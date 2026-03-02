@@ -86,6 +86,16 @@ body {
   padding: 0;
 }
 
+/* Phone Container - Wrapper para centrado perfecto */
+.phone-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+  max-width: calc(100vw - 320px);
+}
+
 /* Navigation */
 .mockup-nav {
   background: var(--white);
@@ -148,11 +158,16 @@ body {
     var(--shadow-xl),
     0 0 0 3px var(--gray-800);
   position: relative;
-  transform-origin: center;
+  transform-origin: center center;
   flex-shrink: 0;
-  /* Escalar automáticamente para ajustarse al viewport */
-  max-height: calc(100vh - 40px);
-  transform: scale(min(1, (100vh - 40px) / 812));
+  /* Escalar automáticamente manteniendo relación de aspecto */
+  transform: scale(
+    min(
+      1,
+      (100vh - 40px) / 812,
+      (100vw - 340px) / 375
+    )
+  );
 }
 
 .phone-notch {
@@ -3520,6 +3535,11 @@ textarea:focus {
     padding: 0;
   }
   
+  .phone-container {
+    max-width: 100%;
+    flex: 1;
+  }
+  
   .mockup-nav {
     border-radius: 0;
     position: fixed;
@@ -3559,7 +3579,6 @@ textarea:focus {
   .phone-frame {
     width: 100%;
     height: calc(100vh - 100px);
-    max-height: none;
     border-radius: 0;
     padding: 0;
     background: transparent;
