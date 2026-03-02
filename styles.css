@@ -66,12 +66,10 @@ body {
   font-family: var(--font-family);
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 10px;
-  overflow: auto;
+  padding: 20px;
 }
 
 /* Mockup Container */
@@ -79,28 +77,22 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
-  max-height: 100vh;
-  width: 100%;
-  padding: 10px 0;
+  gap: 30px;
 }
 
 /* Navigation */
 .mockup-nav {
   background: var(--white);
-  padding: 15px 20px;
+  padding: 20px 30px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
   text-align: center;
-  max-width: 95vw;
-  width: 100%;
 }
 
 .mockup-nav h2 {
   color: var(--primary);
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-weight: 700;
-  font-size: 18px;
 }
 
 .nav-buttons {
@@ -143,10 +135,6 @@ body {
     var(--shadow-xl),
     0 0 0 3px var(--gray-800);
   position: relative;
-  transform-origin: center;
-  /* Escalar automáticamente para ajustarse al viewport */
-  max-height: calc(100vh - 180px);
-  transform: scale(min(1, (100vh - 180px) / 812));
 }
 
 .phone-notch {
@@ -3477,79 +3465,14 @@ textarea:focus {
 /* =====================================================
    RESPONSIVE
    ===================================================== */
-
-/* Tablets y pantallas medianas */
-@media (max-width: 1024px) {
-  .mockup-container {
-    gap: 10px;
-  }
-  
-  .mockup-nav {
-    padding: 10px 15px;
-  }
-  
-  .mockup-nav h2 {
-    font-size: 16px;
-    margin-bottom: 8px;
-  }
-  
-  .nav-buttons button {
-    font-size: 11px;
-    padding: 6px 12px;
-  }
-}
-
-/* Móviles - Pantalla completa sin marco */
-@media (max-width: 768px) {
-  body {
-    padding: 0;
-    background: var(--white);
-  }
-  
-  .mockup-container {
-    max-height: none;
-    height: 100vh;
-    gap: 0;
-    padding: 0;
-  }
-  
-  .mockup-nav {
-    border-radius: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  
-  .mockup-nav h2 {
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-  
-  .nav-buttons {
-    max-width: 100%;
-    gap: 4px;
-  }
-  
-  .nav-buttons button {
-    font-size: 10px;
-    padding: 5px 10px;
-  }
-  
-  /* Ocultar el marco del teléfono en móvil */
+@media (max-width: 420px) {
   .phone-frame {
     width: 100%;
-    height: calc(100vh - 100px);
-    max-height: none;
+    max-width: 375px;
+    height: auto;
+    min-height: 700px;
     border-radius: 0;
     padding: 0;
-    background: transparent;
-    box-shadow: none;
-    transform: none;
-    margin-top: 90px;
   }
 
   .phone-notch {
@@ -3558,18 +3481,18 @@ textarea:focus {
 
   .phone-screen {
     border-radius: 0;
-    height: 100%;
   }
-  
-  .screen {
-    height: 100%;
-  }
-}
 
-/* Móviles pequeños */
-@media (max-width: 480px) {
-  .nav-buttons button {
-    font-size: 9px;
-    padding: 4px 8px;
+  body {
+    padding: 0;
+  }
+
+  .mockup-nav {
+    border-radius: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
   }
 }
