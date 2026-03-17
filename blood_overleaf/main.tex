@@ -1,0 +1,84 @@
+% ============================================================
+%  !Blood – Informe de Diseño y Especificación Funcional
+%  Proyecto multi-archivo para Overleaf
+%  Compilar con: pdfLaTeX
+% ============================================================
+\documentclass[12pt, a4paper]{article}
+
+% ── Paquetes ──────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{float}   % permite [H] para fijar figuras en su lugar
+
+% ── Colores ───────────────────────────────────────────────
+\definecolor{bloodred}{HTML}{E53935}
+\definecolor{darkgray}{HTML}{333333}
+
+% ── Hipervínculos ─────────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=bloodred,
+    urlcolor=bloodred,
+    citecolor=bloodred
+}
+
+% ── Estilos de secciones ─────────────────────────────────
+\titleformat{\section}
+  {\Large\bfseries\color{bloodred}}{\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\large\bfseries\color{darkgray}}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{darkgray}}{\thesubsubsection.}{0.5em}{}
+
+% ── Encabezado y pie ─────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{bloodred}{!Blood}}
+\fancyhead[R]{\small Informe de Diseño}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ============================================================
+\begin{document}
+
+% ── Portada ───────────────────────────────────────────────
+\input{secciones/portada}
+\newpage
+
+% ── Contraportada ─────────────────────────────────────────
+\input{secciones/contraportada}
+\newpage
+
+% ── Tabla de contenido ───────────────────────────────────
+\tableofcontents
+\newpage
+
+% ── Secciones del documento ──────────────────────────────
+\input{secciones/01_planteamiento}
+\newpage
+
+\input{secciones/02_descripcion}
+\newpage
+
+\input{secciones/03_perfiles}
+\newpage
+
+\input{secciones/referencias}
+
+\end{document}
