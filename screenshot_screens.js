@@ -51,8 +51,16 @@ const SCREENS = [
     file: "12_donacion_confirmada.png",
     label: "Donación confirmada",
   },
-  { id: "chat", file: "13_chat_lista.png", label: "Lista de chats" },
-  { id: "chat-detail", file: "14_chat_detalle.png", label: "Chat – detalle" },
+  {
+    id: "donor-survey",
+    file: "13_encuesta_donante.png",
+    label: "Encuesta de aptitud para donar",
+  },
+  {
+    id: "rate-donor",
+    file: "14_calificacion.png",
+    label: "Calificación mutua",
+  },
   { id: "profile", file: "15_perfil.png", label: "Perfil de usuario" },
   {
     id: "notifications",
@@ -79,6 +87,26 @@ const SCREENS = [
     id: "campaign-detail",
     file: "21_detalle_campana.png",
     label: "Detalle campaña",
+  },
+  {
+    id: "home-pro",
+    file: "22_home_pro.png",
+    label: "Home – Profesional de Salud",
+  },
+  {
+    id: "my-campaigns",
+    file: "23_mis_campanas_pro.png",
+    label: "Mis campañas – Profesional",
+  },
+  {
+    id: "campaign-management",
+    file: "24_gestion_campana.png",
+    label: "Gestión de campaña – Profesional",
+  },
+  {
+    id: "profile-pro",
+    file: "25_perfil_pro.png",
+    label: "Perfil – Profesional de Salud",
   },
 ];
 

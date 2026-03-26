@@ -7,10 +7,10 @@
 
 !Blood es una aplicación móvil orientada a la donación de sangre que permite a cualquier persona integrarse a una comunidad de apoyo, con la posibilidad de donar o solicitar sangre según la necesidad. La herramienta centraliza solicitudes, campañas y comunicación entre usuarios, priorizando la compatibilidad por tipo de sangre y la cercanía geográfica, para facilitar respuestas oportunas.
 
-La aplicación contempla dos perfiles de usuario diferenciados ---ciudadano y profesional de salud--- y estructura su funcionamiento en torno a módulos claramente definidos que cubren desde el registro y verificación de identidad hasta la gestión de campañas institucionales.
+La aplicación contempla dos perfiles de usuario diferenciados ---ciudadano y profesional de salud--- y estructura su funcionamiento en torno a módulos definidos que cubren desde el registro y verificación de identidad hasta la gestión de campañas institucionales.
 
 % ──────────────────────────────────────────────────────────
-\subsection{Arquitectura Funcional}
+\subsection{Descripción de la aplicación}
 
 A continuación se describen en detalle los módulos funcionales que componen la aplicación, organizados según el flujo natural de interacción del usuario.
 
@@ -39,7 +39,7 @@ La interfaz de bienvenida se ilustra en la Figura~\ref{fig:splash}.
 El módulo de inicio de sesión permite al usuario autenticarse mediante su correo electrónico o nombre de usuario y su contraseña. La interfaz incluye:
 
 \begin{itemize}
-    \item Campo de usuario o correo electrónico con icono contextual.
+    \item Campo de usuario o correo electrónico.
     \item Campo de contraseña con opción de alternar la visibilidad del texto ingresado (botón de ojo).
     \item Enlace de recuperación de contraseña (\textit{``¿Olvidaste tu contraseña?''}).
     \item Enlace de acceso rápido al registro para usuarios nuevos.
@@ -67,17 +67,17 @@ En esta primera etapa, el usuario proporciona:
     \item \textbf{Nombre completo.}
     \item \textbf{Fecha de nacimiento.}
     \item \textbf{Tipo de sangre:} selección entre los ocho grupos sanguíneos (A+, A-, B+, B-, AB+, AB-, O+, O-).
-    \item \textbf{Cédula de ciudadanía.}
-    \item \textbf{Teléfono de contacto.}
-    \item \textbf{Correo electrónico.}
+    \item \textbf{Tipo de identificación:} selector con las opciones TI (Tarjeta de Identidad), CC (Cédula de Ciudadanía), CE (Cédula de Extranjería), PA (Pasaporte) y NIT.
+    \item \textbf{Número de identificación.}
 \end{itemize}
 
 \paragraph{Paso 2: Verificación.}
 La segunda etapa tiene como objetivo validar la identidad del usuario y registrar su ubicación:
 
 \begin{itemize}
-    \item \textbf{Fotografía de la cédula de ciudadanía:} el usuario carga una imagen legible de su documento de identidad.
-    \item \textbf{Foto de perfil:} se solicita una fotografía con fondo blanco y rostro visible, para facilitar la identificación entre usuarios.
+    \item \textbf{Cara frontal del documento:} el usuario fotografía o carga la cara frontal de su documento de identidad.
+    \item \textbf{Cara posterior del documento:} el usuario fotografía o carga la cara posterior del mismo documento.
+    \item \textbf{Foto de perfil (cámara):} la foto se toma directamente desde la cámara del dispositivo en el momento del registro; no se permite subir una imagen desde la galería. Su propósito es evitar la creación de cuentas duplicadas mediante reconocimiento facial básico. Instrucción visible en pantalla: \textit{``Toca para abrir la cámara y tomarte una foto. Fondo claro, rostro visible.''}.
     \item \textbf{Ciudad de residencia.}
     \item \textbf{Dirección:} campo de texto complementado con un botón de geolocalización automática que permite capturar la ubicación actual del dispositivo.
 \end{itemize}
@@ -93,6 +93,8 @@ En la última etapa del registro se configuran las credenciales de acceso:
     \item \textbf{Compromiso de donación solidaria:} el usuario acepta explícitamente que toda donación canalizada a través de la plataforma es voluntaria y sin fines de lucro.
 \end{itemize}
 
+Al presionar el botón \textit{``Crear cuenta''}, el sistema dirige automáticamente al usuario ciudadano a la \textbf{encuesta de aptitud para donación de sangre} (véase la sección siguiente).
+
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.32\textwidth]{imagenes/03_registro_paso1.png}\hfill
@@ -103,6 +105,40 @@ En la última etapa del registro se configuran las credenciales de acceso:
 \end{figure}
 
 % ── 2.2.4 ─────────────────────────────────────────────────
+\subsubsection{Encuesta de Aptitud para Donar Sangre}
+\label{sec:encuesta-donante}
+
+Al completar el proceso de registro, el sistema ciudadano dirige automáticamente al usuario a una \textbf{encuesta de aptitud para donación}. Esta encuesta aplica únicamente a usuarios registrados como ciudadanos y tiene como objetivo evaluar si el usuario podría ser un donante viable. Las respuestas \textbf{no bloquean el registro} pero quedan almacenadas y permiten al sistema orientar al usuario sobre su disposición para donar.
+
+La pantalla muestra el título \textit{``¿Eres apto para donar sangre?''} y presenta ocho preguntas con respuesta Sí / No:
+
+\begin{enumerate}[leftmargin=1.5cm]
+    \item ¿Tienes entre 18 y 65 años?
+    \item ¿Pesas más de 50 kg?
+    \item ¿Has donado sangre en los últimos 3 meses?
+    \item ¿Has tenido alguna enfermedad infecciosa recientemente (hepatitis, VIH, sífilis u otras de transmisión sanguínea)?
+    \item ¿Estás tomando algún medicamento actualmente?
+    \item ¿Has recibido alguna vacuna en las últimas 4 semanas?
+    \item ¿Has realizado alguna conducta de riesgo en los últimos 12 meses (tatuajes, piercings, transfusiones)?
+    \item ¿Estás en buen estado de salud general hoy?
+\end{enumerate}
+
+Al finalizar, se muestra un mensaje personalizado:
+\begin{itemize}
+    \item Si el usuario presenta alta aptitud: \textit{``¡Pareces ser un buen donante! Cuando veas una solicitud compatible, anímate a ayudar. ¡Juntos salvamos vidas!''}.
+    \item Si se detectan factores de riesgo: \textit{``Gracias por responder. Algunos de tus datos sugieren que por ahora no podrías donar, pero puedes participar de otras formas en la comunidad.''}.
+\end{itemize}
+
+El usuario puede volver a responder esta encuesta en cualquier momento desde la pantalla de perfil. La encuesta se ilustra en la Figura~\ref{fig:encuesta-donante}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.32\textwidth]{imagenes/13_encuesta_donante.png}
+  \caption{Encuesta de aptitud para donación: ocho preguntas Sí/No que orientan al usuario sobre su viabilidad como donante.}
+  \label{fig:encuesta-donante}
+\end{figure}
+
+% ── 2.2.5 ─────────────────────────────────────────────────
 \subsubsection{Pantalla Principal (Home)}
 
 La pantalla principal es el centro de operaciones del usuario tras iniciar sesión. Está compuesta por los siguientes elementos:
@@ -120,7 +156,6 @@ Cuadrícula de cuatro accesos directos a las funcionalidades principales:
     \item \textbf{Solicitar sangre:} abre el formulario de creación de solicitud.
     \item \textbf{Ver solicitudes:} accede al listado de solicitudes activas en la zona.
     \item \textbf{Campañas:} muestra las campañas de donación programadas.
-    \item \textbf{Mensajes:} dirige al módulo de chat.
 \end{itemize}
 
 \paragraph{Solicitudes cercanas.}
@@ -133,7 +168,7 @@ Vista previa de las campañas de donación programadas en la zona, con informaci
 Indicadores globales que muestran el total de donantes activos y vidas salvadas en la plataforma, reforzando el sentido de pertenencia a una comunidad con impacto real.
 
 \paragraph{Barra de navegación inferior.}
-Barra fija con cinco elementos: Inicio, Explorar, botón central prominente de creación rápida (+), Chat y Perfil. El botón central se destaca visualmente como un botón de acción flotante (FAB). La composición completa de la pantalla principal se puede observar en la Figura~\ref{fig:home}.
+Barra fija con cinco elementos: Inicio, Explorar, botón central de creación rápida (+), Campañas y Perfil. La composición completa de la pantalla principal se puede observar en la Figura~\ref{fig:home}.
 
 \begin{figure}[H]
   \centering
@@ -160,7 +195,15 @@ Este módulo permite a cualquier usuario publicar una solicitud de sangre. El fo
     \item \textbf{Mensaje para donantes:} campo de texto opcional (máximo 200 caracteres).
 \end{itemize}
 
-Un banner informativo aclara: \textit{``Tu solicitud será visible para donantes compatibles en tu zona''}. Tras enviar la solicitud, se muestra una pantalla de confirmación que informa el número de donantes notificados. El formulario y la confirmación se ilustran en la Figura~\ref{fig:crear-solicitud}.
+Un banner informativo aclara: \textit{``Tu solicitud será visible para donantes compatibles en tu zona''}. Cuando el usuario selecciona el nivel \textbf{Urgente}, se despliega un \textbf{modal de advertencia} que solicita confirmación explícita:
+
+\begin{quote}
+\textit{``¿Confirmas que la situación es realmente urgente? Si marcas urgente y luego rectificas que no lo era, se aplicará una \textbf{penalización temporal}: no podrás crear nuevas solicitudes en la aplicación durante un tiempo definido.''}
+\end{quote}
+
+El usuario puede confirmar el nivel urgente o cambiarlo a urgencia media. Si rectifica la urgencia después de haber publicado la solicitud, la penalización se aplica de forma automática.
+
+Tras enviar la solicitud, se muestra una pantalla de confirmación que indica el número de donantes notificados. El formulario y la confirmación se ilustran en la Figura~\ref{fig:crear-solicitud}.
 
 \begin{figure}[H]
   \centering
@@ -177,7 +220,7 @@ La pantalla de solicitudes presenta el listado completo de solicitudes activas e
 
 \begin{itemize}
     \item \textbf{Barra de búsqueda:} por nombre del solicitante o tipo de sangre.
-    \item \textbf{Filtros rápidos (chips):} Todas, Urgentes, Compatible y Cercanas.
+    \item \textbf{Filtros rápidos :} Todas, Urgentes, Compatible y Cercanas.
 \end{itemize}
 
 Cada tarjeta muestra: nivel de urgencia, tiempo de publicación, solicitante, tipo de sangre, unidades, centro de salud, distancia y mensaje breve, tal como se aprecia en la Figura~\ref{fig:solicitudes}.
@@ -192,18 +235,19 @@ Cada tarjeta muestra: nivel de urgencia, tiempo de publicación, solicitante, ti
 % ── 2.2.7 ─────────────────────────────────────────────────
 \subsubsection{Detalle de Solicitud}
 
-Vista completa de una solicitud que comprende:
+Vista completa de una solicitud, estructurada de arriba hacia abajo como sigue:
 
-\begin{itemize}
-    \item Encabezado con urgencia, tipo de sangre y unidades.
+\begin{enumerate}[label=\arabic*.]
+    \item Hero con indicador de urgencia, tipo de sangre y cantidad de unidades necesarias.
+    \item \textbf{Botón \textit{``Quiero donar''}:} visible de manera inmediata sin necesidad de desplazamiento vertical, a fin de maximizar la tasa de aceptación de donaciones.
+    \item \textbf{Aviso de compatibilidad automática:} el sistema informa si el tipo de sangre del usuario es compatible con la solicitud.
     \item Información del solicitante con sello de verificación.
-    \item Mensaje completo de la situación.
+    \item Mensaje completo del solicitante.
     \item Centro de salud con dirección, distancia y botón de mapa.
-    \item Estado de donantes aceptados respecto al total requerido.
-    \item \textbf{Aviso de compatibilidad automática:} el sistema informa si el tipo de sangre del usuario es compatible.
-    \item Botón \textit{``Quiero donar''} que conduce al flujo de confirmación.
-    \item Nota que aclara que la comunicación posterior se realiza vía chat interno y que la donación ocurre únicamente en el centro de salud indicado.
-\end{itemize}
+    \item Estado de donantes aceptados respecto al total requerido y tiempo transcurrido desde la publicación.
+\end{enumerate}
+
+Una nota al pie indica: \textit{``La donación se realiza únicamente en el centro de salud indicado. Preséntate con tu documento de identidad.''}
 
 La vista completa del detalle de solicitud se muestra en la Figura~\ref{fig:detalle-solicitud}.
 
@@ -217,40 +261,55 @@ La vista completa del detalle de solicitud se muestra en la Figura~\ref{fig:deta
 % ── 2.2.8 ─────────────────────────────────────────────────
 \subsubsection{Confirmación de Donación}
 
-Antes de confirmar, el usuario revisa un resumen y acepta:
+Antes de confirmar, el usuario revisa un resumen con el nombre del solicitante, el tipo de sangre requerido y el centro de salud, y debe aceptar:
 
 \begin{itemize}
-    \item \textbf{Compromiso del donante:} acudir al centro indicado, donación voluntaria y sin fines de lucro, comunicación limitada a la coordinación.
-    \item \textbf{Checklist de salud:} no haber donado en los últimos 3 meses, ausencia de enfermedades infectocontagiosas, edad entre 18 y 65 años, peso mayor a 50\,kg.
+    \item \textbf{Compromiso del donante:} acudir al centro indicado y que la donación es voluntaria y sin fines de lucro.
+    \item \textbf{Checklist de salud:} no haber donado en los últimos 3 meses, ausencia de enfermedades infectocontagiosas activas, edad entre 18 y 65 años, peso mayor a 50\,kg.
 \end{itemize}
 
-Al confirmar, una pantalla de agradecimiento reconoce al donante e indica el centro de salud al que debe acudir. Ambas pantallas se ilustran en la Figura~\ref{fig:confirmar-donacion}.
+Un bloque de advertencia visible antes del botón principal informa:
+
+\begin{quote}
+\textit{``\textbf{Compromiso serio:} Una vez confirmes tu donación, si decides cancelar, \textbf{no podrás aceptar donaciones con ningún otro usuario durante 30 días}. Puede estar en juego una vida.''}
+\end{quote}
+
+El sistema también dispone de un modal de cancelación que expone las consecuencias (penalización de 30 días y notificación al solicitante) y ofrece dos opciones: \textit{``Mantener mi compromiso''} (acción primaria) y \textit{``Cancelar de todas formas''} (acción secundaria, en rojo).
+
+Al confirmar, una pantalla de agradecimiento muestra el mensaje \textit{``¡Gracias por comprometerte!''} e indica al donante que debe presentarse en el centro de salud con su documento de identidad. La donación es completamente voluntaria y confidencial. El botón de acción redirige al inicio; el botón de ir al chat ha sido eliminado.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.32\textwidth]{imagenes/11_confirmar_donacion.png}\hfill
   \includegraphics[width=0.32\textwidth]{imagenes/12_donacion_confirmada.png}
-  \caption{Resumen de compromiso y checklist de salud previo a la donación (izq.) y pantalla de agradecimiento al donante (der.).}
+  \caption{Resumen de compromiso, checklist de salud y advertencia de penalización (izq.) y pantalla de agradecimiento al donante tras confirmar (der.).}
   \label{fig:confirmar-donacion}
 \end{figure}
 
 % ── 2.2.9 ─────────────────────────────────────────────────
-\subsubsection{Sistema de Mensajería (Chat)}
+\subsubsection{Sistema de Calificación Mutua}
+\label{sec:calificacion}
 
-El módulo de mensajería activa la comunicación directa entre donante y solicitante, exclusivamente en el contexto de una donación aceptada.
+Una vez registrada una donación como completada, tanto el donante como el receptor tienen la oportunidad de calificarse mutuamente a través de una pantalla dedicada.
 
-\paragraph{Lista de conversaciones.}
-Muestra todas las conversaciones activas con: foto del interlocutor, estado en línea, nombre, última hora de actividad, vista previa del último mensaje, indicador de no leídos y contexto de la solicitud asociada (tipo de sangre y estado).
+\paragraph{Pantalla de calificación.}
+La interfaz incluye:
 
-\paragraph{Detalle de conversación.}
-Incluye encabezado con datos del interlocutor y solicitud, burbujas de mensajes diferenciadas (enviados/recibidos), marcas de tiempo, indicadores de lectura (doble check) y separadores de fecha. El elemento destacado es el \textbf{aviso de moderación por IA}: banner visible que informa \textit{``Chat protegido por IA -- Solo mensajes relacionados con la donación''}, filtrando automáticamente contenido inadecuado o no relacionado con el propósito de la plataforma. La lista de conversaciones y el chat activo se muestran en la Figura~\ref{fig:chat}.
+\begin{itemize}
+    \item \textbf{Información del otro usuario:} avatar, nombre y rol (donante o receptor).
+    \item \textbf{Aviso de imparcialidad:} bloque prominente que recuerda que \textit{``la sangre no tiene color, género, religión ni orientación. La calificación debe basarse \textbf{únicamente} en el comportamiento, puntualidad y actitud de la persona. Cualquier calificación discriminatoria puede resultar en la suspensión de la cuenta''}.
+    \item \textbf{Selector de estrellas:} sistema interactivo de 1 a 5 estrellas.
+    \item \textbf{Comentario opcional:} campo de texto libre de hasta 150 caracteres.
+    \item Botón principal \textit{``Enviar calificación''} y opción secundaria \textit{``Omitir''}.
+\end{itemize}
+
+Las calificaciones acumuladas se muestran en el perfil de cada usuario como indicador de reputación dentro de la comunidad. La pantalla de calificación se ilustra en la Figura~\ref{fig:calificacion}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.32\textwidth]{imagenes/13_chat_lista.png}\hfill
-  \includegraphics[width=0.32\textwidth]{imagenes/14_chat_detalle.png}
-  \caption{Lista de conversaciones con contexto de solicitud (izq.) y chat de coordinación con aviso de moderación por IA (der.).}
-  \label{fig:chat}
+  \includegraphics[width=0.32\textwidth]{imagenes/14_calificacion.png}
+  \caption{Pantalla de calificación mutua: aviso de imparcialidad, selector de estrellas y comentario opcional.}
+  \label{fig:calificacion}
 \end{figure}
 
 % ── 2.2.10 ────────────────────────────────────────────────
@@ -259,11 +318,11 @@ Incluye encabezado con datos del interlocutor y solicitud, burbujas de mensajes 
 La pantalla de perfil concentra la información personal y la configuración:
 
 \begin{itemize}
-    \item Foto de perfil editable, nombre y nombre de usuario.
+    \item Foto de perfil editable, nombre completo y nombre de usuario (\textit{@handle}).
     \item Insignias de \textit{Verificado} y \textit{Donante activo}.
-    \item Tarjeta con tipo de sangre, donaciones realizadas, vidas ayudadas y solicitudes creadas.
-    \item Datos de contacto y antigüedad.
-    \item Accesos a: editar perfil, notificaciones, privacidad, ayuda y cerrar sesión.
+    \item Tarjeta con tipo de sangre, donaciones realizadas, vidas ayudadas, solicitudes creadas y \textbf{calificación promedio en estrellas}.
+    \item \textbf{Mi información:} tipo y número de identificación, ciudad de residencia y fecha de registro.
+    \item Accesos a: editar perfil, notificaciones, privacidad, \textit{encuesta de donante} (volver a responder), ayuda y cerrar sesión.
 \end{itemize}
 
 La pantalla de perfil se ilustra en la Figura~\ref{fig:perfil}.
@@ -281,10 +340,11 @@ La pantalla de perfil se ilustra en la Figura~\ref{fig:perfil}.
 Mantiene al usuario informado en tiempo real. Tipos de notificación:
 
 \begin{itemize}
-    \item \textbf{Solicitudes urgentes:} alerta cuando hay sangre compatible y cercana disponible.
-    \item \textbf{Mensajes nuevos:} aviso de chat entrante.
-    \item \textbf{Donaciones confirmadas:} registro exitoso de una donación.
-    \item \textbf{Reconocimientos:} mensajes motivacionales por logros alcanzados.
+    \item \textbf{Solicitudes urgentes cercanas:} alerta cuando hay un tipo de sangre compatible con el usuario a poca distancia.
+    \item \textbf{Donante aceptó tu solicitud:} aviso cuando otro usuario confirma querer donar.
+    \item \textbf{Donaciones confirmadas:} registro exitoso de una donación completada.
+    \item \textbf{Recordatorio de campaña próxima:} recordatorio automático antes del evento reservado.
+    \item \textbf{Reconocimientos:} mensajes motivacionales por logros alcanzados (medallas, hitos).
     \item \textbf{Estadísticas de comunidad:} crecimiento de la plataforma.
 \end{itemize}
 
@@ -326,8 +386,13 @@ El formulario recoge:
     \item Tipos de sangre necesarios (selección múltiple o ``Todos'').
     \item Descripción de la campaña (máximo 500 caracteres): objetivos, beneficios para donantes, información relevante.
     \item Requisitos estandarizados: edad 18--65 años, peso $> 50$\,kg, documento de identidad, mínimo 3 meses desde la última donación.
-    \item Teléfono de contacto.
 \end{itemize}
+
+Al final del formulario, y antes del botón de publicación, se muestra un \textbf{mensaje motivacional dirigido al profesional}:
+
+\begin{quote}
+\textit{``\textbf{Un mensaje para ti, profesional de la salud:} Cada donante que atiendes hoy puede convertirse en donante de por vida. Un trato amable, agradecido y sin juicios es la mejor forma de que regresen. ¡Gracias por ser parte del cambio!''}
+\end{quote}
 
 El formulario de creación y la pantalla de confirmación se muestran en la Figura~\ref{fig:crear-campana}.
 
@@ -354,14 +419,108 @@ La vista completa incluye: organización verificada, descripción, mapa de ubica
 \end{figure}
 
 % ──────────────────────────────────────────────────────────
-\subsection{Características Transversales}
+\subsection{Vistas exclusivas del Profesional de Salud}
+
+El perfil de profesional de salud dispone de un conjunto de vistas adaptadas a las responsabilidades institucionales: creación y seguimiento de campañas, gestión de participantes y visualización de estadísticas de impacto.
+
+% ── Home profesional ──────────────────────────────────────
+\subsubsection{Pantalla Principal del Profesional (Home Pro)}
+
+La pantalla de inicio del profesional de salud reemplaza la tarjeta de tipo de sangre por un \textbf{panel de estadísticas institucionales} que muestra:
 
 \begin{itemize}
-    \item \textbf{Compatibilidad inteligente:} el sistema evalúa automáticamente la compatibilidad entre el tipo de sangre del donante y el requerido.
-    \item \textbf{Geolocalización:} todas las solicitudes y campañas muestran distancia respecto al usuario.
-    \item \textbf{Verificación de identidad:} el registro requiere cédula y fotografía, generando un sello de \textit{Verificado} que otorga confianza.
-    \item \textbf{Moderación por inteligencia artificial:} el chat incorpora filtrado automático para garantizar que la comunicación se limite al contexto de la donación.
-    \item \textbf{Modelo solidario:} la plataforma refuerza en cada flujo que las donaciones son voluntarias y sin fines de lucro.
-    \item \textbf{Gamificación y reconocimiento:} estadísticas, insignias y mensajes motivacionales fomentan la participación recurrente.
-    \item \textbf{Interfaz inclusiva:} diseño con tipografía clara, iconografía intuitiva, campos con pistas contextuales y flujos cortos que minimizan la carga cognitiva.
+    \item Número total de campañas publicadas.
+    \item Total de participantes captados.
+    \item Total de donaciones registradas a través de sus campañas.
 \end{itemize}
+
+La sección de \textbf{acciones rápidas} contiene cuatro opciones:
+
+\begin{itemize}
+    \item \textbf{Crear campaña:} acceso directo al formulario de nueva campaña.
+    \item \textbf{Mis campañas:} listado y gestión de campañas propias.
+    \item \textbf{Ver solicitudes:} exploración del listado general de solicitudes activas.
+    \item \textbf{Solicitar sangre:} posibilidad de publicar una solicitud de sangre como cualquier usuario.
+\end{itemize}
+
+Debajo de las acciones rápidas se muestra un resumen de las campañas activas más recientes con su estado de cupos, y al final las estadísticas globales de la comunidad. La barra de navegación inferior del profesional incluye: Inicio, Campañas, botón central (+), Explorar y Perfil. La pantalla se ilustra en la Figura~\ref{fig:home-pro}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.32\textwidth]{imagenes/22_home_pro.png}
+  \caption{Pantalla de inicio del profesional de salud: estadísticas institucionales, acciones rápidas y resumen de campañas activas.}
+  \label{fig:home-pro}
+\end{figure}
+
+% ── Mis campañas ─────────────────────────────────────────
+\subsubsection{Gestión de Mis Campañas}
+
+El módulo \textbf{Mis campañas} permite al profesional administrar todas sus campañas organizadas en tres pestañas: \textit{Activas}, \textit{Próximas} y \textit{Pasadas}.
+
+Cada tarjeta de campaña muestra: nombre de la campaña, estado, institución, fecha, horario, dirección, barra de progreso de cupos (reservados / total) y tres acciones:
+
+\begin{itemize}
+    \item \textbf{Gestionar:} accede a la vista detallada de gestión con estadísticas de participantes.
+    \item \textbf{Editar:} permite modificar los datos de la campaña.
+    \item \textbf{Cancelar:} cancela la campaña y notifica a los participantes.
+\end{itemize}
+
+El listado y las tarjetas de gestión se muestran en la Figura~\ref{fig:mis-campanas-pro}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.32\textwidth]{imagenes/23_mis_campanas_pro.png}
+  \caption{Listado de campañas del profesional con estado, progreso de cupos y opciones de gestión.}
+  \label{fig:mis-campanas-pro}
+\end{figure}
+
+% ── Gestión de campaña ───────────────────────────────────
+\subsubsection{Vista de Gestión de Campaña}
+
+La vista de gestión ofrece al profesional un panel completo de control sobre una campaña específica. Está organizada en las siguientes secciones:
+
+\paragraph{Hero con estadísticas.}
+Panel superior (destacado en color) con el nombre de la campaña, institución, fecha y tres indicadores clave: reservas confirmadas, participantes que asistieron y cupos disponibles.
+
+\paragraph{Ocupación de cupos.}
+Barra de progreso visual que muestra el porcentaje de ocupación, desglosado en: confirmados, asistidos y libres.
+
+\paragraph{Tipos de sangre recibidos.}
+Listado con la cantidad de donaciones por cada grupo sanguíneo registrado en la jornada, con indicadores visuales de los más solicitados.
+
+\paragraph{Lista de participantes.}
+Vista previa de los últimos participantes con: avatar, nombre, tiempo de reserva, tipo de sangre y estado (Asistió, Confirmado, No asistió). Incluye enlace para ver el listado completo.
+
+\paragraph{Acciones de gestión.}
+Botones para registrar asistencia, editar la campaña y cancelarla. La pantalla de gestión se ilustra en la Figura~\ref{fig:gestion-campana}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.32\textwidth]{imagenes/24_gestion_campana.png}
+  \caption{Vista de gestión de campaña: panel de estadísticas, ocupación de cupos, tipos de sangre recibidos y lista de participantes.}
+  \label{fig:gestion-campana}
+\end{figure}
+
+% ── Perfil Pro ───────────────────────────────────────────
+\subsubsection{Perfil del Profesional de Salud}
+
+El perfil del profesional presenta una estructura diferenciada respecto al perfil ciudadano:
+
+\begin{itemize}
+    \item Avatar (foto de cámara tomada en el registro), nombre completo y nombre de usuario.
+    \item Insignias de \textit{Verificado} y \textit{Profesional de Salud}.
+    \item \textbf{Tarjeta de estadísticas profesionales:} campañas publicadas, total de participantes captados y total de donaciones registradas.
+    \item \textbf{Mi información:} institución (hospital o clínica), especialidad, tipo y número de licencia profesional, ciudad y fecha de registro. Se añade también la calificación promedio en estrellas otorgada por los donantes.
+    \item \textbf{Opciones:} editar perfil, gestionar mis campañas, notificaciones, privacidad, ayuda y cerrar sesión.
+\end{itemize}
+
+El perfil del profesional se ilustra en la Figura~\ref{fig:perfil-pro}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.32\textwidth]{imagenes/25_perfil_pro.png}
+  \caption{Perfil del profesional de salud: estadísticas institucionales, información de licencia y opciones de gestión.}
+  \label{fig:perfil-pro}
+\end{figure}
+
+% ──────────────────────────────────────────────────────────

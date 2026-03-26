@@ -1,5 +1,5 @@
 % ============================================================
-%  !Blood – Informe de Diseño y Especificación Funcional
+%  !Blood – Atributos de Calidad de Software
 %  Proyecto multi-archivo para Overleaf
 %  Compilar con: pdfLaTeX
 % ============================================================
@@ -18,14 +18,13 @@
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{xcolor}
-\usepackage{colortbl}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{longtable}
 \usepackage{caption}
-\usepackage{float}   % permite [H] para fijar figuras en su lugar
+\usepackage{float}
 
 % ── Colores ───────────────────────────────────────────────
 \definecolor{bloodred}{HTML}{E53935}
@@ -51,9 +50,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\small\textcolor{bloodred}{!Blood}}
-\fancyhead[R]{\small Informe de Diseño}
+\fancyhead[R]{\small Atributos de Calidad}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
+
+% ── Profundidad del índice ────────────────────────────────
+\setcounter{tocdepth}{2}
 
 % ============================================================
 \begin{document}
@@ -71,19 +73,13 @@
 \newpage
 
 % ── Secciones del documento ──────────────────────────────
-\input{secciones/01_planteamiento}
+\input{secciones/01_disponibilidad}
 \newpage
 
-\input{secciones/02_descripcion}
+\input{secciones/02_modificabilidad}
 \newpage
 
-\input{secciones/04_prueba_usabilidad}
-\newpage
-
-\input{secciones/03_perfiles}
-\newpage
-
-\input{secciones/05_atributos_calidad}
+\input{secciones/03_usabilidad}
 \newpage
 
 \input{secciones/referencias}

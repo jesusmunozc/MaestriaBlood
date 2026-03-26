@@ -1,0 +1,172 @@
+PORTADA. Es la que habíamos utilizado para el trabajo de los mockups.
+
+INDICE
+1. Atributo de calidad: Disponibilidad
+1.1. Escenario de calidad
+1.2. Táctica 1: Heartbeat
+1.3. Táctica 2: Degradation
+2. Atributo de calidad: Modificabilidad
+2.1. Escenario de calidad
+2.2. Táctica 1: Dividir módulo
+2.3. Táctica 2: Encapsular
+3. Atributo de calidad: Usabilidad
+3.1. Escenario de calidad
+3.2. Táctica 1: Mantener modelo del sistema
+3.3. Táctica 2: Mantener modelo de tarea
+Referencias
+
+1.	Atributo de calidad: Disponibilidad
+1.1	Escenario de calidad
+
+Caso: el servidor de notificaciones o mensajería deja de responder durante una solicitud urgente de donación.
+•	Fuente del estímulo: fallo interno de software o proceso del servidor encargado de notificaciones o mensajería.
+•	Estímulo: el servicio de notificaciones o chat deja de responder mientras un usuario intenta gestionar una solicitud urgente de donación.
+•	Artefacto: proceso de notificaciones, servicio de mensajería, canal de comunicación y funciones asociadas al seguimiento de solicitudes.
+•	Entorno: operación normal del sistema.
+•	Respuesta: el sistema debe detectar la falla, informar o registrar el evento y continuar prestando las funciones más críticas de la aplicación, como el registro de usuarios, la consulta de campañas, la visualización de solicitudes y la publicación de casos urgentes, aunque algunas funciones secundarias queden temporalmente limitadas.
+•	Medida de respuesta: la respuesta será satisfactoria si la falla se detecta en pocos segundos, el sistema continúa disponible para las funciones esenciales y la interrupción no provoca caída total de la plataforma.
+En la aplicación !Blood, un escenario de calidad asociado al atributo de disponibilidad se presenta cuando, en medio de una solicitud urgente de sangre, el servicio de notificaciones o de mensajería deja de responder. Esta situación es crítica, porque la plataforma debe seguir funcionando incluso si uno de sus componentes falla. En este caso, resulta conveniente aplicar principalmente las tácticas de heartbeat y degradation. La táctica heartbeat permite supervisar periódicamente si un proceso o servicio continúa activo, de modo que el sistema detecte con rapidez cuando un componente deja de responder. Por su parte, la táctica degradation permite que, ante esa falla, la aplicación mantenga operativas las funciones más importantes, aunque reduzca temporalmente aquellas que no son esenciales. 
+
+1.2	Táctica 1: Heartbeat
+¿Qué es?
+La táctica heartbeat consiste en realizar un intercambio periódico de señales o mensajes entre un monitor del sistema y un proceso supervisado, con el fin de comprobar que ese componente sigue activo y funcionando correctamente. Si esas señales dejan de recibirse dentro del tiempo esperado, el sistema asume que existe una falla y puede actuar en consecuencia (mecanismo de detección de fallas). 
+¿Cómo se aplicaría en la aplicación?
+Se podría aplicarse para vigilar procesos importantes como:
+•	el servicio de notificaciones que avisa sobre campañas o solicitudes urgentes,
+•	el módulo de mensajería o interacción entre usuarios,
+•	el servicio que consulta la disponibilidad de donantes,
+•	el backend encargado de procesar solicitudes de sangre,
+•	la conexión con la base de datos donde se almacena la información crítica.
+Por ejemplo, el sistema podría verificar cada cierto tiempo si el servicio de notificaciones sigue respondiendo. Si deja de hacerlo, la plataforma detectaría la falla rápidamente y podría registrar el problema, alertar al administrador o activar una respuesta alternativa.
+¿Por qué es conveniente esta táctica?
+En la aplicación es importante que, si algo falla, eso se descubra rápido. Esta táctica es útil porque maneja funcionalidades al tiempo, como alertas de donación urgente, confirmaciones de disponibilidad o notificaciones a usuarios. Si uno de estos servicios deja de responder y nadie lo detecta, la aplicación puede aparentar estar funcionando cuando en realidad está fallando en una de sus funciones más críticas. Por eso, heartbeat ayuda a mejorar la confiabilidad operativa del sistema.
+
+1.3	Táctica 2: Degradation 
+
+¿Qué es?
+La táctica degradation consiste en mantener activas las funciones más importantes del sistema cuando ocurre una falla en alguno de sus componentes, reduciendo o suspendiendo temporalmente las funciones menos críticas. En vez de provocar una caída completa, el sistema continúa funcionando de manera limitada pero útil (recuperación ante fallas).
+¿Cómo se aplicaría en la aplicación?
+•	si falla el servicio de chat o mensajería, la aplicación puede seguir permitiendo publicar y consultar solicitudes de donación;
+•	si el módulo de notificaciones presenta errores, el sistema puede continuar mostrando campañas y casos urgentes dentro de la aplicación, aunque no envíe avisos en tiempo real;
+•	sí hay congestión en una parte secundaria del sistema, pueden priorizarse funciones esenciales como registro, autenticación, consulta de compatibilidad sanguínea y visualización de solicitudes activas;
+•	sí una funcionalidad adicional, como reportes estadísticos o historial avanzado, falla, la plataforma puede seguir operando con los módulos principales.
+¿Por qué es conveniente esta táctica?
+Porque !Blood es una aplicación cuyo valor principal está en conectar rápidamente a personas que necesitan sangre con posibles donantes. En ese contexto, una falla parcial no debería dejar completamente inutilizable la plataforma. Lo más importante es que el sistema mantenga disponibles las funciones esenciales, incluso si algunas características secundarias deben desactivarse temporalmente. Esta táctica resulta muy adecuada porque permite que la aplicación siga siendo útil en situaciones de error, reduce el impacto de las fallas y evita que una interrupción menor termine afectando por completo el servicio. En otras palabras, ayuda a que la plataforma conserve su propósito principal aun en condiciones adversas.
+2.	Atributo de calidad: Modificabilidad
+2.1	Escenario de calidad 
+
+Caso: los usuarios utilizan de manera inapropiada el chat en vivo.
+•	Fuente del estímulo: equipo de desarrollo de la aplicación.
+
+•	Estímulo: decisión de eliminar la funcionalidad de chat en vivo debido a su uso indebido dentro de la plataforma.
+
+
+•	Artefacto: módulo de chat, interfaces de comunicación entre usuarios, vistas asociadas y lógica de mensajería.
+
+•	Entorno: tiempo de diseño y mantenimiento del sistema.
+
+
+•	Respuesta: el sistema debe permitir que la funcionalidad de chat sea retirada, actualizando las interfaces, ajustando las reglas de interacción entre usuarios, sin comprometer el funcionamiento de otras funcionalidades, como el registro, las solicitudes de donación, las campañas y las notificaciones.
+
+•	Medida de respuesta: la modificación será satisfactoria si puede implementarse en un tiempo razonable, con bajo costo, afectando la menor cantidad posible de módulos y sin introducir errores, inconsistencias o efectos secundarios en otras partes del sistema.
+
+En !Blood, un escenario de calidad asociado al atributo de modificabilidad se presenta cuando el equipo de desarrollo detecta que la funcionalidad de chat en vivo está siendo utilizada de forma inapropiada por algunos usuarios para compartir números de teléfono o incluso promover prácticas contrarias al propósito solidario de la plataforma, como la compra y venta de sangre. Ante esta situación, surge la necesidad de eliminar dicha funcionalidad. En este caso se aplican principalmente las tácticas de dividir módulo y encapsular. La táctica dividir módulo permite que la funcionalidad de chat se encuentre separada del resto de componentes de la aplicación, facilitando su eliminación sin afectar de manera significativa otras funciones. Por su parte, la táctica encapsular permite que el chat se relacione con otros módulos únicamente a través de interfaces bien definidas, reduciendo el acoplamiento y evitando que su retiro genere cambios innecesarios en otras partes del sistema. De manera complementaria, también se relaciona con la táctica restringir dependencias, ya que conviene que los módulos centrales de la aplicación no dependan directamente de esta funcionalidad.
+2.2	Táctica 1: Dividir módulo
+
+¿Qué es?
+Consiste en separar el sistema en módulos más pequeños e independientes, de manera que cada uno tenga una responsabilidad específica. Esto facilita que una funcionalidad pueda modificarse, reemplazarse o eliminarse sin afectar de forma significativa al resto del sistema.
+¿Cómo se aplicaría en la aplicación?
+•	el módulo de chat en vivo, independiente del módulo de solicitudes de donación,
+•	el módulo de registro e inicio de sesión, separado de la gestión de perfiles,
+•	el módulo de campañas de donación, separado del historial de donaciones,
+•	el módulo de notificaciones, desacoplado del módulo de búsqueda de donantes,
+•	el módulo de compatibilidad sanguínea, separado de la lógica de publicación de solicitudes,
+•	el módulo de reportes o denuncias, independiente del sistema de mensajería o interacción entre usuarios.
+¿Por qué es conveniente esta táctica?
+Porque permite que los cambios se realicen de manera más localizada y ordenada. Si las funcionalidades están separadas, el equipo de desarrollo no necesita intervenir muchas partes del sistema para hacer una modificación puntual. En !Blood, esto sería útil, por ejemplo, si se desea cambiar únicamente la lógica de compatibilidad sanguínea, mejorar el sistema de notificaciones, ajustar el registro de usuarios o añadir nuevas funciones al módulo de campañas. Al estar cada responsabilidad aislada, se reduce el esfuerzo por mantener cada módulo facilitando la evolución progresiva de la aplicación.
+
+2.3	Táctica 2: Encapsular
+
+¿Qué es?
+Consiste en ocultar la implementación interna de un módulo y permitir que otros componentes interactúen con él únicamente mediante el uso de APIS. Así, los demás módulos no dependen de los detalles internos de funcionamiento, sino solo de los servicios que ese módulo ofrece.
+¿Cómo se aplicaría en la aplicación?
+•	el módulo de chat podría exponer acciones como enviar mensaje, bloquear conversación o cerrar chat, sin que otros módulos conozcan su lógica interna,
+•	el módulo de notificaciones podría ofrecer operaciones como enviar alerta o marcar como leída, sin mostrar cómo gestiona colas, estados o almacenamiento,
+•	el módulo de donantes podría exponer funciones como consultar disponibilidad o actualizar estado, sin revelar la estructura interna de la base de datos,
+•	el módulo de compatibilidad sanguínea podría ofrecer una validación de compatibilidad sin que otros componentes conozcan las reglas internas detalladas,
+•	el módulo de campañas podría publicar o cerrar jornadas de donación mediante servicios específicos, sin depender de cómo se almacenan o procesan internamente esos datos.
+Así, si se necesita cambiar la lógica de un módulo o incluso retirarlo, el impacto sobre el resto del sistema será menor, porque los demás componentes solo conocen su interfaz externa.
+¿Por qué es conveniente esta táctica?
+Porque reduce el acoplamiento entre módulos y evita que un cambio interno se propague innecesariamente al resto del sistema. En !Blood”, esto resulta muy conveniente porque varias funcionalidades pueden evolucionar con el tiempo: podrían cambiarse las reglas de notificación, la lógica de compatibilidad sanguínea, la forma de gestionar campañas o incluso eliminar el chat. Esta táctica mejora la mantenibilidad del sistema, permitiendo que la arquitectura sea clara y escalable.
+3.	Atributo de calidad: Usabilidad
+
+3.1	Escenario de calidad 
+
+Caso: el donante revierte su decisión de donar
+•	Fuente del estímulo:
+Usuario final, específicamente el donante.
+•	Estímulo: El donante, después de haber confirmado su intención de donar sangre a un receptor o de aceptar una solicitud, desea revertir esa acción porque se equivocó o ya no tiene disponibilidad.
+•	Entorno: Tiempo de ejecución, mientras el usuario está usando la aplicación y antes de que el proceso haya sido confirmado definitivamente por el centro de salud o profesional encargado.
+•	Artefacto: Módulo de gestión de solicitudes de donación o pantalla donde el donante confirma, consulta y administra su compromiso de donación.
+•	Respuesta: El sistema debe permitir al donante deshacer su confirmación de donación, restaurar el estado anterior de la solicitud, liberar la disponibilidad asociada a esa donación y notificar el cambio a los actores correspondientes, como el receptor o el centro de salud, si aplica. Además, debe mostrar un mensaje claro indicando que la reversión fue realizada con éxito o, en caso contrario, explicar por qué ya no puede hacerse.
+•	Medida de respuesta:
+La reversión en un tiempo corto, con una tasa de éxito alta, sin generar inconsistencias en el estado de la solicitud, y el usuario debe poder comprender fácilmente el resultado de su acción. También puede medirse por la reducción de errores, la satisfacción del usuario y la cantidad de operaciones completadas exitosamente.
+
+En la aplicación  !Blood, un escenario de calidad asociado al atributo de usabilidad se presenta cuando un donante confirma su intención de donar sangre, pero posteriormente desea revertir esa decisión debido a un error o a un cambio de disponibilidad. Este estímulo ocurre en tiempo de ejecución, dentro del módulo de gestión de solicitudes de donación, y exige que el sistema permita al usuario deshacer la acción realizada, restablecer el estado previo de la solicitud, actualizar la disponibilidad del donante y notificar el cambio a los actores involucrados cuando sea necesario. La respuesta será satisfactoria si la operación se ejecuta en un tiempo corto y sin inconsistencias en la información y con una retroalimentación clara para el usuario. En este caso se aplica la táctica Undo (Deshacer), ya que el sistema debe conservar información del estado anterior para restaurarlo cuando el usuario solicite revertir su acción. Esto mejora la usabilidad al reducir frustración, prevenir errores de operación y brindar mayor control al usuario sobre sus decisiones; sin embargo, dado que se trata de un contexto de salud, esta reversión debe restringirse parcialmente para no afectar la coordinación con receptores y personal médico.
+
+3.2	Táctica 1: Mantener modelo del sistema
+
+¿Qué es?
+Consiste en que el sistema mantenga un modelo explícito de su propio estado para darle al usuario retroalimentación apropiada. Como por ejemplo una barra de progreso que predice el tiempo necesario para completar una actividad. 
+¿Cómo se aplicaría en la aplicación?
+•	el indicador de progreso en el registro en 3 pasos,
+•	el número de donantes notificados tras publicar una solicitud,
+•	el estado de donantes aceptados frente al total requerido,
+•	el estado de lectura en chat,
+•	el centro de notificaciones,
+•	el indicador de cupos reservados/disponibles en campañas 
+¿Por qué es conveniente esta táctica?
+Para el usuario es conveniente mostrar claramente en qué estado va todo, ya que la incertidumbre genera abandono. Si el usuario ve “solicitud publicada”, “23 donantes notificados”, “2 de 4 donantes confirmados” o “campaña con 10 cupos disponibles”, entiende que el sistema sí está respondiendo y qué debe hacer después. Eso baja la ansiedad, reduce errores y mejora la satisfacción del usuario.
+
+3.3	Táctica 2: Mantener modelo de tarea
+
+¿Qué es?
+Se usa para determinar el contexto y que el sistema tenga una idea de lo que el usuario intenta hacer, para así ofrecer ayuda adecuada.
+¿Cómo se aplicaría en la aplicación?
+El sistema puede reconocer en qué tarea está el usuario:
+•	registrándose,
+•	publicando una solicitud,
+•	explorando solicitudes compatibles,
+•	confirmando una donación,
+•	creando una campaña como profesional de salud.
+Con eso puede mostrar ayuda contextual. Por ejemplo:
+•	si el usuario está creando una solicitud, destacar primero tipo de sangre, urgencia y centro de salud;
+•	sí está por donar, mostrar el checklist de salud;
+•	sí es profesional de salud, mostrar campos de cupos, horario y requisitos estandarizados;
+•	si el usuario ve una solicitud compatible, resaltar el botón “Quiero donar” y ubicarlo de tal forma que vaya ligado a su modelo mental.
+¿Por qué es conveniente?
+La aplicación tiene 3 perfiles de usuario y no todos necesitan la misma información al mismo tiempo. El donante necesita claridad sobre requisitos y cercanía; el solicitante necesita rapidez; el profesional necesita gestionar campañas y cupos. Si la interfaz se adapta a la tarea actual, la aplicación se siente más simple y enfocada en el usuario. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+REFERENCIAS
+[1]. Bass, L., Clements, P., y Kazman, R. (2012). Software Architecture in Practice (3rd ed.). Addison-Wesley. Disponibilidad: pp. 106-116; Modificabilidad: pp. 140-146; Usabilidad: pp. 197-202.

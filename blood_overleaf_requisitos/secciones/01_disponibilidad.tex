@@ -1,0 +1,69 @@
+% ============================================================
+%  SECCIÓN 1 – ATRIBUTO DE CALIDAD: DISPONIBILIDAD
+% ============================================================
+\section{Atributo de calidad: Disponibilidad}
+
+% ─────────────────────────────────────────────────────────
+\subsection{Escenario de calidad}
+
+\textbf{Caso:} el servidor de notificaciones o mensajería deja de responder durante una solicitud urgente de donación.
+
+\begin{itemize}
+    \item \textbf{Fuente del estímulo:} fallo interno de software o proceso del servidor encargado de notificaciones o mensajería.
+    \item \textbf{Estímulo:} el servicio de notificaciones o chat deja de responder mientras un usuario intenta gestionar una solicitud urgente de donación.
+    \item \textbf{Artefacto:} proceso de notificaciones, servicio de mensajería, canal de comunicación y funciones asociadas al seguimiento de solicitudes.
+    \item \textbf{Entorno:} operación normal del sistema.
+    \item \textbf{Respuesta:} el sistema debe detectar la falla, informar o registrar el evento y continuar prestando las funciones más críticas de la aplicación, como el registro de usuarios, la consulta de campañas, la visualización de solicitudes y la publicación de casos urgentes, aunque algunas funciones secundarias queden temporalmente limitadas.
+    \item \textbf{Medida de respuesta:} la respuesta será satisfactoria si la falla se detecta en pocos segundos, el sistema continúa disponible para las funciones esenciales y la interrupción no provoca caída total de la plataforma.
+\end{itemize}
+
+En la aplicación !Blood, un escenario de calidad asociado al atributo de disponibilidad se presenta cuando, en medio de una solicitud urgente de sangre, el servicio de notificaciones o de mensajería deja de responder. Esta situación es crítica, porque la plataforma debe seguir funcionando incluso si uno de sus componentes falla. En este caso, resulta conveniente aplicar principalmente las tácticas de \textit{heartbeat} y \textit{degradation}. La táctica \textit{heartbeat} permite supervisar periódicamente si un proceso o servicio continúa activo, de modo que el sistema detecte con rapidez cuando un componente deja de responder. Por su parte, la táctica \textit{degradation} permite que, ante esa falla, la aplicación mantenga operativas las funciones más importantes, aunque reduzca temporalmente aquellas que no son esenciales.
+
+% ─────────────────────────────────────────────────────────
+\subsection{Táctica 1: Heartbeat}
+
+\noindent\textbf{¿Qué es?}
+
+La táctica \textit{heartbeat} consiste en realizar un intercambio periódico de señales o mensajes entre un monitor del sistema y un proceso supervisado, con el fin de comprobar que ese componente sigue activo y funcionando correctamente. Si esas señales dejan de recibirse dentro del tiempo esperado, el sistema asume que existe una falla y puede actuar en consecuencia (mecanismo de detección de fallas).
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+Se podría aplicar para vigilar procesos importantes como:
+
+\begin{itemize}
+    \item el servicio de notificaciones que avisa sobre campañas o solicitudes urgentes,
+    \item el módulo de mensajería o interacción entre usuarios,
+    \item el servicio que consulta la disponibilidad de donantes,
+    \item el backend encargado de procesar solicitudes de sangre,
+    \item la conexión con la base de datos donde se almacena la información crítica.
+\end{itemize}
+
+Por ejemplo, el sistema podría verificar cada cierto tiempo si el servicio de notificaciones sigue respondiendo. Si deja de hacerlo, la plataforma detectaría la falla rápidamente y podría registrar el problema, alertar al administrador o activar una respuesta alternativa.
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+En la aplicación es importante que, si algo falla, eso se descubra rápido. Esta táctica es útil porque maneja funcionalidades al tiempo, como alertas de donación urgente, confirmaciones de disponibilidad o notificaciones a usuarios. Si uno de estos servicios deja de responder y nadie lo detecta, la aplicación puede aparentar estar funcionando cuando en realidad está fallando en una de sus funciones más críticas. Por eso, \textit{heartbeat} ayuda a mejorar la confiabilidad operativa del sistema.
+
+% ─────────────────────────────────────────────────────────
+\subsection{Táctica 2: Degradation}
+
+\noindent\textbf{¿Qué es?}
+
+La táctica \textit{degradation} consiste en mantener activas las funciones más importantes del sistema cuando ocurre una falla en alguno de sus componentes, reduciendo o suspendiendo temporalmente las funciones menos críticas. En vez de provocar una caída completa, el sistema continúa funcionando de manera limitada pero útil (recuperación ante fallas).
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item si falla el servicio de chat o mensajería, la aplicación puede seguir permitiendo publicar y consultar solicitudes de donación;
+    \item si el módulo de notificaciones presenta errores, el sistema puede continuar mostrando campañas y casos urgentes dentro de la aplicación, aunque no envíe avisos en tiempo real;
+    \item si hay congestión en una parte secundaria del sistema, pueden priorizarse funciones esenciales como registro, autenticación, consulta de compatibilidad sanguínea y visualización de solicitudes activas;
+    \item si una funcionalidad adicional, como reportes estadísticos o historial avanzado, falla, la plataforma puede seguir operando con los módulos principales.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Porque !Blood es una aplicación cuyo valor principal está en conectar rápidamente a personas que necesitan sangre con posibles donantes. En ese contexto, una falla parcial no debería dejar completamente inutilizable la plataforma. Lo más importante es que el sistema mantenga disponibles las funciones esenciales, incluso si algunas características secundarias deben desactivarse temporalmente. Esta táctica resulta muy adecuada porque permite que la aplicación siga siendo útil en situaciones de error, reduce el impacto de las fallas y evita que una interrupción menor termine afectando por completo el servicio. En otras palabras, ayuda a que la plataforma conserve su propósito principal aun en condiciones adversas.

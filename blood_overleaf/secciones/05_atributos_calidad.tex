@@ -1,0 +1,217 @@
+% ============================================================
+%  SECCIÓN 5 – ATRIBUTOS DE CALIDAD DE SOFTWARE
+% ============================================================
+\section{Atributos de Calidad de Software}
+
+% ════════════════════════════════════════════════════════════
+\subsection{Atributo de calidad: Disponibilidad}
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Escenario de calidad}
+
+\textbf{Caso:} el servidor de notificaciones o mensajería deja de responder durante una solicitud urgente de donación.
+
+\begin{itemize}
+    \item \textbf{Fuente del estímulo:} fallo interno de software o proceso del servidor encargado de notificaciones o mensajería.
+    \item \textbf{Estímulo:} el servicio de notificaciones o chat deja de responder mientras un usuario intenta gestionar una solicitud urgente de donación.
+    \item \textbf{Artefacto:} proceso de notificaciones, servicio de mensajería, canal de comunicación y funciones asociadas al seguimiento de solicitudes.
+    \item \textbf{Entorno:} operación normal del sistema.
+    \item \textbf{Respuesta:} el sistema debe detectar la falla, informar o registrar el evento y continuar prestando las funciones más críticas de la aplicación, como el registro de usuarios, la consulta de campañas, la visualización de solicitudes y la publicación de casos urgentes, aunque algunas funciones secundarias queden temporalmente limitadas.
+    \item \textbf{Medida de respuesta:} la respuesta será satisfactoria si la falla se detecta en pocos segundos, el sistema continúa disponible para las funciones esenciales y la interrupción no provoca caída total de la plataforma.
+\end{itemize}
+
+En la aplicación !Blood, un escenario de calidad asociado al atributo de disponibilidad se presenta cuando, en medio de una solicitud urgente de sangre, el servicio de notificaciones o de mensajería deja de responder. Esta situación es crítica, porque la plataforma debe seguir funcionando incluso si uno de sus componentes falla. En este caso, resulta conveniente aplicar principalmente las tácticas de \textit{heartbeat} y \textit{degradation}. La táctica \textit{heartbeat} permite supervisar periódicamente si un proceso o servicio continúa activo, de modo que el sistema detecte con rapidez cuando un componente deja de responder. Por su parte, la táctica \textit{degradation} permite que, ante esa falla, la aplicación mantenga operativas las funciones más importantes, aunque reduzca temporalmente aquellas que no son esenciales.
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Táctica 1: Heartbeat}
+
+\noindent\textbf{¿Qué es?}
+
+La táctica \textit{heartbeat} consiste en realizar un intercambio periódico de señales o mensajes entre un monitor del sistema y un proceso supervisado, con el fin de comprobar que ese componente sigue activo y funcionando correctamente. Si esas señales dejan de recibirse dentro del tiempo esperado, el sistema asume que existe una falla y puede actuar en consecuencia (mecanismo de detección de fallas).
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+Se podría aplicar para vigilar procesos importantes como:
+
+\begin{itemize}
+    \item el servicio de notificaciones que avisa sobre campañas o solicitudes urgentes,
+    \item el módulo de mensajería o interacción entre usuarios,
+    \item el servicio que consulta la disponibilidad de donantes,
+    \item el backend encargado de procesar solicitudes de sangre,
+    \item la conexión con la base de datos donde se almacena la información crítica.
+\end{itemize}
+
+Por ejemplo, el sistema podría verificar cada cierto tiempo si el servicio de notificaciones sigue respondiendo. Si deja de hacerlo, la plataforma detectaría la falla rápidamente y podría registrar el problema, alertar al administrador o activar una respuesta alternativa.
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+En la aplicación es importante que, si algo falla, eso se descubra rápido. Esta táctica es útil porque maneja funcionalidades al tiempo, como alertas de donación urgente, confirmaciones de disponibilidad o notificaciones a usuarios. Si uno de estos servicios deja de responder y nadie lo detecta, la aplicación puede aparentar estar funcionando cuando en realidad está fallando en una de sus funciones más críticas. Por eso, \textit{heartbeat} ayuda a mejorar la confiabilidad operativa del sistema.
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Táctica 2: Degradation}
+
+\noindent\textbf{¿Qué es?}
+
+La táctica \textit{degradation} consiste en mantener activas las funciones más importantes del sistema cuando ocurre una falla en alguno de sus componentes, reduciendo o suspendiendo temporalmente las funciones menos críticas. En vez de provocar una caída completa, el sistema continúa funcionando de manera limitada pero útil (recuperación ante fallas).
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item si falla el servicio de chat o mensajería, la aplicación puede seguir permitiendo publicar y consultar solicitudes de donación;
+    \item si el módulo de notificaciones presenta errores, el sistema puede continuar mostrando campañas y casos urgentes dentro de la aplicación, aunque no envíe avisos en tiempo real;
+    \item si hay congestión en una parte secundaria del sistema, pueden priorizarse funciones esenciales como registro, autenticación, consulta de compatibilidad sanguínea y visualización de solicitudes activas;
+    \item si una funcionalidad adicional, como reportes estadísticos o historial avanzado, falla, la plataforma puede seguir operando con los módulos principales.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Porque !Blood es una aplicación cuyo valor principal está en conectar rápidamente a personas que necesitan sangre con posibles donantes. En ese contexto, una falla parcial no debería dejar completamente inutilizable la plataforma. Lo más importante es que el sistema mantenga disponibles las funciones esenciales, incluso si algunas características secundarias deben desactivarse temporalmente. Esta táctica resulta muy adecuada porque permite que la aplicación siga siendo útil en situaciones de error, reduce el impacto de las fallas y evita que una interrupción menor termine afectando por completo el servicio. En otras palabras, ayuda a que la plataforma conserve su propósito principal aun en condiciones adversas.
+
+% ════════════════════════════════════════════════════════════
+\subsection{Atributo de calidad: Modificabilidad}
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Escenario de calidad}
+
+\textbf{Caso:} los usuarios utilizan de manera inapropiada el chat en vivo.
+
+\begin{itemize}
+    \item \textbf{Fuente del estímulo:} equipo de desarrollo de la aplicación.
+    \item \textbf{Estímulo:} decisión de eliminar la funcionalidad de chat en vivo debido a su uso indebido dentro de la plataforma.
+    \item \textbf{Artefacto:} módulo de chat, interfaces de comunicación entre usuarios, vistas asociadas y lógica de mensajería.
+    \item \textbf{Entorno:} tiempo de diseño y mantenimiento del sistema.
+    \item \textbf{Respuesta:} el sistema debe permitir que la funcionalidad de chat sea retirada, actualizando las interfaces, ajustando las reglas de interacción entre usuarios, sin comprometer el funcionamiento de otras funcionalidades, como el registro, las solicitudes de donación, las campañas y las notificaciones.
+    \item \textbf{Medida de respuesta:} la modificación será satisfactoria si puede implementarse en un tiempo razonable, con bajo costo, afectando la menor cantidad posible de módulos y sin introducir errores, inconsistencias o efectos secundarios en otras partes del sistema.
+\end{itemize}
+
+En !Blood, un escenario de calidad asociado al atributo de modificabilidad se presenta cuando el equipo de desarrollo detecta que la funcionalidad de chat en vivo está siendo utilizada de forma inapropiada por algunos usuarios para compartir números de teléfono o incluso promover prácticas contrarias al propósito solidario de la plataforma, como la compra y venta de sangre. Ante esta situación, surge la necesidad de eliminar dicha funcionalidad. En este caso se aplican principalmente las tácticas de \textit{dividir módulo} y \textit{encapsular}. La táctica \textit{dividir módulo} permite que la funcionalidad de chat se encuentre separada del resto de componentes de la aplicación, facilitando su eliminación sin afectar de manera significativa otras funciones. Por su parte, la táctica \textit{encapsular} permite que el chat se relacione con otros módulos únicamente a través de interfaces bien definidas, reduciendo el acoplamiento y evitando que su retiro genere cambios innecesarios en otras partes del sistema. De manera complementaria, también se relaciona con la táctica \textit{restringir dependencias}, ya que conviene que los módulos centrales de la aplicación no dependan directamente de esta funcionalidad.
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Táctica 1: Dividir módulo}
+
+\noindent\textbf{¿Qué es?}
+
+Consiste en separar el sistema en módulos más pequeños e independientes, de manera que cada uno tenga una responsabilidad específica. Esto facilita que una funcionalidad pueda modificarse, reemplazarse o eliminarse sin afectar de forma significativa al resto del sistema.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item el módulo de chat en vivo, independiente del módulo de solicitudes de donación,
+    \item el módulo de registro e inicio de sesión, separado de la gestión de perfiles,
+    \item el módulo de campañas de donación, separado del historial de donaciones,
+    \item el módulo de notificaciones, desacoplado del módulo de búsqueda de donantes,
+    \item el módulo de compatibilidad sanguínea, separado de la lógica de publicación de solicitudes,
+    \item el módulo de reportes o denuncias, independiente del sistema de mensajería o interacción entre usuarios.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Porque permite que los cambios se realicen de manera más localizada y ordenada. Si las funcionalidades están separadas, el equipo de desarrollo no necesita intervenir muchas partes del sistema para hacer una modificación puntual. En !Blood, esto sería útil, por ejemplo, si se desea cambiar únicamente la lógica de compatibilidad sanguínea, mejorar el sistema de notificaciones, ajustar el registro de usuarios o añadir nuevas funciones al módulo de campañas. Al estar cada responsabilidad aislada, se reduce el esfuerzo por mantener cada módulo facilitando la evolución progresiva de la aplicación.
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Táctica 2: Encapsular}
+
+\noindent\textbf{¿Qué es?}
+
+Consiste en ocultar la implementación interna de un módulo y permitir que otros componentes interactúen con él únicamente mediante el uso de APIs. Así, los demás módulos no dependen de los detalles internos de funcionamiento, sino solo de los servicios que ese módulo ofrece.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item el módulo de chat podría exponer acciones como \textit{enviar mensaje}, \textit{bloquear conversación} o \textit{cerrar chat}, sin que otros módulos conozcan su lógica interna,
+    \item el módulo de notificaciones podría ofrecer operaciones como \textit{enviar alerta} o \textit{marcar como leída}, sin mostrar cómo gestiona colas, estados o almacenamiento,
+    \item el módulo de donantes podría exponer funciones como \textit{consultar disponibilidad} o \textit{actualizar estado}, sin revelar la estructura interna de la base de datos,
+    \item el módulo de compatibilidad sanguínea podría ofrecer una validación de compatibilidad sin que otros componentes conozcan las reglas internas detalladas,
+    \item el módulo de campañas podría publicar o cerrar jornadas de donación mediante servicios específicos, sin depender de cómo se almacenan o procesan internamente esos datos.
+\end{itemize}
+
+Así, si se necesita cambiar la lógica de un módulo o incluso retirarlo, el impacto sobre el resto del sistema será menor, porque los demás componentes solo conocen su interfaz externa.
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Porque reduce el acoplamiento entre módulos y evita que un cambio interno se propague innecesariamente al resto del sistema. En !Blood, esto resulta muy conveniente porque varias funcionalidades pueden evolucionar con el tiempo: podrían cambiarse las reglas de notificación, la lógica de compatibilidad sanguínea, la forma de gestionar campañas o incluso eliminarse el chat. Esta táctica mejora la mantenibilidad del sistema, permitiendo que la arquitectura sea clara y escalable.
+
+% ════════════════════════════════════════════════════════════
+\subsection{Atributo de calidad: Usabilidad}
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Escenario de calidad}
+
+\textbf{Caso:} el donante revierte su decisión de donar.
+
+\begin{itemize}
+    \item \textbf{Fuente del estímulo:} usuario final, específicamente el donante.
+    \item \textbf{Estímulo:} el donante, después de haber confirmado su intención de donar sangre a un receptor o de aceptar una solicitud, desea revertir esa acción porque se equivocó o ya no tiene disponibilidad.
+    \item \textbf{Entorno:} tiempo de ejecución, mientras el usuario está usando la aplicación y antes de que el proceso haya sido confirmado definitivamente por el centro de salud o profesional encargado.
+    \item \textbf{Artefacto:} módulo de gestión de solicitudes de donación o pantalla donde el donante confirma, consulta y administra su compromiso de donación.
+    \item \textbf{Respuesta:} el sistema debe permitir al donante deshacer su confirmación de donación, restaurar el estado anterior de la solicitud, liberar la disponibilidad asociada a esa donación y notificar el cambio a los actores correspondientes, como el receptor o el centro de salud, si aplica. Además, debe mostrar un mensaje claro indicando que la reversión fue realizada con éxito o, en caso contrario, explicar por qué ya no puede hacerse.
+    \item \textbf{Medida de respuesta:} la reversión en un tiempo corto, con una tasa de éxito alta, sin generar inconsistencias en el estado de la solicitud, y el usuario debe poder comprender fácilmente el resultado de su acción. También puede medirse por la reducción de errores, la satisfacción del usuario y la cantidad de operaciones completadas exitosamente.
+\end{itemize}
+
+En la aplicación !Blood, un escenario de calidad asociado al atributo de usabilidad se presenta cuando un donante confirma su intención de donar sangre, pero posteriormente desea revertir esa decisión debido a un error o a un cambio de disponibilidad. Este estímulo ocurre en tiempo de ejecución, dentro del módulo de gestión de solicitudes de donación, y exige que el sistema permita al usuario deshacer la acción realizada, restablecer el estado previo de la solicitud, actualizar la disponibilidad del donante y notificar el cambio a los actores involucrados cuando sea necesario. La respuesta será satisfactoria si la operación se ejecuta en un tiempo corto y sin inconsistencias en la información y con una retroalimentación clara para el usuario. En este caso se aplica la táctica \textit{Undo} (Deshacer), ya que el sistema debe conservar información del estado anterior para restaurarlo cuando el usuario solicite revertir su acción. Esto mejora la usabilidad al reducir frustración, prevenir errores de operación y brindar mayor control al usuario sobre sus decisiones; sin embargo, dado que se trata de un contexto de salud, esta reversión debe restringirse parcialmente para no afectar la coordinación con receptores y personal médico.
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Táctica 1: Mantener modelo del sistema}
+
+\noindent\textbf{¿Qué es?}
+
+Consiste en que el sistema mantenga un modelo explícito de su propio estado para darle al usuario retroalimentación apropiada. Como por ejemplo una barra de progreso que predice el tiempo necesario para completar una actividad.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item el indicador de progreso en el registro en 3 pasos,
+    \item el número de donantes notificados tras publicar una solicitud,
+    \item el estado de donantes aceptados frente al total requerido,
+    \item el estado de lectura en chat,
+    \item el centro de notificaciones,
+    \item el indicador de cupos reservados/disponibles en campañas.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Para el usuario es conveniente mostrar claramente en qué estado va todo, ya que la incertidumbre genera abandono. Si el usuario ve ``solicitud publicada'', ``23 donantes notificados'', ``2 de 4 donantes confirmados'' o ``campaña con 10 cupos disponibles'', entiende que el sistema sí está respondiendo y qué debe hacer después. Eso baja la ansiedad, reduce errores y mejora la satisfacción del usuario.
+
+% ──────────────────────────────────────────────────────────
+\subsubsection{Táctica 2: Mantener modelo de tarea}
+
+\noindent\textbf{¿Qué es?}
+
+Se usa para determinar el contexto y que el sistema tenga una idea de lo que el usuario intenta hacer, para así ofrecer ayuda adecuada.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+El sistema puede reconocer en qué tarea está el usuario:
+
+\begin{itemize}
+    \item registrándose,
+    \item publicando una solicitud,
+    \item explorando solicitudes compatibles,
+    \item confirmando una donación,
+    \item creando una campaña como profesional de salud.
+\end{itemize}
+
+Con eso puede mostrar ayuda contextual. Por ejemplo:
+
+\begin{itemize}
+    \item si el usuario está creando una solicitud, destacar primero tipo de sangre, urgencia y centro de salud;
+    \item si está por donar, mostrar el checklist de salud;
+    \item si es profesional de salud, mostrar campos de cupos, horario y requisitos estandarizados;
+    \item si el usuario ve una solicitud compatible, resaltar el botón ``Quiero donar'' y ubicarlo de tal forma que vaya ligado a su modelo mental.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente?}
+
+La aplicación tiene 3 perfiles de usuario y no todos necesitan la misma información al mismo tiempo. El donante necesita claridad sobre requisitos y cercanía; el solicitante necesita rapidez; el profesional necesita gestionar campañas y cupos. Si la interfaz se adapta a la tarea actual, la aplicación se siente más simple y enfocada en el usuario.

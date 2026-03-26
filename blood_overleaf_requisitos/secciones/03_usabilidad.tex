@@ -1,0 +1,78 @@
+% ============================================================
+%  SECCIÓN 3 – ATRIBUTO DE CALIDAD: USABILIDAD
+% ============================================================
+\section{Atributo de calidad: Usabilidad}
+
+% ─────────────────────────────────────────────────────────
+\subsection{Escenario de calidad}
+
+\textbf{Caso:} el donante revierte su decisión de donar.
+
+\begin{itemize}
+    \item \textbf{Fuente del estímulo:} usuario final, específicamente el donante.
+    \item \textbf{Estímulo:} el donante, después de haber confirmado su intención de donar sangre a un receptor o de aceptar una solicitud, desea revertir esa acción porque se equivocó o ya no tiene disponibilidad.
+    \item \textbf{Entorno:} tiempo de ejecución, mientras el usuario está usando la aplicación y antes de que el proceso haya sido confirmado definitivamente por el centro de salud o profesional encargado.
+    \item \textbf{Artefacto:} módulo de gestión de solicitudes de donación o pantalla donde el donante confirma, consulta y administra su compromiso de donación.
+    \item \textbf{Respuesta:} el sistema debe permitir al donante deshacer su confirmación de donación, restaurar el estado anterior de la solicitud, liberar la disponibilidad asociada a esa donación y notificar el cambio a los actores correspondientes, como el receptor o el centro de salud, si aplica. Además, debe mostrar un mensaje claro indicando que la reversión fue realizada con éxito o, en caso contrario, explicar por qué ya no puede hacerse.
+    \item \textbf{Medida de respuesta:} la reversión en un tiempo corto, con una tasa de éxito alta, sin generar inconsistencias en el estado de la solicitud, y el usuario debe poder comprender fácilmente el resultado de su acción. También puede medirse por la reducción de errores, la satisfacción del usuario y la cantidad de operaciones completadas exitosamente.
+\end{itemize}
+
+En la aplicación !Blood, un escenario de calidad asociado al atributo de usabilidad se presenta cuando un donante confirma su intención de donar sangre, pero posteriormente desea revertir esa decisión debido a un error o a un cambio de disponibilidad. Este estímulo ocurre en tiempo de ejecución, dentro del módulo de gestión de solicitudes de donación, y exige que el sistema permita al usuario deshacer la acción realizada, restablecer el estado previo de la solicitud, actualizar la disponibilidad del donante y notificar el cambio a los actores involucrados cuando sea necesario. La respuesta será satisfactoria si la operación se ejecuta en un tiempo corto y sin inconsistencias en la información y con una retroalimentación clara para el usuario. En este caso se aplica la táctica \textit{Undo} (Deshacer), ya que el sistema debe conservar información del estado anterior para restaurarlo cuando el usuario solicite revertir su acción. Esto mejora la usabilidad al reducir frustración, prevenir errores de operación y brindar mayor control al usuario sobre sus decisiones; sin embargo, dado que se trata de un contexto de salud, esta reversión debe restringirse parcialmente para no afectar la coordinación con receptores y personal médico.
+
+% ─────────────────────────────────────────────────────────
+\subsection{Táctica 1: Mantener modelo del sistema}
+
+\noindent\textbf{¿Qué es?}
+
+Consiste en que el sistema mantenga un modelo explícito de su propio estado para darle al usuario retroalimentación apropiada. Como por ejemplo una barra de progreso que predice el tiempo necesario para completar una actividad.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item el indicador de progreso en el registro en 3 pasos,
+    \item el número de donantes notificados tras publicar una solicitud,
+    \item el estado de donantes aceptados frente al total requerido,
+    \item el estado de lectura en chat,
+    \item el centro de notificaciones,
+    \item el indicador de cupos reservados/disponibles en campañas.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Para el usuario es conveniente mostrar claramente en qué estado va todo, ya que la incertidumbre genera abandono. Si el usuario ve ``solicitud publicada'', ``23 donantes notificados'', ``2 de 4 donantes confirmados'' o ``campaña con 10 cupos disponibles'', entiende que el sistema sí está respondiendo y qué debe hacer después. Eso baja la ansiedad, reduce errores y mejora la satisfacción del usuario.
+
+% ─────────────────────────────────────────────────────────
+\subsection{Táctica 2: Mantener modelo de tarea}
+
+\noindent\textbf{¿Qué es?}
+
+Se usa para determinar el contexto y que el sistema tenga una idea de lo que el usuario intenta hacer, para así ofrecer ayuda adecuada.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+El sistema puede reconocer en qué tarea está el usuario:
+
+\begin{itemize}
+    \item registrándose,
+    \item publicando una solicitud,
+    \item explorando solicitudes compatibles,
+    \item confirmando una donación,
+    \item creando una campaña como profesional de salud.
+\end{itemize}
+
+Con eso puede mostrar ayuda contextual. Por ejemplo:
+
+\begin{itemize}
+    \item si el usuario está creando una solicitud, destacar primero tipo de sangre, urgencia y centro de salud;
+    \item si está por donar, mostrar el checklist de salud;
+    \item si es profesional de salud, mostrar campos de cupos, horario y requisitos estandarizados;
+    \item si el usuario ve una solicitud compatible, resaltar el botón ``Quiero donar'' y ubicarlo de tal forma que vaya ligado a su modelo mental.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente?}
+
+La aplicación tiene 3 perfiles de usuario y no todos necesitan la misma información al mismo tiempo. El donante necesita claridad sobre requisitos y cercanía; el solicitante necesita rapidez; el profesional necesita gestionar campañas y cupos. Si la interfaz se adapta a la tarea actual, la aplicación se siente más simple y enfocada en el usuario.

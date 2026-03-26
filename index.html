@@ -31,9 +31,17 @@
           <button onclick="showScreen('campaigns')">Ver Campañas</button>
           <button onclick="showScreen('requests')">Solicitudes</button>
           <button onclick="showScreen('request-detail')">Detalle</button>
-          <button onclick="showScreen('chat')">Chat</button>
+          <button onclick="showScreen('donor-survey')">Encuesta</button>
+          <button onclick="showScreen('rate-donor')">Calificación</button>
           <button onclick="showScreen('profile')">Perfil</button>
           <button onclick="showScreen('notifications')">Notificaciones</button>
+          <div class="nav-separator"></div>
+          <button onclick="showScreen('home-pro')">Home Pro</button>
+          <button onclick="showScreen('my-campaigns')">Mis Campañas</button>
+          <button onclick="showScreen('campaign-management')">
+            Gestión Campaña
+          </button>
+          <button onclick="showScreen('profile-pro')">Perfil Pro</button>
         </div>
       </nav>
 
@@ -197,26 +205,25 @@
                 </div>
 
                 <div class="input-group">
-                  <label>Cédula de ciudadanía</label>
+                  <label>Tipo de identificación</label>
                   <div class="input-wrapper">
                     <i class="fas fa-id-card"></i>
-                    <input type="text" placeholder="1234567890" />
+                    <select>
+                      <option value="">Seleccionar tipo</option>
+                      <option value="CC">CC — Cédula de Ciudadanía</option>
+                      <option value="TI">TI — Tarjeta de Identidad</option>
+                      <option value="CE">CE — Cédula de Extranjería</option>
+                      <option value="PA">PA — Pasaporte</option>
+                      <option value="NIT">NIT</option>
+                    </select>
                   </div>
                 </div>
 
                 <div class="input-group">
-                  <label>Teléfono</label>
+                  <label>Número de identificación</label>
                   <div class="input-wrapper">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" placeholder="+57 300 123 4567" />
-                  </div>
-                </div>
-
-                <div class="input-group">
-                  <label>Correo electrónico</label>
-                  <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
-                    <input type="email" placeholder="tu@email.com" />
+                    <i class="fas fa-hashtag"></i>
+                    <input type="text" placeholder="Ej: 1234567890" />
                   </div>
                 </div>
 
@@ -260,27 +267,49 @@
 
               <form class="register-form">
                 <div class="photo-upload-section">
-                  <h3>Foto de tu cédula</h3>
+                  <h3>Documento de identidad — Cara frontal</h3>
                   <p class="upload-hint">
-                    Asegúrate que sea legible y esté completa
+                    Fotografía o sube la cara frontal de tu documento
                   </p>
                   <div class="upload-area">
                     <div class="upload-placeholder">
                       <i class="fas fa-id-card"></i>
-                      <span>Toca para subir foto</span>
+                      <span>Cara frontal del documento</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="photo-upload-section">
+                  <h3>Documento de identidad — Cara posterior</h3>
+                  <p class="upload-hint">
+                    Fotografía o sube la cara posterior de tu documento
+                  </p>
+                  <div class="upload-area">
+                    <div class="upload-placeholder">
+                      <i class="fas fa-id-card"></i>
+                      <span>Cara posterior del documento</span>
                     </div>
                   </div>
                 </div>
 
                 <div class="photo-upload-section">
                   <h3>Tu foto de perfil</h3>
-                  <p class="upload-hint">Fondo blanco, rostro visible</p>
-                  <div class="upload-area profile-photo">
+                  <p class="upload-hint">
+                    Toca para abrir la cámara y tomarte una foto. Fondo claro,
+                    rostro visible.
+                  </p>
+                  <div class="upload-area profile-photo camera-only">
                     <div class="upload-placeholder">
-                      <i class="fas fa-user-circle"></i>
-                      <span>Toca para subir foto</span>
+                      <i class="fas fa-camera"></i>
+                      <span>Abrir cámara</span>
+                      <small>No se puede subir desde galería</small>
                     </div>
                   </div>
+                  <span class="input-hint"
+                    ><i class="fas fa-info-circle"></i> Esta foto se usa para
+                    verificar que no existan cuentas duplicadas. No se comparte
+                    con otros usuarios.</span
+                  >
                 </div>
 
                 <div class="input-group">
@@ -398,7 +427,7 @@
                 <button
                   type="button"
                   class="btn-primary"
-                  onclick="showScreen('home')"
+                  onclick="showScreen('donor-survey')"
                 >
                   Crear cuenta <i class="fas fa-check"></i>
                 </button>
@@ -446,7 +475,7 @@
                   </div>
                   <div class="stat">
                     <span class="stat-number">5</span>
-                    <span class="stat-label">Vidas ayudadas</span>
+                    <span class="stat-label">Vidas</span>
                   </div>
                 </div>
               </div>
@@ -474,12 +503,6 @@
                       <i class="fas fa-bullhorn"></i>
                     </div>
                     <span>Campañas</span>
-                  </button>
-                  <button class="action-card" onclick="showScreen('chat')">
-                    <div class="action-icon chat">
-                      <i class="fas fa-comments"></i>
-                    </div>
-                    <span>Mensajes</span>
                   </button>
                 </div>
               </div>
@@ -550,7 +573,7 @@
                     <h4>Jornada de donación marzo</h4>
                     <p><i class="fas fa-hospital"></i> Hospital San José</p>
                     <p>
-                      <i class="fas fa-calendar"></i> 15 Mar •
+                      <i class="fas fa-calendar"></i> 15 Mar &nbsp;·&nbsp;
                       <i class="fas fa-clock"></i> 8:00 AM
                     </p>
                   </div>
@@ -592,9 +615,9 @@
               >
                 <i class="fas fa-plus"></i>
               </button>
-              <button class="nav-item" onclick="showScreen('chat')">
-                <i class="fas fa-comments"></i>
-                <span>Chat</span>
+              <button class="nav-item" onclick="showScreen('campaigns')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campañas</span>
               </button>
               <button class="nav-item" onclick="showScreen('profile')">
                 <i class="fas fa-user"></i>
@@ -687,7 +710,7 @@
                         <p>En las próximas horas</p>
                       </div>
                     </label>
-                    <label class="urgency-option">
+                    <label class="urgency-option" onclick="checkUrgency(this)">
                       <input type="radio" name="urgency" />
                       <div class="urgency-card high">
                         <i class="fas fa-bolt"></i>
@@ -739,8 +762,8 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
           <!-- REQUEST SUCCESS -->
           <div id="request-success" class="screen">
             <div class="success-content">
-              <div class="success-icon">
-                <i class="fas fa-check-circle"></i>
+              <div class="blood-drop-celebration active">
+                <i class="fas fa-tint drop-anim"></i>
               </div>
               <h2>¡Solicitud publicada!</h2>
               <p>
@@ -924,9 +947,9 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
               >
                 <i class="fas fa-plus"></i>
               </button>
-              <button class="nav-item" onclick="showScreen('chat')">
-                <i class="fas fa-comments"></i>
-                <span>Chat</span>
+              <button class="nav-item" onclick="showScreen('campaigns')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campañas</span>
               </button>
               <button class="nav-item" onclick="showScreen('profile')">
                 <i class="fas fa-user"></i>
@@ -953,6 +976,14 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
                 </div>
                 <div class="blood-type-display">A+</div>
                 <span class="units-needed">3 unidades necesarias</span>
+                <div class="action-buttons hero-action">
+                  <button
+                    class="btn-primary large"
+                    onclick="showScreen('confirm-donation')"
+                  >
+                    <i class="fas fa-hand-holding-heart"></i> Quiero donar
+                  </button>
+                </div>
               </div>
 
               <div class="detail-body">
@@ -1019,20 +1050,10 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
                   </div>
                 </div>
 
-                <div class="action-buttons">
-                  <button
-                    class="btn-primary large"
-                    onclick="showScreen('confirm-donation')"
-                  >
-                    <i class="fas fa-hand-holding-heart"></i> Quiero donar
-                  </button>
-                </div>
-
                 <p class="donation-note">
                   <i class="fas fa-info-circle"></i>
-                  Al aceptar, podrás coordinar con el solicitante a través del
-                  chat interno. La donación se realiza únicamente en el centro
-                  de salud indicado.
+                  La donación se realiza únicamente en el centro de salud
+                  indicado. Preséntate con tu documento de identidad.
                 </p>
               </div>
             </div>
@@ -1101,11 +1122,29 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
                 </label>
               </div>
 
+              <div class="cancellation-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>
+                  ⚠️ <strong>Compromiso serio:</strong> Una vez confirmes, si
+                  decides cancelar,
+                  <strong
+                    >no podrás aceptar donaciones con ningún usuario durante 30
+                    días</strong
+                  >. Puede estar en juego una vida.
+                </p>
+              </div>
+
               <button
                 class="btn-primary large"
                 onclick="showScreen('donation-confirmed')"
               >
                 <i class="fas fa-check"></i> Confirmar mi donación
+              </button>
+              <button
+                class="btn-outline danger small-cancel"
+                onclick="showModal('cancel-donation-modal')"
+              >
+                Cancelar
               </button>
             </div>
           </div>
@@ -1113,28 +1152,28 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
           <!-- DONATION CONFIRMED -->
           <div id="donation-confirmed" class="screen">
             <div class="success-content">
-              <div class="success-icon heart">
-                <i class="fas fa-heart"></i>
+              <div class="blood-drop-celebration active">
+                <i class="fas fa-tint drop-anim"></i>
               </div>
-              <h2>¡Gracias por donar!</h2>
+              <h2>¡Gracias por comprometerte!</h2>
               <p>
-                Has aceptado ayudar a María González. Ya pueden coordinar a
-                través del chat.
+                Has aceptado ayudar a María González. ¡Tu gesto puede salvar una
+                vida!
               </p>
               <div class="success-info">
                 <div class="info-item">
                   <i class="fas fa-hospital"></i>
-                  <span>Acude a <strong>Hospital San José</strong></span>
+                  <span
+                    >Preséntate en <strong>Hospital San José</strong> con tu
+                    documento de identidad</span
+                  >
                 </div>
                 <div class="info-item">
-                  <i class="fas fa-comments"></i>
-                  <span>Usa el chat para coordinar horarios</span>
+                  <i class="fas fa-info-circle"></i>
+                  <span>La donación es confidencial y sin costo</span>
                 </div>
               </div>
-              <button class="btn-primary" onclick="showScreen('chat')">
-                <i class="fas fa-comments"></i> Ir al chat
-              </button>
-              <button class="btn-secondary" onclick="showScreen('home')">
+              <button class="btn-primary" onclick="showScreen('home')">
                 Volver al inicio
               </button>
             </div>
@@ -1247,9 +1286,9 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
               >
                 <i class="fas fa-plus"></i>
               </button>
-              <button class="nav-item active">
-                <i class="fas fa-comments"></i>
-                <span>Chat</span>
+              <button class="nav-item active" onclick="showScreen('campaigns')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campañas</span>
               </button>
               <button class="nav-item" onclick="showScreen('profile')">
                 <i class="fas fa-user"></i>
@@ -1258,10 +1297,10 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
             </nav>
           </div>
 
-          <!-- CHAT DETAIL SCREEN -->
+          <!-- CHAT DETAIL SCREEN (legacy - no accesible desde UI) -->
           <div id="chat-detail" class="screen">
             <div class="chat-header-detail">
-              <button class="back-btn" onclick="showScreen('chat')">
+              <button class="back-btn" onclick="showScreen('home')">
                 <i class="fas fa-arrow-left"></i>
               </button>
               <div
@@ -1406,7 +1445,7 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
                   </div>
                   <div class="profile-stat">
                     <span class="stat-number">5</span>
-                    <span class="stat-label">Vidas ayudadas</span>
+                    <span class="stat-label">Vidas</span>
                   </div>
                   <div class="profile-stat">
                     <span class="stat-number">1</span>
@@ -1419,12 +1458,8 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
                 <h3>Mi información</h3>
                 <div class="info-list">
                   <div class="info-row">
-                    <i class="fas fa-envelope"></i>
-                    <span>juan.perez@email.com</span>
-                  </div>
-                  <div class="info-row">
-                    <i class="fas fa-phone"></i>
-                    <span>+57 300 123 4567</span>
+                    <i class="fas fa-id-card"></i>
+                    <span>CC · 1001234567</span>
                   </div>
                   <div class="info-row">
                     <i class="fas fa-map-marker-alt"></i>
@@ -1433,6 +1468,10 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
                   <div class="info-row">
                     <i class="fas fa-calendar"></i>
                     <span>Miembro desde Enero 2024</span>
+                  </div>
+                  <div class="info-row">
+                    <i class="fas fa-star"></i>
+                    <span>Calificación: 4.8 ★★★★★</span>
                   </div>
                 </div>
               </div>
@@ -1484,9 +1523,9 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
               >
                 <i class="fas fa-plus"></i>
               </button>
-              <button class="nav-item" onclick="showScreen('chat')">
-                <i class="fas fa-comments"></i>
-                <span>Chat</span>
+              <button class="nav-item" onclick="showScreen('campaigns')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campañas</span>
               </button>
               <button class="nav-item active">
                 <i class="fas fa-user"></i>
@@ -1524,19 +1563,8 @@ Necesito donantes para mi padre que está en cirugía programada. Agradezco much
 
               <div
                 class="notification-item unread"
-                onclick="showScreen('chat')"
+                onclick="showScreen('request-detail')"
               >
-                <div class="notification-icon message">
-                  <i class="fas fa-comment"></i>
-                </div>
-                <div class="notification-info">
-                  <h4>Nuevo mensaje</h4>
-                  <p>María González te envió un mensaje</p>
-                  <span class="notification-time">Hace 45 min</span>
-                </div>
-              </div>
-
-              <div class="notification-item unread">
                 <div class="notification-icon success">
                   <i class="fas fa-check-circle"></i>
                 </div>
@@ -1789,11 +1817,20 @@ Gran jornada de donación de sangre. Tendremos refrigerios para todos los donant
                   </div>
                 </div>
 
-                <div class="input-group">
-                  <label>Contacto para información</label>
-                  <div class="input-wrapper">
-                    <i class="fas fa-phone"></i>
-                    <input type="tel" placeholder="+57 300 123 4567" />
+                <div class="pro-message-banner">
+                  <div class="pro-message-icon">
+                    <i class="fas fa-heart"></i>
+                  </div>
+                  <div class="pro-message-text">
+                    <strong
+                      >💛 Un mensaje para ti, profesional de la salud</strong
+                    >
+                    <p>
+                      Cada donante que atiendes hoy puede convertirse en donante
+                      de por vida. Un trato amable, agradecido y sin juicios es
+                      la mejor forma de que regresen. ¡Gracias por ser parte del
+                      cambio!
+                    </p>
                   </div>
                 </div>
 
@@ -1811,8 +1848,10 @@ Gran jornada de donación de sangre. Tendremos refrigerios para todos los donant
           <!-- CAMPAIGN SUCCESS -->
           <div id="campaign-success" class="screen">
             <div class="success-content">
-              <div class="success-icon campaign">
-                <i class="fas fa-bullhorn"></i>
+              <div class="blood-drop-celebration multi active">
+                <i class="fas fa-tint drop-anim"></i>
+                <i class="fas fa-tint drop-anim drop-anim-2"></i>
+                <i class="fas fa-tint drop-anim drop-anim-3"></i>
               </div>
               <h2>¡Campaña publicada!</h2>
               <p>
@@ -1968,9 +2007,9 @@ Gran jornada de donación de sangre. Tendremos refrigerios para todos los donant
                 <i class="fas fa-home"></i>
                 <span>Inicio</span>
               </button>
-              <button class="nav-item active" onclick="showScreen('campaigns')">
-                <i class="fas fa-bullhorn"></i>
-                <span>Campañas</span>
+              <button class="nav-item" onclick="showScreen('requests')">
+                <i class="fas fa-search"></i>
+                <span>Explorar</span>
               </button>
               <button
                 class="nav-item create"
@@ -1978,15 +2017,356 @@ Gran jornada de donación de sangre. Tendremos refrigerios para todos los donant
               >
                 <i class="fas fa-plus"></i>
               </button>
-              <button class="nav-item" onclick="showScreen('chat')">
-                <i class="fas fa-comments"></i>
-                <span>Chat</span>
+              <button class="nav-item active" onclick="showScreen('campaigns')">
+                <i class="fas fa-bullhorn"></i>
+                <span>Campañas</span>
               </button>
               <button class="nav-item" onclick="showScreen('profile')">
                 <i class="fas fa-user"></i>
                 <span>Perfil</span>
               </button>
             </nav>
+          </div>
+
+          <!-- DONOR ELIGIBILITY SURVEY SCREEN -->
+          <div id="donor-survey" class="screen">
+            <div class="screen-header">
+              <span></span>
+              <h2>Encuesta de donante</h2>
+              <span></span>
+            </div>
+            <div class="survey-content">
+              <div class="survey-intro">
+                <div class="survey-icon">
+                  <i class="fas fa-heartbeat"></i>
+                </div>
+                <h3>¿Eres apto para donar sangre?</h3>
+                <p>
+                  Responde estas preguntas para saber si podrías ser donante. No
+                  afectan tu registro.
+                </p>
+              </div>
+
+              <form class="survey-form">
+                <div class="survey-question">
+                  <p>1. ¿Tienes entre 18 y 65 años?</p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q1" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q1" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>2. ¿Pesas más de 50 kg?</p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q2" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q2" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>3. ¿Has donado sangre en los últimos 3 meses?</p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q3" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q3" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>
+                    4. ¿Has tenido alguna enfermedad infecciosa recientemente
+                    (hepatitis, VIH, sífilis u otras de transmisión sanguínea)?
+                  </p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q4" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q4" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>5. ¿Estás tomando algún medicamento actualmente?</p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q5" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q5" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>
+                    6. ¿Has recibido alguna vacuna en las últimas 4 semanas?
+                  </p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q6" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q6" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>
+                    7. ¿Has realizado alguna conducta de riesgo en los últimos
+                    12 meses (tatuajes, piercings, transfusiones)?
+                  </p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q7" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q7" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <div class="survey-question">
+                  <p>8. ¿Estás en buen estado de salud general hoy?</p>
+                  <div class="survey-options">
+                    <label class="survey-option yes"
+                      ><input type="radio" name="q8" /><span>Sí</span></label
+                    >
+                    <label class="survey-option no"
+                      ><input type="radio" name="q8" /><span>No</span></label
+                    >
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  class="btn-primary"
+                  onclick="showSurveyResult()"
+                >
+                  Ver mi resultado <i class="fas fa-arrow-right"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- DONOR SURVEY RESULT -->
+          <div id="donor-survey-result" class="screen">
+            <div class="success-content">
+              <div class="success-icon survey-result" id="surveyResultIcon">
+                <i class="fas fa-heartbeat"></i>
+              </div>
+              <h2 id="surveyResultTitle">¡Pareces ser un buen donante!</h2>
+              <p id="surveyResultMsg">
+                Cuando veas una solicitud compatible, anímate a ayudar. ¡Juntos
+                salvamos vidas!
+              </p>
+              <div class="blood-drop-celebration active">
+                <i class="fas fa-tint drop-anim"></i>
+              </div>
+              <button class="btn-primary" onclick="showScreen('home')">
+                <i class="fas fa-home"></i> Ir al inicio
+              </button>
+            </div>
+          </div>
+
+          <!-- URGENCY WARNING MODAL OVERLAY -->
+          <div id="urgency-modal" class="modal-overlay" style="display: none">
+            <div class="modal-box warning">
+              <div class="modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+              </div>
+              <h3>¿Confirmas urgencia real?</h3>
+              <p>
+                Si marcas <strong>Urgente</strong> y luego rectificas que no lo
+                era, se aplicará una <strong>penalización temporal</strong>: no
+                podrás crear nuevas solicitudes durante un tiempo definido.
+              </p>
+              <p class="modal-sub">
+                Esta medida protege a los donantes de falsas alarmas.
+              </p>
+              <div class="modal-actions">
+                <button class="btn-primary" onclick="confirmUrgency()">
+                  <i class="fas fa-bolt"></i> Sí, es urgente
+                </button>
+                <button class="btn-outline" onclick="changeUrgency()">
+                  Cambiar a urgencia media
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CANCEL DONATION WARNING MODAL -->
+          <div
+            id="cancel-donation-modal"
+            class="modal-overlay"
+            style="display: none"
+          >
+            <div class="modal-box danger">
+              <div class="modal-icon danger">
+                <i class="fas fa-heart-broken"></i>
+              </div>
+              <h3>¿Seguro que deseas cancelar?</h3>
+              <p>Esta acción tiene consecuencias:</p>
+              <ul class="penalty-list">
+                <li>
+                  <i class="fas fa-ban"></i> No podrás aceptar nuevas donaciones
+                  durante <strong>30 días</strong>
+                </li>
+                <li>
+                  <i class="fas fa-bell"></i> El solicitante será notificado
+                </li>
+              </ul>
+              <p class="modal-sub">
+                Esta persona puede estar dependiendo de ti. Si tienes un
+                impedimento médico, comunícate con el centro de salud.
+              </p>
+              <div class="modal-actions">
+                <button
+                  class="btn-primary"
+                  onclick="closeModal('cancel-donation-modal')"
+                >
+                  <i class="fas fa-heart"></i> Mantener mi compromiso
+                </button>
+                <button
+                  class="btn-outline danger"
+                  onclick="showScreen('donation-cancelled')"
+                >
+                  Cancelar de todas formas
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- DONATION CANCELLED - PENALTY SCREEN -->
+          <div id="donation-cancelled" class="screen">
+            <div class="success-content penalty">
+              <div class="success-icon penalty">
+                <i class="fas fa-ban"></i>
+              </div>
+              <h2>Donación cancelada</h2>
+              <p>
+                Has cancelado tu compromiso de donación. El solicitante ha sido
+                notificado.
+              </p>
+              <div class="penalty-info-card">
+                <i class="fas fa-clock"></i>
+                <div>
+                  <strong>Penalización activa</strong>
+                  <p>
+                    No podrás aceptar donaciones durante
+                    <strong>30 días</strong>
+                  </p>
+                </div>
+              </div>
+              <button class="btn-secondary" onclick="showScreen('home')">
+                Volver al inicio
+              </button>
+            </div>
+          </div>
+
+          <!-- RATE DONOR SCREEN -->
+          <div id="rate-donor" class="screen">
+            <div class="screen-header">
+              <button class="back-btn" onclick="showScreen('home')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <h2>Califica tu experiencia</h2>
+              <span></span>
+            </div>
+            <div class="rating-content">
+              <div class="rating-user-info">
+                <img
+                  src="https://i.pravatar.cc/100?img=12"
+                  alt="Donante"
+                  class="rating-avatar"
+                />
+                <div>
+                  <h4>Carlos Mendez</h4>
+                  <span class="rating-role"
+                    ><i class="fas fa-hand-holding-heart"></i> Donante</span
+                  >
+                </div>
+              </div>
+
+              <div class="fairness-notice">
+                <i class="fas fa-globe-americas"></i>
+                <p>
+                  🌎 Recuerda: la sangre no tiene color, género, religión ni
+                  orientación sexual. La calificación debe basarse
+                  <strong>únicamente</strong> en el comportamiento, puntualidad
+                  y actitud de la persona. Cualquier calificación
+                  discriminatoria puede resultar en la
+                  <strong>suspensión de tu cuenta</strong>.
+                </p>
+              </div>
+
+              <div class="stars-section">
+                <p class="stars-label">¿Cómo fue tu experiencia?</p>
+                <div class="stars-input" id="starsInput">
+                  <i class="fas fa-star star-item" data-value="1"></i>
+                  <i class="fas fa-star star-item" data-value="2"></i>
+                  <i class="fas fa-star star-item" data-value="3"></i>
+                  <i class="fas fa-star star-item" data-value="4"></i>
+                  <i class="fas fa-star star-item" data-value="5"></i>
+                </div>
+                <span class="stars-desc" id="starsDesc"
+                  >Toca para calificar</span
+                >
+              </div>
+
+              <div class="input-group">
+                <label>Comentario (opcional)</label>
+                <textarea
+                  placeholder="Describe brevemente tu experiencia..."
+                  maxlength="150"
+                ></textarea>
+                <span class="char-count">0/150</span>
+              </div>
+
+              <button
+                class="btn-primary large"
+                onclick="showScreen('rating-sent')"
+              >
+                <i class="fas fa-check"></i> Enviar calificación
+              </button>
+              <button class="btn-secondary" onclick="showScreen('home')">
+                Omitir
+              </button>
+            </div>
+          </div>
+
+          <!-- RATING SENT SUCCESS -->
+          <div id="rating-sent" class="screen">
+            <div class="success-content">
+              <div class="success-icon">
+                <i class="fas fa-star"></i>
+              </div>
+              <h2>¡Gracias por tu calificación!</h2>
+              <p>
+                Tu opinión ayuda a construir una comunidad más confiable y
+                solidaria.
+              </p>
+              <div class="blood-drop-celebration active">
+                <i class="fas fa-tint drop-anim"></i>
+              </div>
+              <button class="btn-primary" onclick="showScreen('home')">
+                Volver al inicio
+              </button>
+            </div>
           </div>
 
           <!-- CAMPAIGN DETAIL SCREEN -->
@@ -2143,6 +2523,656 @@ Gran jornada de donación de sangre. Tendremos refrigerios para todos los donant
                 </p>
               </div>
             </div>
+          </div>
+
+          <!-- ================================================== -->
+          <!-- VISTAS PROFESIONAL DE SALUD                        -->
+          <!-- ================================================== -->
+
+          <!-- HOME PROFESIONAL DE SALUD -->
+          <div id="home-pro" class="screen">
+            <div class="home-header">
+              <div class="header-top">
+                <div class="user-greeting">
+                  <img
+                    src="https://i.pravatar.cc/100?img=47"
+                    alt="Dra. López"
+                    class="avatar"
+                  />
+                  <div>
+                    <span class="greeting-text">Hola,</span>
+                    <h3>Dra. López</h3>
+                  </div>
+                </div>
+                <div class="header-actions">
+                  <button
+                    class="icon-btn"
+                    onclick="showScreen('notifications')"
+                  >
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">2</span>
+                  </button>
+                </div>
+              </div>
+              <div class="pro-header-badge">
+                <i class="fas fa-user-md"></i>
+                <span>Profesional de Salud Verificado</span>
+              </div>
+            </div>
+
+            <div class="home-content">
+              <!-- Panel de estadísticas del profesional -->
+              <div class="blood-card pro-card">
+                <div class="pro-card-icon">
+                  <i class="fas fa-user-md"></i>
+                </div>
+                <div class="blood-stats">
+                  <div class="stat">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Campañas</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-number">342</span>
+                    <span class="stat-label">Participantes</span>
+                  </div>
+                  <div class="stat">
+                    <span class="stat-number">285</span>
+                    <span class="stat-label">Donaciones</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Acciones rápidas -->
+              <div class="quick-actions">
+                <h3>Acciones rápidas</h3>
+                <div class="actions-grid pro-actions">
+                  <button
+                    class="action-card"
+                    onclick="showScreen('create-campaign')"
+                  >
+                    <div class="action-icon campaign">
+                      <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <span>Crear campaña</span>
+                  </button>
+                  <button
+                    class="action-card"
+                    onclick="showScreen('my-campaigns')"
+                  >
+                    <div class="action-icon manage">
+                      <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <span>Mis campañas</span>
+                  </button>
+                  <button class="action-card" onclick="showScreen('requests')">
+                    <div class="action-icon donate">
+                      <i class="fas fa-hand-holding-heart"></i>
+                    </div>
+                    <span>Ver solicitudes</span>
+                  </button>
+                  <button
+                    class="action-card"
+                    onclick="showScreen('create-request')"
+                  >
+                    <div class="action-icon urgent">
+                      <i class="fas fa-tint"></i>
+                    </div>
+                    <span>Solicitar sangre</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Mis campañas activas -->
+              <div class="campaigns-section">
+                <div class="section-header">
+                  <h3>Mis campañas activas</h3>
+                  <a href="#" onclick="showScreen('my-campaigns')">Ver todas</a>
+                </div>
+
+                <div
+                  class="pro-campaign-preview"
+                  onclick="showScreen('campaign-management')"
+                >
+                  <div class="pro-campaign-info">
+                    <div class="pro-campaign-header">
+                      <span class="pro-campaign-name"
+                        >Jornada de donación marzo</span
+                      >
+                      <span class="status-badge active">Activa</span>
+                    </div>
+                    <p>
+                      <i class="fas fa-calendar"></i> Sáb 15 Mar · 8:00 – 4:00
+                      PM
+                    </p>
+                    <p><i class="fas fa-hospital"></i> Hospital San José</p>
+                  </div>
+                  <div class="pro-campaign-stats">
+                    <div class="mini-progress">
+                      <div class="progress-bar">
+                        <div class="progress" style="width: 64%"></div>
+                      </div>
+                      <span>32 / 50 cupos</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="pro-campaign-preview"
+                  onclick="showScreen('campaign-management')"
+                >
+                  <div class="pro-campaign-info">
+                    <div class="pro-campaign-header">
+                      <span class="pro-campaign-name"
+                        >Dona vida en la Universidad</span
+                      >
+                      <span class="status-badge upcoming">Próxima</span>
+                    </div>
+                    <p>
+                      <i class="fas fa-calendar"></i> Dom 22 Mar · 9:00 – 5:00
+                      PM
+                    </p>
+                    <p>
+                      <i class="fas fa-university"></i> Universidad Nacional
+                    </p>
+                  </div>
+                  <div class="pro-campaign-stats">
+                    <div class="mini-progress">
+                      <div class="progress-bar">
+                        <div class="progress" style="width: 18%"></div>
+                      </div>
+                      <span>18 / 100 cupos</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Estadísticas de la comunidad -->
+              <div class="community-stats">
+                <h3>Nuestra comunidad</h3>
+                <div class="stats-row">
+                  <div class="community-stat">
+                    <i class="fas fa-users"></i>
+                    <span class="stat-value">12,458</span>
+                    <span class="stat-desc">Donantes activos</span>
+                  </div>
+                  <div class="community-stat">
+                    <i class="fas fa-heart"></i>
+                    <span class="stat-value">3,892</span>
+                    <span class="stat-desc">Vidas salvadas</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <nav class="bottom-nav">
+              <button class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+              </button>
+              <button class="nav-item" onclick="showScreen('my-campaigns')">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Campañas</span>
+              </button>
+              <button
+                class="nav-item create"
+                onclick="showScreen('create-campaign')"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+              <button class="nav-item" onclick="showScreen('requests')">
+                <i class="fas fa-search"></i>
+                <span>Explorar</span>
+              </button>
+              <button class="nav-item" onclick="showScreen('profile-pro')">
+                <i class="fas fa-user-md"></i>
+                <span>Perfil</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- MIS CAMPAÑAS (gestión para profesional) -->
+          <div id="my-campaigns" class="screen">
+            <div class="screen-header">
+              <button class="back-btn" onclick="showScreen('home-pro')">
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <h2>Mis campañas</h2>
+              <button class="icon-btn" onclick="showScreen('create-campaign')">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+
+            <div class="my-campaigns-content">
+              <div class="tabs">
+                <button class="tab active">Activas</button>
+                <button class="tab">Próximas</button>
+                <button class="tab">Pasadas</button>
+              </div>
+
+              <!-- Campaña 1 -->
+              <div class="campaign-manage-card">
+                <div class="campaign-manage-header">
+                  <span class="campaign-manage-title"
+                    >Jornada de donación marzo</span
+                  >
+                  <span class="status-badge active">Activa</span>
+                </div>
+                <div class="campaign-manage-body">
+                  <div class="campaign-manage-meta">
+                    <p><i class="fas fa-hospital"></i> Hospital San José</p>
+                    <p>
+                      <i class="fas fa-calendar"></i> Sáb 15 Mar 2026 · 8:00 AM
+                      – 4:00 PM
+                    </p>
+                    <p>
+                      <i class="fas fa-map-marker-alt"></i> Calle 10 #18-75,
+                      Bogotá
+                    </p>
+                  </div>
+                  <div class="cupos-progress">
+                    <div class="cupos-header">
+                      <span>Cupos reservados</span>
+                      <strong>32 / 50</strong>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress" style="width: 64%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="campaign-manage-actions">
+                  <button
+                    class="btn-outline"
+                    onclick="showScreen('campaign-management')"
+                  >
+                    <i class="fas fa-chart-bar"></i> Gestionar
+                  </button>
+                  <button class="btn-outline">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="btn-outline danger">
+                    <i class="fas fa-times"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Campaña 2 -->
+              <div class="campaign-manage-card">
+                <div class="campaign-manage-header">
+                  <span class="campaign-manage-title"
+                    >Dona vida en la Universidad</span
+                  >
+                  <span class="status-badge upcoming">Próxima</span>
+                </div>
+                <div class="campaign-manage-body">
+                  <div class="campaign-manage-meta">
+                    <p>
+                      <i class="fas fa-university"></i> Universidad Nacional
+                    </p>
+                    <p>
+                      <i class="fas fa-calendar"></i> Dom 22 Mar 2026 · 9:00 AM
+                      – 5:00 PM
+                    </p>
+                    <p>
+                      <i class="fas fa-map-marker-alt"></i> Campus Bogotá,
+                      Edificio A
+                    </p>
+                  </div>
+                  <div class="cupos-progress">
+                    <div class="cupos-header">
+                      <span>Cupos reservados</span>
+                      <strong>18 / 100</strong>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress" style="width: 18%"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="campaign-manage-actions">
+                  <button
+                    class="btn-outline"
+                    onclick="showScreen('campaign-management')"
+                  >
+                    <i class="fas fa-chart-bar"></i> Gestionar
+                  </button>
+                  <button class="btn-outline">
+                    <i class="fas fa-edit"></i> Editar
+                  </button>
+                  <button class="btn-outline danger">
+                    <i class="fas fa-times"></i> Cancelar
+                  </button>
+                </div>
+              </div>
+
+              <!-- Empty state (oculto) -->
+              <div class="empty-state" style="display: none">
+                <i class="fas fa-bullhorn"></i>
+                <h3>Sin campañas activas</h3>
+                <p>Crea tu primera campaña de donación</p>
+                <button
+                  class="btn-primary"
+                  onclick="showScreen('create-campaign')"
+                >
+                  Nueva campaña
+                </button>
+              </div>
+            </div>
+
+            <nav class="bottom-nav">
+              <button class="nav-item" onclick="showScreen('home-pro')">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+              </button>
+              <button class="nav-item active">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Campañas</span>
+              </button>
+              <button
+                class="nav-item create"
+                onclick="showScreen('create-campaign')"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+              <button class="nav-item" onclick="showScreen('requests')">
+                <i class="fas fa-search"></i>
+                <span>Explorar</span>
+              </button>
+              <button class="nav-item" onclick="showScreen('profile-pro')">
+                <i class="fas fa-user-md"></i>
+                <span>Perfil</span>
+              </button>
+            </nav>
+          </div>
+
+          <!-- GESTIÓN DE CAMPAÑA (detalle para profesional) -->
+          <div id="campaign-management" class="screen">
+            <div class="screen-header transparent">
+              <button
+                class="back-btn light"
+                onclick="showScreen('my-campaigns')"
+              >
+                <i class="fas fa-arrow-left"></i>
+              </button>
+              <span></span>
+              <button class="icon-btn light">
+                <i class="fas fa-share-alt"></i>
+              </button>
+            </div>
+
+            <div class="campaign-mgmt-content">
+              <!-- Hero azul con stats -->
+              <div class="campaign-mgmt-hero">
+                <h2>Jornada de donación marzo</h2>
+                <p>
+                  <i class="fas fa-hospital"></i> Hospital San José
+                  &nbsp;·&nbsp; <i class="fas fa-calendar"></i> 15 Mar 2026
+                </p>
+                <div class="mgmt-stats-row">
+                  <div class="mgmt-stat-chip">
+                    <span class="stat-number">32</span>
+                    <span class="stat-label">Reservas</span>
+                  </div>
+                  <div class="mgmt-stat-chip">
+                    <span class="stat-number">28</span>
+                    <span class="stat-label">Asistieron</span>
+                  </div>
+                  <div class="mgmt-stat-chip">
+                    <span class="stat-number">18</span>
+                    <span class="stat-label">Disponibles</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="campaign-mgmt-body">
+                <!-- Ocupación de cupos -->
+                <div class="mgmt-section">
+                  <h4><i class="fas fa-users"></i> Ocupación de cupos</h4>
+                  <div class="mgmt-cupos-bar">
+                    <div class="progress-bar">
+                      <div class="progress" style="width: 64%"></div>
+                    </div>
+                    <span>32 / 50</span>
+                  </div>
+                  <div class="mgmt-cupos-detail">
+                    <div class="cupos-detail-item confirmed">
+                      <span class="number">32</span>
+                      <span class="label">Confirmados</span>
+                    </div>
+                    <div class="cupos-detail-item attended">
+                      <span class="number">28</span>
+                      <span class="label">Asistieron</span>
+                    </div>
+                    <div class="cupos-detail-item free">
+                      <span class="number">18</span>
+                      <span class="label">Libres</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Tipos de sangre recibidos -->
+                <div class="mgmt-section">
+                  <h4><i class="fas fa-tint"></i> Tipos de sangre recibidos</h4>
+                  <div class="blood-types-needed">
+                    <span class="blood-tag highlight">O+ (12)</span>
+                    <span class="blood-tag">A+ (8)</span>
+                    <span class="blood-tag highlight">O- (5)</span>
+                    <span class="blood-tag">B+ (3)</span>
+                  </div>
+                </div>
+
+                <!-- Lista de participantes -->
+                <div class="mgmt-section">
+                  <h4><i class="fas fa-list"></i> Participantes recientes</h4>
+                  <div class="participant-list">
+                    <div class="participant-item">
+                      <img
+                        src="https://i.pravatar.cc/50?img=5"
+                        alt="María"
+                        class="participant-avatar"
+                      />
+                      <div class="participant-info">
+                        <h5>María González</h5>
+                        <span>Reservó hace 2 días</span>
+                      </div>
+                      <span class="participant-blood">O+</span>
+                      <span class="participant-status attended">Asistió</span>
+                    </div>
+                    <div class="participant-item">
+                      <img
+                        src="https://i.pravatar.cc/50?img=12"
+                        alt="Carlos"
+                        class="participant-avatar"
+                      />
+                      <div class="participant-info">
+                        <h5>Carlos Mendez</h5>
+                        <span>Reservó hace 1 día</span>
+                      </div>
+                      <span class="participant-blood">A+</span>
+                      <span class="participant-status confirmed"
+                        >Confirmado</span
+                      >
+                    </div>
+                    <div class="participant-item">
+                      <img
+                        src="https://i.pravatar.cc/50?img=32"
+                        alt="Ana"
+                        class="participant-avatar"
+                      />
+                      <div class="participant-info">
+                        <h5>Ana Rodríguez</h5>
+                        <span>Reservó hace 3 días</span>
+                      </div>
+                      <span class="participant-blood">B+</span>
+                      <span class="participant-status absent">No asistió</span>
+                    </div>
+                  </div>
+                  <div class="see-all-link">
+                    <a href="#">Ver los 32 participantes →</a>
+                  </div>
+                </div>
+
+                <!-- Acciones de gestión -->
+                <div class="mgmt-actions">
+                  <button class="btn-primary">
+                    <i class="fas fa-check-circle"></i> Registrar asistencia
+                  </button>
+                  <button class="btn-outline">
+                    <i class="fas fa-edit"></i> Editar campaña
+                  </button>
+                  <button class="btn-outline danger">
+                    <i class="fas fa-times-circle"></i> Cancelar campaña
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PERFIL PROFESIONAL DE SALUD -->
+          <div id="profile-pro" class="screen">
+            <div class="profile-header">
+              <div class="profile-cover"></div>
+              <div class="profile-avatar-section">
+                <img
+                  src="https://i.pravatar.cc/150?img=47"
+                  alt="Dra. López"
+                  class="profile-avatar-large"
+                />
+                <button class="edit-avatar-btn">
+                  <i class="fas fa-camera"></i>
+                </button>
+              </div>
+              <h2 class="profile-name">Dra. Camila López</h2>
+              <p class="profile-username">@camilalopez_md</p>
+              <div class="profile-badges">
+                <span class="badge verified">
+                  <i class="fas fa-check-circle"></i> Verificado
+                </span>
+                <span
+                  class="badge donor"
+                  style="background: #bbdefb; color: #1565c0"
+                >
+                  <i class="fas fa-user-md"></i> Profesional de Salud
+                </span>
+              </div>
+            </div>
+
+            <div class="profile-content">
+              <!-- Estadísticas profesionales -->
+              <div class="pro-stats-card">
+                <div class="pro-role-label">
+                  <i class="fas fa-chart-bar"></i> Mis estadísticas
+                </div>
+                <div class="pro-stats-grid">
+                  <div class="pro-stat-item">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Campañas</span>
+                  </div>
+                  <div class="pro-stat-item">
+                    <span class="stat-number">342</span>
+                    <span class="stat-label">Participantes</span>
+                  </div>
+                  <div class="pro-stat-item">
+                    <span class="stat-number">285</span>
+                    <span class="stat-label">Donaciones</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información profesional -->
+              <div class="profile-section">
+                <h3>Mi información</h3>
+                <div class="info-list">
+                  <div class="info-row institution">
+                    <i class="fas fa-hospital"></i>
+                    <span>Hospital San José · Bogotá</span>
+                  </div>
+                  <div class="info-row">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>Especialidad: Hematología</span>
+                  </div>
+                  <div class="info-row">
+                    <i class="fas fa-id-card"></i>
+                    <span>TP · 8823456</span>
+                  </div>
+                  <div class="info-row">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Bogotá, Colombia</span>
+                  </div>
+                  <div class="info-row">
+                    <i class="fas fa-calendar"></i>
+                    <span>Miembro desde Febrero 2024</span>
+                  </div>
+                  <div class="info-row">
+                    <i class="fas fa-star"></i>
+                    <span>Calificación: 4.9 ★★★★★</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Opciones -->
+              <div class="profile-section">
+                <h3>Opciones</h3>
+                <div class="options-list">
+                  <button class="option-item">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Editar perfil</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                  <button
+                    class="option-item"
+                    onclick="showScreen('my-campaigns')"
+                  >
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Mis campañas</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                  <button class="option-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificaciones</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                  <button class="option-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Privacidad</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                  <button class="option-item">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Ayuda</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                  <button class="option-item danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar sesión</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <nav class="bottom-nav">
+              <button class="nav-item" onclick="showScreen('home-pro')">
+                <i class="fas fa-home"></i>
+                <span>Inicio</span>
+              </button>
+              <button class="nav-item" onclick="showScreen('my-campaigns')">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Campañas</span>
+              </button>
+              <button
+                class="nav-item create"
+                onclick="showScreen('create-campaign')"
+              >
+                <i class="fas fa-plus"></i>
+              </button>
+              <button class="nav-item" onclick="showScreen('requests')">
+                <i class="fas fa-search"></i>
+                <span>Explorar</span>
+              </button>
+              <button class="nav-item active">
+                <i class="fas fa-user-md"></i>
+                <span>Perfil</span>
+              </button>
+            </nav>
           </div>
         </div>
       </div>

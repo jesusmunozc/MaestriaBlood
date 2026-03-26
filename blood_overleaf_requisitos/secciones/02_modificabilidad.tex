@@ -1,0 +1,69 @@
+% ============================================================
+%  SECCIÓN 2 – ATRIBUTO DE CALIDAD: MODIFICABILIDAD
+% ============================================================
+\section{Atributo de calidad: Modificabilidad}
+
+% ─────────────────────────────────────────────────────────
+\subsection{Escenario de calidad}
+
+\textbf{Caso:} los usuarios utilizan de manera inapropiada el chat en vivo.
+
+\begin{itemize}
+    \item \textbf{Fuente del estímulo:} equipo de desarrollo de la aplicación.
+    \item \textbf{Estímulo:} decisión de eliminar la funcionalidad de chat en vivo debido a su uso indebido dentro de la plataforma.
+    \item \textbf{Artefacto:} módulo de chat, interfaces de comunicación entre usuarios, vistas asociadas y lógica de mensajería.
+    \item \textbf{Entorno:} tiempo de diseño y mantenimiento del sistema.
+    \item \textbf{Respuesta:} el sistema debe permitir que la funcionalidad de chat sea retirada, actualizando las interfaces, ajustando las reglas de interacción entre usuarios, sin comprometer el funcionamiento de otras funcionalidades, como el registro, las solicitudes de donación, las campañas y las notificaciones.
+    \item \textbf{Medida de respuesta:} la modificación será satisfactoria si puede implementarse en un tiempo razonable, con bajo costo, afectando la menor cantidad posible de módulos y sin introducir errores, inconsistencias o efectos secundarios en otras partes del sistema.
+\end{itemize}
+
+En !Blood, un escenario de calidad asociado al atributo de modificabilidad se presenta cuando el equipo de desarrollo detecta que la funcionalidad de chat en vivo está siendo utilizada de forma inapropiada por algunos usuarios para compartir números de teléfono o incluso promover prácticas contrarias al propósito solidario de la plataforma, como la compra y venta de sangre. Ante esta situación, surge la necesidad de eliminar dicha funcionalidad. En este caso se aplican principalmente las tácticas de \textit{dividir módulo} y \textit{encapsular}. La táctica \textit{dividir módulo} permite que la funcionalidad de chat se encuentre separada del resto de componentes de la aplicación, facilitando su eliminación sin afectar de manera significativa otras funciones. Por su parte, la táctica \textit{encapsular} permite que el chat se relacione con otros módulos únicamente a través de interfaces bien definidas, reduciendo el acoplamiento y evitando que su retiro genere cambios innecesarios en otras partes del sistema. De manera complementaria, también se relaciona con la táctica \textit{restringir dependencias}, ya que conviene que los módulos centrales de la aplicación no dependan directamente de esta funcionalidad.
+
+% ─────────────────────────────────────────────────────────
+\subsection{Táctica 1: Dividir módulo}
+
+\noindent\textbf{¿Qué es?}
+
+Consiste en separar el sistema en módulos más pequeños e independientes, de manera que cada uno tenga una responsabilidad específica. Esto facilita que una funcionalidad pueda modificarse, reemplazarse o eliminarse sin afectar de forma significativa al resto del sistema.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item el módulo de chat en vivo, independiente del módulo de solicitudes de donación,
+    \item el módulo de registro e inicio de sesión, separado de la gestión de perfiles,
+    \item el módulo de campañas de donación, separado del historial de donaciones,
+    \item el módulo de notificaciones, desacoplado del módulo de búsqueda de donantes,
+    \item el módulo de compatibilidad sanguínea, separado de la lógica de publicación de solicitudes,
+    \item el módulo de reportes o denuncias, independiente del sistema de mensajería o interacción entre usuarios.
+\end{itemize}
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Porque permite que los cambios se realicen de manera más localizada y ordenada. Si las funcionalidades están separadas, el equipo de desarrollo no necesita intervenir muchas partes del sistema para hacer una modificación puntual. En !Blood, esto sería útil, por ejemplo, si se desea cambiar únicamente la lógica de compatibilidad sanguínea, mejorar el sistema de notificaciones, ajustar el registro de usuarios o añadir nuevas funciones al módulo de campañas. Al estar cada responsabilidad aislada, se reduce el esfuerzo por mantener cada módulo facilitando la evolución progresiva de la aplicación.
+
+% ─────────────────────────────────────────────────────────
+\subsection{Táctica 2: Encapsular}
+
+\noindent\textbf{¿Qué es?}
+
+Consiste en ocultar la implementación interna de un módulo y permitir que otros componentes interactúen con él únicamente mediante el uso de APIs. Así, los demás módulos no dependen de los detalles internos de funcionamiento, sino solo de los servicios que ese módulo ofrece.
+
+\medskip
+\noindent\textbf{¿Cómo se aplicaría en la aplicación?}
+
+\begin{itemize}
+    \item el módulo de chat podría exponer acciones como \textit{enviar mensaje}, \textit{bloquear conversación} o \textit{cerrar chat}, sin que otros módulos conozcan su lógica interna,
+    \item el módulo de notificaciones podría ofrecer operaciones como \textit{enviar alerta} o \textit{marcar como leída}, sin mostrar cómo gestiona colas, estados o almacenamiento,
+    \item el módulo de donantes podría exponer funciones como \textit{consultar disponibilidad} o \textit{actualizar estado}, sin revelar la estructura interna de la base de datos,
+    \item el módulo de compatibilidad sanguínea podría ofrecer una validación de compatibilidad sin que otros componentes conozcan las reglas internas detalladas,
+    \item el módulo de campañas podría publicar o cerrar jornadas de donación mediante servicios específicos, sin depender de cómo se almacenan o procesan internamente esos datos.
+\end{itemize}
+
+Así, si se necesita cambiar la lógica de un módulo o incluso retirarlo, el impacto sobre el resto del sistema será menor, porque los demás componentes solo conocen su interfaz externa.
+
+\medskip
+\noindent\textbf{¿Por qué es conveniente esta táctica?}
+
+Porque reduce el acoplamiento entre módulos y evita que un cambio interno se propague innecesariamente al resto del sistema. En !Blood, esto resulta muy conveniente porque varias funcionalidades pueden evolucionar con el tiempo: podrían cambiarse las reglas de notificación, la lógica de compatibilidad sanguínea, la forma de gestionar campañas o incluso eliminarse el chat. Esta táctica mejora la mantenibilidad del sistema, permitiendo que la arquitectura sea clara y escalable.
