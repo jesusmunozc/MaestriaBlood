@@ -1,0 +1,684 @@
+% ============================================================
+%  !Blood – Presentación Beamer
+%  Compilar con: pdfLaTeX
+%  Subir a Overleaf como nuevo proyecto
+% ============================================================
+\documentclass[aspectratio=169, 12pt]{beamer}
+
+% ── Codificación & Idioma ────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+
+% ── Fuentes ──────────────────────────────────────────────
+\usepackage{lmodern}
+
+% ── Paquetes visuales ────────────────────────────────────
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{multicol}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins, breakable}
+\usepackage{fontawesome5}
+\usepackage{enumitem}
+\usepackage{caption}
+
+% ════════════════════════════════════════════════════════
+%  PALETA DE COLORES
+% ════════════════════════════════════════════════════════
+\definecolor{bloodred}{HTML}{E53935}
+\definecolor{blooddk}{HTML}{B71C1C}
+\definecolor{bloodlt}{HTML}{FF6659}
+\definecolor{bgdark}{HTML}{0D0D0D}
+\definecolor{bgcard}{HTML}{1C1C1C}
+\definecolor{warmgray}{HTML}{AAAAAA}
+\definecolor{offwhite}{HTML}{F5F5F5}
+\definecolor{accentpink}{HTML}{FF8A80}
+
+% ════════════════════════════════════════════════════════
+%  TEMA BEAMER PERSONALIZADO
+% ════════════════════════════════════════════════════════
+\usetheme{default}
+\usecolortheme{default}
+\usefonttheme{professionalfonts}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize item}{\color{bloodred}\small\faCircle}
+\setbeamertemplate{itemize subitem}{\color{bloodlt}\scriptsize\faCircle}
+
+% ── Colores del tema ─────────────────────────────────────
+\setbeamercolor{background canvas}{bg=bgdark}
+\setbeamercolor{normal text}{fg=offwhite}
+\setbeamercolor{alerted text}{fg=bloodlt}
+\setbeamercolor{structure}{fg=bloodred}
+\setbeamercolor{block title}{fg=offwhite, bg=blooddk}
+\setbeamercolor{block body}{fg=offwhite, bg=bgcard}
+\setbeamercolor{block title alerted}{fg=offwhite, bg=bloodred}
+\setbeamercolor{block body alerted}{fg=offwhite, bg=bgcard}
+\setbeamercolor{frametitle}{fg=offwhite, bg=bgdark}
+\setbeamercolor{footline}{fg=warmgray}
+\setbeamercolor{title}{fg=offwhite}
+\setbeamercolor{subtitle}{fg=warmgray}
+\setbeamercolor{author}{fg=offwhite}
+\setbeamercolor{institute}{fg=warmgray}
+\setbeamercolor{date}{fg=warmgray}
+\setbeamercolor{separation line}{bg=bloodred}
+
+% ── Frametitle ───────────────────────────────────────────
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip
+  \begin{beamercolorbox}[wd=\paperwidth, ht=2.6ex, dp=1.4ex, leftskip=12pt]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle%
+    \ifx\insertframesubtitle\@empty\else%
+      \hspace{6pt}\usebeamerfont{framesubtitle}{\color{warmgray}\small|\space\insertframesubtitle}%
+    \fi%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=\paperwidth, ht=0.4pt]{separation line}\end{beamercolorbox}%
+  \vspace{2pt}%
+}
+
+% ── Pie de página ────────────────────────────────────────
+\setbeamertemplate{footline}{%
+  \begin{beamercolorbox}[wd=\paperwidth, ht=2.2ex, dp=1.2ex]{footline}%
+    \hspace{12pt}%
+    {\color{bloodred}\tiny\faDroplet}\;%
+    {\color{warmgray}\tiny !Blood\enspace|\enspace Ana María Campo Agredo}%
+    \hfill%
+    {\color{warmgray}\tiny\insertframenumber\,/\,\inserttotalframenumber}%
+    \hspace{12pt}%
+  \end{beamercolorbox}%
+}
+
+% ── Fonts ────────────────────────────────────────────────
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{title}{size=\Huge, series=\bfseries}
+\setbeamerfont{subtitle}{size=\large, series=\normalfont}
+\setbeamerfont{block title}{size=\small, series=\bfseries}
+\setbeamerfont{block body}{size=\footnotesize}
+
+% ════════════════════════════════════════════════════════
+%  CAJAS PERSONALIZADAS (tcolorbox)
+% ════════════════════════════════════════════════════════
+
+% Caja roja (alerta / dato importante)
+\tcbset{
+  redbox/.style={
+    enhanced, colback=bgcard, colframe=bloodred,
+    coltext=offwhite, fonttitle=\bfseries\small,
+    coltitle=offwhite, attach boxed title to top left={yshift=-2mm, xshift=4mm},
+    boxed title style={colback=bloodred, colframe=bloodred, rounded corners},
+    rounded corners, arc=6pt,
+    left=6pt, right=6pt, top=8pt, bottom=6pt,
+    drop shadow={opacity=.3}
+  },
+  graybox/.style={
+    enhanced, colback=bgcard, colframe=bgcard,
+    coltext=offwhite, rounded corners, arc=6pt,
+    borderline west={3pt}{0pt}{bloodred},
+    left=8pt, right=6pt, top=6pt, bottom=6pt,
+  },
+  statbox/.style={
+    enhanced, colback=bgcard, colframe=bloodred!30,
+    coltext=offwhite, rounded corners, arc=8pt,
+    left=8pt, right=8pt, top=8pt, bottom=8pt,
+    halign=center, valign=center,
+  }
+}
+
+% ── Macros útiles ────────────────────────────────────────
+\newcommand{\redtext}[1]{{\color{bloodlt}#1}}
+\newcommand{\greytext}[1]{{\color{warmgray}#1}}
+\newcommand{\tagbadge}[1]{%
+  \tikz[baseline=(t.base)]
+  \node[fill=bloodred!15, draw=bloodred!40, rounded corners=10pt,
+        inner xsep=6pt, inner ysep=2pt, text=accentpink,
+        font=\bfseries\tiny\ttfamily] (t) {\MakeUppercase{#1}};%
+}
+
+% ── Gota SVG en TikZ ─────────────────────────────────────
+\newcommand{\blooddrop}[1][1.2cm]{%
+  \begin{tikzpicture}[baseline=(d.south)]
+    \fill[top color=bloodlt, bottom color=blooddk, drop shadow={opacity=.5,shadow xshift=0,shadow yshift=-1pt}]
+      (0,#1) .. controls (-0.55*#1,0.35*#1) and (-0.7*#1,-0.3*#1) ..
+      (0,-0.7*#1) .. controls (0.7*#1,-0.3*#1) and (0.55*#1,0.35*#1) ..
+      (0,#1) coordinate (d);
+    \fill[white, opacity=.2]
+      (-0.18*#1,0.18*#1) .. controls (-0.35*#1,0.05*#1) and (-0.32*#1,-0.12*#1) ..
+      (-0.15*#1,-0.2*#1) .. controls (-0.02*#1,-0.26*#1) and (0.05*#1,-0.18*#1) ..
+      (-0.18*#1,0.18*#1);
+  \end{tikzpicture}%
+}
+
+% ════════════════════════════════════════════════════════
+%  METADATOS
+% ════════════════════════════════════════════════════════
+\title{{\large\faDroplet}\quad !Blood}
+\subtitle{Aplicación Móvil de Donación de Sangre\\[4pt]
+  \small Informe de Diseño y Especificación Funcional}
+\author{Ana María Campo Agredo}
+\institute{Universidad del Cauca\\
+  Facultad de Ciencias Naturales, Exactas y de la Educación\\
+  Departamento de Física --- Popayán, Colombia}
+\date{2026}
+
+% ════════════════════════════════════════════════════════
+\begin{document}
+% ════════════════════════════════════════════════════════
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 1 – PORTADA
+% ──────────────────────────────────────────────────────
+{
+\setbeamertemplate{footline}{}
+\setbeamertemplate{frametitle}{}
+\begin{frame}[plain]
+  \begin{tikzpicture}[remember picture, overlay]
+    % Fondo degradado lateral
+    \fill[blooddk, opacity=.12]
+      (current page.north west) rectangle (current page.south east);
+    % Mancha roja decorativa derecha
+    \fill[bloodred, opacity=.10]
+      ([xshift=2cm]current page.east) circle (6cm);
+    % Mancha roja decorativa izquierda inferior
+    \fill[blooddk, opacity=.08]
+      ([xshift=-3cm, yshift=-2cm]current page.south west) circle (5cm);
+    % Línea lateral roja
+    \fill[bloodred]
+      ([xshift=0.55\paperwidth]current page.south west)
+      rectangle
+      ([xshift=0.55\paperwidth+3pt]current page.north west);
+  \end{tikzpicture}
+
+  \vspace*{0.8cm}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \vspace{0.6cm}
+      % Tag
+      \tagbadge{Aplicación Móvil · Popayán, Colombia}
+      \vspace{0.5cm}
+
+      % Título principal
+      {\fontsize{42}{44}\selectfont\bfseries\color{bloodlt}!Blood}
+
+      \vspace{4pt}
+      {\color{offwhite}\large\itshape ``Dona vida, recibe vida''}
+
+      \vspace{10pt}
+      \begin{beamercolorbox}[wd=3cm, ht=2pt]{separation line}\end{beamercolorbox}
+      \vspace{10pt}
+
+      {\footnotesize\color{warmgray}
+        \textbf{\color{offwhite}Ana María Campo Agredo}\\[3pt]
+        Universidad del Cauca\\
+        Fac. Ciencias Naturales, Exactas y de la Educación\\
+        Dpto. de Física --- Popayán, Colombia\\[3pt]
+        \textbf{\color{offwhite}2026}
+      }
+
+      \vspace{12pt}
+      \tagbadge{\faDroplet\enspace Donación de Sangre}\quad
+      \tagbadge{\faMobileAlt\enspace App Móvil}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \vspace*{0.4cm}
+      \centering
+      % Gota grande
+      \begin{tikzpicture}
+        \fill[top color=bloodlt, bottom color=blooddk,
+              drop shadow={opacity=.5, shadow xshift=2pt, shadow yshift=-4pt}]
+          (0,3.5) .. controls (-1.9,1.2) and (-2.4,-1) ..
+          (0,-2.4) .. controls (2.4,-1) and (1.9,1.2) ..
+          (0,3.5);
+        \fill[white, opacity=.18]
+          (-0.6,0.6) .. controls (-1.2,0.15) and (-1.1,-0.4) ..
+          (-0.5,-0.65) .. controls (-0.1,-0.85) and (0.15,-0.6) ..
+          (-0.6,0.6);
+        \node[white, font=\bfseries\large] at (0,-0.3) {!Blood};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 2 – AGENDA
+% ──────────────────────────────────────────────────────
+\begin{frame}{Agenda}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{enumerate}[\color{bloodred}1.]\color{offwhite}
+        \setlength\itemsep{7pt}
+        \item \textbf{Contexto y Crisis} — OMS y Cauca
+        \item \textbf{Problemática Identificada} — 6 causas
+        \item \textbf{La Solución} — ¿Qué es !Blood?
+        \item \textbf{Módulos Funcionales} — ¿Qué hace?
+        \item \textbf{Perfiles de Usuario} — ¿Para quién?
+        \item \textbf{Prueba de Usabilidad} — Thinking Aloud
+      \end{enumerate}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{enumerate}[\color{bloodred}1.]\color{offwhite}
+        \setlength\itemsep{7pt}
+        \setcounter{enumi}{6}
+        \item \textbf{Disponibilidad} — Heartbeat + Degradation
+        \item \textbf{Modificabilidad} — Dividir + Encapsular
+        \item \textbf{Usabilidad} — Undo + Modelos
+        \item \textbf{Conclusiones}
+      \end{enumerate}
+    \end{column}
+  \end{columns}
+  \vfill
+  \begin{tcolorbox}[graybox]
+    \small Tiempo estimado de exposición: \redtext{\textbf{10 minutos}} \quad·\quad 10 diapositivas \quad·\quad $\approx$60 seg/diapositiva
+  \end{tcolorbox}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 3 – CONTEXTO Y CRISIS
+% ──────────────────────────────────────────────────────
+\begin{frame}{El Problema}{\tagbadge{Contexto}}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \begin{tcolorbox}[graybox]
+        \small La donación de sangre es un \textbf{pilar fundamental} de los sistemas de salud.
+        En Colombia y el Cauca, los niveles están \redtext{significativamente por debajo} del umbral mínimo establecido por la OMS.
+      \end{tcolorbox}
+      \vspace{8pt}
+      \begin{tcolorbox}[graybox]
+        \small En Popayán, la \textbf{dispersión geográfica} y la \textbf{ausencia de mecanismos ágiles} impiden conectar donantes con pacientes en situaciones urgentes.
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      % Tres cajas de estadística
+      \begin{tcolorbox}[statbox]
+        {\color{bloodlt}\fontsize{28}{30}\selectfont\bfseries 10--20}\\[2pt]
+        \greytext{\tiny donaciones/1\,000 hab.\\ requeridas por la OMS}
+      \end{tcolorbox}
+      \vspace{6pt}
+      \begin{tcolorbox}[statbox]
+        {\color{bloodlt}\fontsize{28}{30}\selectfont\bfseries$\downarrow$}\\[2pt]
+        \greytext{\tiny Colombia y Cauca\\ muy por debajo del umbral}
+      \end{tcolorbox}
+      \vspace{6pt}
+      \begin{tcolorbox}[statbox]
+        {\color{bloodlt}\fontsize{28}{30}\selectfont\bfseries 0}\\[2pt]
+        \greytext{\tiny canales unificados\\ de convocatoria oficial}
+      \end{tcolorbox}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 4 – 6 PROBLEMAS
+% ──────────────────────────────────────────────────────
+\begin{frame}{Problemática Identificada}{\tagbadge{6 causas raíz}}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{tcolorbox}[redbox, title={\faSignal\enspace Información Dispersa}]
+        Sin canal unificado: convocatorias en redes sociales, volantes o comunicados sin fuente oficial.
+      \end{tcolorbox}
+      \vspace{4pt}
+      \begin{tcolorbox}[redbox, title={\faUnlink\enspace Oferta $\neq$ Demanda}]
+        Cadenas informales en WhatsApp sin filtro por tipo de sangre ni cercanía geográfica.
+      \end{tcolorbox}
+      \vspace{4pt}
+      \begin{tcolorbox}[redbox, title={\faBrain\enspace Mitos y Desinformación}]
+        Creencias falsas disuaden a donantes potenciales dispuestos a donar con información correcta.
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{tcolorbox}[redbox, title={\faBell\enspace Sin Seguimiento}]
+        El donante no recibe retroalimentación, no tiene historial ni recordatorios de recurrencia.
+      \end{tcolorbox}
+      \vspace{4pt}
+      \begin{tcolorbox}[redbox, title={\faHospital\enspace Sin Herramientas Pro}]
+        Los centros de salud carecen de medio digital para gestionar campañas y cupos.
+      \end{tcolorbox}
+      \vspace{4pt}
+      \begin{tcolorbox}[redbox, title={\faLock\enspace Comunicación Insegura}]
+        Los canales informales no garantizan privacidad ni limitan interacciones a fines de donación.
+      \end{tcolorbox}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 5 – LA SOLUCIÓN
+% ──────────────────────────────────────────────────────
+\begin{frame}{La Solución}{\tagbadge{!Blood – App Móvil}}
+  \begin{columns}[T]
+    \begin{column}{0.60\textwidth}
+      \vspace{4pt}
+      \begin{tcolorbox}[graybox]
+        \textbf{!Blood} es una aplicación móvil que \textbf{centraliza} solicitudes, campañas y comunicación entre usuarios, priorizando la \redtext{compatibilidad por tipo de sangre} y la \redtext{cercanía geográfica} para facilitar respuestas oportunas.
+      \end{tcolorbox}
+      \vspace{8pt}
+      \begin{block}{\faUsers\enspace 2 Perfiles diferenciados}
+        Ciudadano y Profesional de Salud --- funcionalidades propias para cada uno.
+      \end{block}
+      \vspace{4pt}
+      \begin{block}{\faMapMarkerAlt\enspace Conexión inteligente}
+        Matching por grupo sanguíneo + geolocalización en tiempo real.
+      \end{block}
+      \vspace{4pt}
+      \begin{block}{\faShieldAlt\enspace Entorno seguro y moderado}
+        Verificación de identidad, privacidad de datos y moderación de contenido.
+      \end{block}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \centering
+      \vspace{0.4cm}
+      \begin{tikzpicture}
+        \fill[top color=bloodlt, bottom color=blooddk,
+              drop shadow={opacity=.6, shadow xshift=3pt, shadow yshift=-5pt}]
+          (0,3.2) .. controls (-1.75,1.1) and (-2.2,-0.9) ..
+          (0,-2.2) .. controls (2.2,-0.9) and (1.75,1.1) ..
+          (0,3.2);
+        \fill[white, opacity=.2]
+          (-0.55,0.55) .. controls (-1.1,0.12) and (-1.0,-0.35) ..
+          (-0.45,-0.60) .. controls (-0.1,-0.78) and (0.12,-0.55) ..
+          (-0.55,0.55);
+        \node[white, font=\bfseries\large] at (0,-0.2) {!Blood};
+        \node[white, font=\tiny\itshape] at (0,-0.85) {Dona vida,};
+        \node[white, font=\tiny\itshape] at (0,-1.2) {recibe vida};
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 6 – MÓDULOS FUNCIONALES
+% ──────────────────────────────────────────────────────
+\begin{frame}{Módulos Funcionales de la App}{\tagbadge{¿Qué hace !Blood?}}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\setlength\itemsep{5pt}
+        \item[\color{bloodred}\faGlobe] \textbf{Splash \& Onboarding} --- primera experiencia
+        \item[\color{bloodred}\faKey] \textbf{Login \& Registro} --- 3 pasos + verificación de identidad
+        \item[\color{bloodred}\faClipboardList] \textbf{Encuesta de Aptitud} --- filtro automático de requisitos
+        \item[\color{bloodred}\faExclamationTriangle] \textbf{Solicitudes Urgentes} --- publicación y notificación inmediata
+        \item[\color{bloodred}\faCalendarAlt] \textbf{Campañas de Donación} --- creadas por profesionales de salud
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{itemize}\setlength\itemsep{5pt}
+        \item[\color{bloodred}\faMapMarkerAlt] \textbf{Geolocalización} --- matching por type + proximidad
+        \item[\color{bloodred}\faHistory] \textbf{Historial Personal} --- seguimiento + recordatorios automáticos
+        \item[\color{bloodred}\faBell] \textbf{Notificaciones Push} --- alertas de compatibilidad cercana
+        \item[\color{bloodred}\faTrophy] \textbf{Gamificación} --- insignias, rachas y recompensas
+        \item[\color{bloodred}\faFlag] \textbf{Moderación} --- reportes y control de contenido
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vfill
+  \begin{tcolorbox}[graybox]
+    \small El registro incluye \textbf{foto en vivo} (anti-duplicados), carga de documento de identidad y geolocalización automática.
+  \end{tcolorbox}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 7 – PERFILES DE USUARIO
+% ──────────────────────────────────────────────────────
+\begin{frame}{Perfiles de Usuario}{\tagbadge{¿Para quién?}}
+  \begin{columns}[T]
+    % Perfil 1
+    \begin{column}{0.31\textwidth}
+      \begin{tcolorbox}[
+        enhanced, colback=bgcard, colframe=bloodred, arc=10pt,
+        coltext=offwhite, fonttitle=\bfseries\small,
+        title={\faHeartbeat\enspace Donante Potencial},
+        coltitle=offwhite
+      ]
+        \greytext{\tiny 18–65 años · Popayán · Peso >50 kg}\\[5pt]
+        Quiere ayudar donando. Necesita claridad sobre requisitos, dónde donar y recordatorios automáticos.\\[5pt]
+        \redtext{\faInfoCircle\enspace} Hombre: cada 3 meses\\
+        \redtext{\faInfoCircle\enspace} Mujer: cada 6 meses
+      \end{tcolorbox}
+    \end{column}
+    % Perfil 2
+    \begin{column}{0.31\textwidth}
+      \begin{tcolorbox}[
+        enhanced, colback=bgcard, colframe=accentpink, arc=10pt,
+        coltext=offwhite, fonttitle=\bfseries\small,
+        title={\faSos\enspace Solicitante de Sangre},
+        coltitle=offwhite
+      ]
+        \greytext{\tiny Familiar/cuidador de paciente}\\[5pt]
+        Necesita donantes \textbf{compatibles y cercanos} de urgencia. El proceso debe ser \redtext{extremadamente rápido e intuitivo}.\\[5pt]
+        \redtext{\faClock\enspace} Capacidad de atención reducida en emergencia
+      \end{tcolorbox}
+    \end{column}
+    % Perfil 3
+    \begin{column}{0.31\textwidth}
+      \begin{tcolorbox}[
+        enhanced, colback=bgcard, colframe=warmgray, arc=10pt,
+        coltext=offwhite, fonttitle=\bfseries\small,
+        title={\faHospital\enspace Profesional de Salud},
+        coltitle=offwhite
+      ]
+        \greytext{\tiny Hospital · Clínica · Banco de Sangre}\\[5pt]
+        Crea \textbf{campañas institucionales}, gestiona cupos y comunica requisitos de manera estandarizada.\\[5pt]
+        \redtext{\faCheckCircle\enspace} Cuenta verificada y contenido oficial
+      \end{tcolorbox}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 8 – PRUEBA DE USABILIDAD
+% ──────────────────────────────────────────────────────
+\begin{frame}{Prueba de Usabilidad}{\tagbadge{Thinking Aloud}}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \begin{tcolorbox}[statbox]
+        {\color{bloodlt}\fontsize{26}{28}\selectfont\bfseries 4}\\[2pt]
+        \greytext{\tiny Participantes\\Estudiantes Ing.~Física}
+      \end{tcolorbox}
+      \vspace{6pt}
+      \begin{tcolorbox}[statbox]
+        {\color{bloodlt}\fontsize{26}{28}\selectfont\bfseries 12}\\[2pt]
+        \greytext{\tiny Hallazgos clave\\identificados}
+      \end{tcolorbox}
+      \vspace{6pt}
+      \begin{tcolorbox}[graybox]
+        \tiny Técnica: expresión en voz alta del pensamiento durante la interacción con la interfaz.
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}{0.65\textwidth}
+      \footnotesize
+      \renewcommand{\arraystretch}{1.25}
+      \begin{tabular}{>{\color{bloodlt}\bfseries\footnotesize}p{2cm}
+                      >{\color{offwhite}\footnotesize}p{3.4cm}
+                      >{\color{warmgray}\footnotesize}p{3.4cm}}
+        \rowcolor{blooddk!60}
+        \color{offwhite}Categoría & \color{offwhite}Hallazgo & \color{offwhite}Recomendación \\
+        \hline
+        Registro      & Demasiados datos al inicio & Simplificar el registro \\
+        Navegación    & Botón ``Donar'' poco visible & Ubicar en zona destacada \\
+        Urgencia      & No es claro cuándo es urgente & Apoyar con evidencia \\
+        Motivación    & No mantiene interés a largo plazo & Gamificación \\
+        Reversión     & No permite revertir decisión & Permitir con advertencia \\
+        Identidad     & Nombres ``creativos'' restán seriedad & Usar nombres reales \\
+      \end{tabular}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 9 – DISPONIBILIDAD
+% ──────────────────────────────────────────────────────
+\begin{frame}{Atributo de Calidad \#1}{\tagbadge{Disponibilidad}}
+  \begin{tcolorbox}[graybox]
+    \small\textbf{Caso crítico:} El servidor de notificaciones deja de responder durante una \redtext{solicitud urgente de donación}.
+  \end{tcolorbox}
+  \vspace{6pt}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\faHeartbeat\enspace Táctica 1: Heartbeat}
+        Señales periódicas entre monitor y proceso supervisado. Detecta fallos en segundos en:
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item Servicio de notificaciones urgentes
+          \item Módulo de mensajería
+          \item Backend de solicitudes de sangre
+          \item Conexión con base de datos
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\faArrowDown\enspace Táctica 2: Degradation}
+        Ante fallo, mantiene funciones críticas y suspende secundarias:
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item Falla chat \faArrowRight{} solicitudes siguen activas
+          \item Falla notif. \faArrowRight{} campañas visibles en app
+          \item Priorizar: registro, autenticación, compatibilidad
+          \item Reportes estadísticos pueden fallar sin impacto
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 10 – MODIFICABILIDAD
+% ──────────────────────────────────────────────────────
+\begin{frame}{Atributo de Calidad \#2}{\tagbadge{Modificabilidad}}
+  \begin{tcolorbox}[graybox]
+    \small\textbf{Caso:} Se detecta uso inapropiado del \textbf{chat en vivo} — usuarios comparten teléfonos o promueven compra/venta de sangre. El equipo debe \redtext{eliminar el módulo sin afectar el resto del sistema}.
+  \end{tcolorbox}
+  \vspace{6pt}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\faCut\enspace Táctica 1: Dividir Módulo}
+        Cada funcionalidad tiene responsabilidad única e independiente:
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item Chat $\neq$ Solicitudes de donación
+          \item Registro $\neq$ Gestión de perfiles
+          \item Campañas $\neq$ Historial de donaciones
+          \item Notificaciones $\neq$ Búsqueda de donantes
+        \end{itemize}
+        \redtext{Resultado:} eliminar chat no rompe ninguna otra función.
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{\faBox\enspace Táctica 2: Encapsular}
+        Cada módulo expone solo su API, ocultando implementación interna:
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item Chat: enviar, bloquear, cerrar conversación
+          \item Notificaciones: enviar alerta, marcar leída
+          \item Compatibilidad: validar grupo sanguíneo
+          \item Campañas: publicar, actualizar, cerrar jornada
+        \end{itemize}
+        \redtext{Resultado:} cambios internos no se propagan.
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 11 – USABILIDAD
+% ──────────────────────────────────────────────────────
+\begin{frame}{Atributo de Calidad \#3}{\tagbadge{Usabilidad}}
+  \begin{tcolorbox}[graybox]
+    \small\textbf{Caso:} Un donante confirma su intención de donar y luego desea \redtext{revertir esa decisión} por un error o cambio de disponibilidad.
+  \end{tcolorbox}
+  \vspace{6pt}
+  \begin{columns}[T]
+    \begin{column}{0.31\textwidth}
+      \begin{block}{\faUndo\enspace Undo (Deshacer)}
+        El sistema conserva el estado anterior. El donante puede revertir \textbf{con advertencia}, sin inconsistencias. Restricción parcial para no afectar coordinación médica.
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{\faChartBar\enspace Modelo del Sistema}
+        Retroalimentación constante:
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item ``23 donantes notificados''
+          \item ``2 de 4 confirmados''
+          \item Progreso en registro (3 pasos)
+          \item Cupos disponibles en campañas
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.31\textwidth}
+      \begin{block}{\faPuzzlePiece\enspace Modelo de Tarea}
+        La app adapta la interfaz al contexto:
+        \begin{itemize}\setlength\itemsep{2pt}
+          \item Donante \faArrowRight{} checklist salud
+          \item Solicitante \faArrowRight{} campos urgentes primero
+          \item Profesional \faArrowRight{} cupos + horario
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ──────────────────────────────────────────────────────
+%  DIAPOSITIVA 12 – CONCLUSIONES
+% ──────────────────────────────────────────────────────
+{
+\setbeamertemplate{footline}{}
+\begin{frame}[plain]{Conclusiones}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[bloodred, opacity=.10]
+      ([xshift=3cm]current page.east) circle (7cm);
+    \fill[blooddk, opacity=.08]
+      ([xshift=-3cm, yshift=-3cm]current page.south west) circle (5cm);
+  \end{tikzpicture}
+
+  \vspace{6pt}
+  \begin{columns}[T]
+    \begin{column}{0.60\textwidth}
+      {\large\bfseries\color{bloodlt}!Blood}\greytext{ — Tecnología que Salva Vidas}
+      \vspace{8pt}
+
+      \begin{itemize}\setlength\itemsep{7pt}
+        \item[\color{bloodred}\faDroplet]
+          \textbf{Centraliza} la donación de sangre en Popayán y el Cauca
+        \item[\color{bloodred}\faMapMarkerAlt]
+          Matching \textbf{inteligente} por tipo de sangre y proximidad
+        \item[\color{bloodred}\faShieldAlt]
+          Entorno \textbf{seguro, moderado y verificado}
+        \item[\color{bloodred}\faRecycle]
+          Sistema \textbf{resiliente} (Disponibilidad) y \textbf{adaptable} (Modificabilidad)
+        \item[\color{bloodred}\faStar]
+          Diseñado desde la \textbf{usabilidad real} validada con usuarios
+      \end{itemize}
+
+      \vspace{10pt}
+      \begin{tcolorbox}[graybox]
+        Una solución móvil que \textbf{reduce barreras de acceso}, incrementa la donación voluntaria y contribuye a \redtext{\textbf{salvar vidas}}.
+      \end{tcolorbox}
+    \end{column}
+    \begin{column}{0.36\textwidth}
+      \centering
+      \vspace{0.6cm}
+      \begin{tikzpicture}
+        \fill[top color=bloodlt, bottom color=blooddk,
+              drop shadow={opacity=.7, shadow xshift=4pt, shadow yshift=-6pt}]
+          (0,3.5) .. controls (-1.9,1.2) and (-2.4,-1.0) ..
+          (0,-2.4) .. controls (2.4,-1.0) and (1.9,1.2) ..
+          (0,3.5);
+        \fill[white, opacity=.2]
+          (-0.6,0.6) .. controls (-1.2,0.15) and (-1.1,-0.4) ..
+          (-0.5,-0.65) .. controls (-0.1,-0.85) and (0.15,-0.6) ..
+          (-0.6,0.6);
+        \node[white, font=\bfseries\Large] at (0,-0.1) {!Blood};
+        \node[white, font=\scriptsize\itshape] at (0,-0.8) {``Dona vida,};
+        \node[white, font=\scriptsize\itshape] at (0,-1.2) {recibe vida''};
+      \end{tikzpicture}
+
+      \vspace{8pt}
+      {\small\color{warmgray}\itshape Ana María Campo Agredo\\
+      Universidad del Cauca · 2026}
+    \end{column}
+  \end{columns}
+\end{frame}
+}
+
+% ════════════════════════════════════════════════════════
+\end{document}
+% ════════════════════════════════════════════════════════

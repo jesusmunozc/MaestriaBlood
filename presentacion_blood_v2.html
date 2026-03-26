@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>!Blood — Presentación</title>
+<style>
+/* ─── GOOGLE FONTS ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ─── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0a0f; }
+
+/* ─── VARIABLES ─────────────────────────────────────────── */
+:root {
+  --r1: #FF2D20; --r2: #FF6B6B; --r3: #FFB3B3;
+  --p1: #7C3AED; --p2: #A78BFA;
+  --o1: #F97316; --o2: #FDBA74;
+  --bg:  #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a28;
+  --card: rgba(255,255,255,0.04);
+  --cardB: rgba(255,255,255,0.08);
+  --w:   #ffffff;
+  --w70: rgba(255,255,255,0.70);
+  --w40: rgba(255,255,255,0.40);
+  --w15: rgba(255,255,255,0.15);
+  --w06: rgba(255,255,255,0.06);
+  --font: 'Inter', sans-serif;
+  --font2: 'Space Grotesk', sans-serif;
+}
+
+/* ─── DECK ──────────────────────────────────────────────── */
+#deck { width:100vw; height:100vh; position:relative; overflow:hidden; font-family:var(--font); }
+
+.slide {
+  position: absolute; inset: 0;
+  display: none;
+  background: var(--bg);
+  color: var(--w);
+  overflow: hidden;
+}
+.slide.active { display: flex; }
+
+/* ─── PROGRESS + COUNTER ────────────────────────────────── */
+#bar {
+  position: fixed; top:0; left:0; height:3px; z-index:1000;
+  background: linear-gradient(90deg, var(--r1), var(--r2), var(--p1));
+  transition: width .4s cubic-bezier(.4,0,.2,1);
+}
+#counter {
+  position: fixed; top:16px; right:20px; z-index:1000;
+  font-size: 12px; font-weight:600; color: var(--w40);
+  letter-spacing:.05em;
+}
+
+/* ─── NAV DOTS ───────────────────────────────────────────── */
+#dots {
+  position: fixed; bottom:24px; left:50%; transform:translateX(-50%);
+  display: flex; gap:6px; z-index:1000; align-items:center;
+}
+.dot {
+  width:7px; height:7px; border-radius:50%;
+  background: var(--w15); cursor:pointer;
+  transition: all .3s ease;
+}
+.dot.on { background:var(--r1); width:22px; border-radius:4px; }
+
+/* ─── ARROW BTNS ─────────────────────────────────────────── */
+.arr {
+  position: fixed; top:50%; transform:translateY(-50%);
+  z-index:1000; background:var(--w06); border: 1px solid var(--w15);
+  color:var(--w); width:44px; height:44px; border-radius:50%;
+  cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center;
+  transition: background .2s, border-color .2s;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.arr:hover { background: rgba(255,45,32,.25); border-color: var(--r1); }
+#prev { left:20px; }
+#next { right:20px; }
+
+/* ─── SHARED LAYOUT ─────────────────────────────────────── */
+.inner {
+  width:100%; max-width:1180px; margin:0 auto;
+  padding: 40px 60px 60px;
+  z-index:2; position:relative;
+  display:flex; flex-direction:column;
+  justify-content:center; height:100%;
+}
+
+/* ─── SLIDE LABELS ───────────────────────────────────────── */
+.eyebrow {
+  display: inline-flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:700; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--r2);
+  background: rgba(255,45,32,.12);
+  border: 1px solid rgba(255,45,32,.25);
+  padding: 5px 12px; border-radius:20px;
+  margin-bottom:16px; width:fit-content;
+}
+.eyebrow .dot-red {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--r1); flex-shrink:0;
+  box-shadow: 0 0 6px var(--r1);
+}
+
+/* ─── HEADINGS ───────────────────────────────────────────── */
+.h1 {
+  font-family: var(--font2);
+  font-size: clamp(2rem, 5vw, 3.8rem);
+  font-weight:800; line-height:1.05; letter-spacing:-.03em;
+  color: var(--w);
+}
+.h2 {
+  font-family: var(--font2);
+  font-size: clamp(1.5rem, 3.5vw, 2.6rem);
+  font-weight:800; line-height:1.1; letter-spacing:-.02em;
+}
+.h3 { font-size:1.1rem; font-weight:700; }
+.lead {
+  font-size:clamp(.9rem, 1.6vw, 1.05rem);
+  color:var(--w70); line-height:1.75; max-width:620px;
+}
+
+/* Gradient text */
+.grad { background: linear-gradient(135deg, var(--r2), var(--r1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.grad-p { background: linear-gradient(135deg, var(--p2), var(--p1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+/* ─── CARDS ──────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--w15);
+  border-radius:16px; padding:20px 22px;
+  transition: border-color .25s, background .25s;
+  position:relative; overflow:hidden;
+}
+.card:hover { background:var(--cardB); border-color:rgba(255,45,32,.4); }
+.card::after {
+  content:''; position:absolute;
+  inset:0; border-radius:16px;
+  background: radial-gradient(circle at 30% 20%, rgba(255,45,32,.08), transparent 60%);
+  pointer-events:none;
+}
+.card-accent { border-color: rgba(255,45,32,.35); }
+
+/* ─── GRID HELPERS ───────────────────────────────────────── */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+.g3-2 { display:grid; grid-template-columns:3fr 2fr; gap:32px; align-items:center; }
+.g2-3 { display:grid; grid-template-columns:2fr 3fr; gap:32px; align-items:center; }
+
+/* ─── STAT NUMBERS ───────────────────────────────────────── */
+.bignum {
+  font-family:var(--font2); font-size:clamp(2.6rem,5vw,4.2rem);
+  font-weight:900; line-height:1;
+  background:linear-gradient(135deg, var(--r2) 0%, var(--r1) 60%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.num-label { font-size:.78rem; color:var(--w40); margin-top:6px; line-height:1.4; }
+
+/* ─── TAG PILL ───────────────────────────────────────────── */
+.pill {
+  display:inline-block;
+  background: rgba(255,255,255,.07);
+  border:1px solid var(--w15); border-radius:8px;
+  padding:4px 10px; font-size:.75rem; color:var(--w70);
+  font-weight:500;
+}
+.pill-red { background:rgba(255,45,32,.12); border-color:rgba(255,45,32,.3); color:var(--r2); }
+.pill-purple { background:rgba(124,58,237,.15); border-color:rgba(124,58,237,.3); color:var(--p2); }
+
+/* ─── HIGHLIGHT QUOTE ────────────────────────────────────── */
+.quote {
+  border-left:3px solid var(--r1);
+  padding: 12px 18px;
+  background: rgba(255,45,32,.06);
+  border-radius:0 10px 10px 0;
+  font-size:.9rem; color:var(--w70); line-height:1.7;
+  font-style:italic;
+}
+
+/* ─── ICON CIRCLES ───────────────────────────────────────── */
+.icon-circle {
+  width:46px; height:46px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; flex-shrink:0;
+  background: rgba(255,45,32,.12);
+  border:1px solid rgba(255,45,32,.2);
+}
+
+/* ─── DIVIDER ────────────────────────────────────────────── */
+.divider {
+  width:48px; height:3px;
+  background:linear-gradient(90deg, var(--r1), transparent);
+  border-radius:2px; margin: 12px 0 20px;
+}
+
+/* ─── TACTIC BOX ─────────────────────────────────────────── */
+.tactic {
+  background: linear-gradient(135deg, rgba(255,45,32,.1) 0%, rgba(255,45,32,.03) 100%);
+  border:1px solid rgba(255,45,32,.25);
+  border-radius:16px; padding:22px 24px;
+}
+.tactic-label { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--r2); margin-bottom:4px; }
+.tactic-name { font-family:var(--font2); font-size:1.25rem; font-weight:800; margin-bottom:10px; }
+.tactic-body { font-size:.83rem; color:var(--w70); line-height:1.6; }
+
+/* ─── PROFILE CARD ───────────────────────────────────────── */
+.profile {
+  border-radius:20px; padding:26px 22px;
+  display:flex; flex-direction:column; gap:10px;
+  border:1px solid var(--w15);
+  background: var(--card);
+  position:relative; overflow:hidden;
+}
+.profile-top { display:flex; align-items:center; gap:12px; }
+.p-avatar {
+  width:52px; height:52px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.5rem; flex-shrink:0;
+}
+.av1 { background:rgba(255,45,32,.18); }
+.av2 { background:rgba(249,115,22,.15); }
+.av3 { background:rgba(124,58,237,.15); }
+.p-name { font-weight:700; font-size:1rem; }
+.p-sub  { font-size:.75rem; color:var(--w40); }
+.p-body { font-size:.81rem; color:var(--w70); line-height:1.55; }
+
+/* ─── TABLE ──────────────────────────────────────────────── */
+.t-wrap { overflow:hidden; border-radius:14px; border:1px solid var(--w15); }
+table { width:100%; border-collapse:collapse; font-size:.78rem; }
+thead tr { background:rgba(255,45,32,.2); }
+th { padding:10px 14px; text-align:left; font-weight:700; color:var(--w); font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; }
+td { padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.05); color:var(--w70); vertical-align:top; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(255,255,255,.02); }
+.td-cat { color:var(--r2); font-weight:700; }
+
+/* ─── DECORATIVE MESH ────────────────────────────────────── */
+.mesh {
+  position:absolute; pointer-events:none; z-index:0;
+  border-radius:50%; filter:blur(80px); opacity:.12;
+}
+
+/* ─── GLOW RING ──────────────────────────────────────────── */
+.glow {
+  position:absolute; border-radius:50%; pointer-events:none; z-index:0;
+  border:1px solid rgba(255,45,32,.25);
+}
+
+/* ─── LIST ITEMS STYLED ──────────────────────────────────── */
+ul.styled { list-style:none; display:flex; flex-direction:column; gap:8px; }
+ul.styled li {
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:.85rem; color:var(--w70); line-height:1.5;
+}
+ul.styled li::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--r1); flex-shrink:0; margin-top:6px;
+  box-shadow:0 0 6px var(--r1);
+}
+
+/* ─── ROW WITH ICON ──────────────────────────────────────── */
+.row-item { display:flex; align-items:center; gap:12px; padding:10px 14px; border-radius:10px; background:var(--w06); border:1px solid var(--w15); }
+.row-item .emoji { font-size:1.15rem; flex-shrink:0; }
+.row-item .ri-text { flex:1; }
+.row-item .ri-title { font-size:.85rem; font-weight:600; }
+.row-item .ri-sub { font-size:.73rem; color:var(--w40); margin-top:1px; }
+
+/* ══════════════════════════════════════════════════
+   SLIDE 1 — PORTADA
+══════════════════════════════════════════════════ */
+#s1 {
+  background: linear-gradient(135deg, #0a0a0f 0%, #130a0a 50%, #0a0a0f 100%);
+  flex-direction:row;
+}
+#s1 .mesh.m1 { width:700px; height:700px; background:var(--r1); top:-200px; right:-200px; }
+#s1 .mesh.m2 { width:400px; height:400px; background:var(--p1); bottom:-150px; left:-150px; }
+#s1 .glow.g1 { width:320px; height:320px; right:10%; top:10%; }
+#s1 .glow.g2 { width:500px; height:500px; right:5%; top:5%; opacity:.5; }
+
+#s1 .left {
+  flex:1; display:flex; flex-direction:column; justify-content:center;
+  padding:60px 50px 60px 80px; z-index:2;
+}
+#s1 .right {
+  width:42%; display:flex; align-items:center; justify-content:center;
+  z-index:2; position:relative;
+}
+
+/* Blood drop in center */
+.drop-container {
+  position:relative; display:flex; align-items:center; justify-content:center;
+}
+.drop-svg-big { filter:drop-shadow(0 0 40px rgba(255,45,32,.7)); animation: float 4s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+
+.brand-name {
+  font-family:var(--font2); font-size:clamp(3.5rem,8vw,7rem); font-weight:900;
+  letter-spacing:-.05em; line-height:1;
+  background:linear-gradient(135deg, #FF6B6B 0%, #FF2D20 40%, #C51010 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  margin-bottom:6px;
+}
+.brand-tagline { font-size:1.1rem; color:var(--w70); font-style:italic; letter-spacing:.02em; margin-bottom:28px; }
+
+/* ══════════════════════════════════════════════════
+   SLIDE 2 — CONTEXTO
+══════════════════════════════════════════════════ */
+#s2 .mesh.m1 { width:500px; height:500px; background:var(--r1); top:-200px; right:-150px; }
+
+/* ══════════════════════════════════════════════════
+   SLIDE 6 — PERFILES (horizontal scroll feel)
+══════════════════════════════════════════════════ */
+.profile.p-red::before    { content:''; position:absolute; inset:0; background:radial-gradient(circle at top left, rgba(255,45,32,.1), transparent 60%); }
+.profile.p-orange::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at top left, rgba(249,115,22,.08), transparent 60%); }
+.profile.p-purple::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at top left, rgba(124,58,237,.08), transparent 60%); }
+
+/* ══════════════════════════════════════════════════
+   SLIDE CONCLUSION — special
+══════════════════════════════════════════════════ */
+#s11 {
+  background: linear-gradient(135deg, #0a0a0f 0%, #130a0a 60%, #0d0a14 100%);
+}
+#s11 .mesh.m1 { width:600px; height:600px; background:var(--r1); bottom:-200px; right:-150px; }
+#s11 .mesh.m2 { width:350px; height:350px; background:var(--p1); top:-100px; left:-100px; }
+
+/* ─── CIRCLE CONCLUSIONS ─────────────────────────────────── */
+.concl-row { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; }
+.concl {
+  background:var(--card); border:1px solid var(--w15);
+  border-radius:16px; padding:16px 14px;
+  display:flex; align-items:center; gap:12px;
+  width:220px;
+}
+.concl-icon { font-size:1.6rem; flex-shrink:0; }
+.concl-text { font-size:.8rem; font-weight:600; color:var(--w70); line-height:1.4; }
+
+/* ─── AVAILABILITY SCENARIO ──────────────────────────────── */
+.scenario {
+  background:rgba(255,45,32,.06);
+  border:1px solid rgba(255,45,32,.2);
+  border-radius:12px; padding:14px 18px;
+  font-size:.84rem; color:var(--w70); line-height:1.65;
+  margin-bottom:16px;
+}
+.scenario strong { color:var(--r2); }
+
+/* ─── MODULE GRID ────────────────────────────────────────── */
+.mod-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.mod {
+  background:var(--w06); border:1px solid var(--w15);
+  border-radius:12px; padding:12px 14px;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.mod-em { font-size:1.2rem; flex-shrink:0; margin-top:1px; }
+.mod-t { font-size:.82rem; font-weight:600; }
+.mod-s { font-size:.72rem; color:var(--w40); margin-top:2px; line-height:1.35; }
+
+/* ─── USABILITY TABLE ROW COLOR ──────────────────────────── */
+.row-alt td { background:rgba(255,255,255,.015); }
+
+/* ─── BACK TO HUB ────────────────────────────────────────── */
+#backBtn {
+  position:fixed; top:14px; left:20px; z-index:1000;
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:8px; padding:6px 13px;
+  color:rgba(255,255,255,.55); font-size:11px; font-weight:600;
+  text-decoration:none; letter-spacing:.04em;
+  backdrop-filter:blur(12px); font-family:var(--font);
+  transition:background .2s, border-color .2s, color .2s;
+}
+#backBtn:hover { background:rgba(255,45,32,.22); border-color:var(--r1); color:#fff; }
+
+/* ─── FULLSCREEN BUTTON ──────────────────────────────────── */
+#fsBtn {
+  position:fixed; top:14px; left:110px; z-index:1000;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:8px; padding:6px 13px;
+  color:rgba(255,255,255,.55); font-size:11px; font-weight:600;
+  cursor:pointer; display:flex; align-items:center; gap:7px;
+  backdrop-filter:blur(12px); letter-spacing:.04em;
+  font-family:var(--font);
+  transition:background .2s, border-color .2s, color .2s;
+}
+#fsBtn:hover { background:rgba(255,45,32,.22); border-color:var(--r1); color:#fff; }
+
+/* ─── HISTORIAS ÉPICAS ───────────────────────────────────── */
+.he-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:9px;
+  margin-top:4px;
+}
+.he-card {
+  background:var(--w06); border:1px solid var(--w15);
+  border-radius:10px; padding:10px 13px;
+  transition:border-color .25s, background .25s;
+}
+.he-card:hover { border-color:rgba(255,45,32,.4); background:var(--cardB); }
+.he-id {
+  display:inline-block; font-size:.62rem; font-weight:800;
+  letter-spacing:.08em; color:var(--r2); text-transform:uppercase;
+  background:rgba(255,45,32,.12); border:1px solid rgba(255,45,32,.2);
+  border-radius:4px; padding:1px 6px; margin-bottom:5px;
+}
+.he-title { font-size:.8rem; font-weight:700; line-height:1.3; margin-bottom:3px; }
+.he-desc  { font-size:.67rem; color:var(--w40); line-height:1.45; }
+
+/* ─── REFERENCES SLIDE ──────────────────────────────────── */
+.ref-item {
+  display:flex; gap:16px; background:var(--w06);
+  border:1px solid var(--w15); border-radius:13px;
+  padding:14px 20px; align-items:flex-start;
+}
+.ref-num {
+  font-family:var(--font2); font-weight:900; font-size:1.5rem;
+  line-height:1; color:var(--r1); flex-shrink:0; min-width:26px;
+}
+.ref-body { font-size:.81rem; color:var(--w70); line-height:1.65; }
+.ref-body strong { color:var(--w); }
+.ref-body a { color:var(--r2); text-decoration:none; font-size:.74rem; }
+.ref-body a:hover { text-decoration:underline; }
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+<div id="counter"></div>
+<button class="arr" id="prev">&#8592;</button>
+<button class="arr" id="next">&#8594;</button>
+<div id="dots"></div>
+
+<!-- BACK TO HUB -->
+<a href="index.html" id="backBtn">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  Inicio
+</a>
+
+<!-- FULLSCREEN BUTTON -->
+<button id="fsBtn" onclick="toggleFS()">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+  </svg>
+  Pantalla completa
+</button>
+
+<div id="deck">
+
+<!-- ══════════ SLIDE 1 — PORTADA ══════════ -->
+<div class="slide active" id="s1">
+  <div class="mesh m1"></div>
+  <div class="mesh m2"></div>
+  <div class="glow g1"></div>
+  <div class="glow g2"></div>
+
+  <!-- Left -->
+  <div class="left">
+    <div class="eyebrow"><span class="dot-red"></span>Aplicación Móvil · Donación de Sangre · 2026</div>
+    <div class="brand-name">!Blood</div>
+    <div class="brand-tagline">"Dona vida, recibe vida"</div>
+
+    <p class="lead">
+      Plataforma móvil que conecta donantes y pacientes con base en <strong style="color:#fff">compatibilidad sanguínea</strong> y <strong style="color:#fff">cercanía geográfica</strong> — diseñada para Popayán, Colombia.
+    </p>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:24px">
+      <span class="pill pill-red">🩸 Tipo de sangre</span>
+      <span class="pill pill-red">📍 Geolocalización</span>
+      <span class="pill pill-purple">🔒 Verificado</span>
+      <span class="pill">🏥 Universidad del Cauca</span>
+    </div>
+
+    <div style="margin-top:32px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:.8rem;color:var(--w40)">Presentado por</div>
+      <div style="font-weight:700;font-size:1rem;margin-top:4px">Ana María Campo Agredo</div>
+      <div style="font-size:.8rem;color:var(--w40);margin-top:2px">Facultad de Ciencias Naturales, Exactas y de la Educación — Dpto. de Física</div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="right">
+    <div class="drop-container">
+      <svg class="drop-svg-big" width="260" height="320" viewBox="0 0 90 110" fill="none">
+        <defs>
+          <linearGradient id="dg1" x1="45" y1="5" x2="45" y2="105" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#FF6B6B"/>
+            <stop offset="60%" stop-color="#FF2D20"/>
+            <stop offset="100%" stop-color="#8B0000"/>
+          </linearGradient>
+          <filter id="glow1">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <path d="M45 5 C45 5 8 50 8 72 C8 92 25 105 45 105 C65 105 82 92 82 72 C82 50 45 5 45 5Z"
+              fill="url(#dg1)" filter="url(#glow1)"/>
+        <path d="M28 80 C26 69 33 60 45 60 C57 60 64 69 62 80"
+              stroke="rgba(255,255,255,.25)" stroke-width="3" stroke-linecap="round" fill="none"/>
+        <text x="45" y="95" text-anchor="middle" fill="rgba(255,255,255,.6)" font-size="7" font-family="Inter" font-weight="700">!BLOOD</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 2 — CONTEXTO ══════════ -->
+<div class="slide" id="s2">
+  <div class="mesh m1"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>El Problema</div>
+    <h2 class="h2">Crisis silenciosa en la<br><span class="grad">donación de sangre</span></h2>
+    <div class="divider"></div>
+
+    <div class="g3-2" style="margin-top:8px">
+      <div>
+        <p class="lead" style="margin-bottom:20px">
+          La donación de sangre es un pilar fundamental de los sistemas de salud. En el departamento del Cauca — especialmente en Popayán — la situación es crítica.
+        </p>
+        <div class="quote">
+          La dispersión geográfica y la ausencia de mecanismos ágiles impiden conectar donantes con quienes requieren transfusiones de forma urgente.
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+          <span class="pill pill-red">📍 Popayán, Cauca</span>
+          <span class="pill pill-red">🌎 América Latina</span>
+          <span class="pill">Fuente: OMS</span>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card card-accent" style="text-align:center;padding:24px">
+          <div class="bignum">10–20</div>
+          <div class="num-label">donaciones por cada 1.000 hab.<br>requeridas por la <strong style="color:#fff">OMS</strong></div>
+        </div>
+        <div class="card" style="text-align:center;padding:24px">
+          <div class="bignum" style="background:linear-gradient(135deg,#fdba74,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">por debajo</div>
+          <div class="num-label">Colombia y el Cauca están<br>significativamente bajo el umbral</div>
+        </div>
+        <div class="card" style="text-align:center;padding:24px">
+          <div class="bignum" style="background:linear-gradient(135deg,#a78bfa,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">0</div>
+          <div class="num-label">canales unificados<br>de convocatoria oficial</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 3 — PROBLEMAS ══════════ -->
+<div class="slide" id="s3">
+  <div class="mesh" style="width:400px;height:400px;background:var(--r1);top:-150px;right:-100px;opacity:.1;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Problemática</div>
+    <h2 class="h2">6 Causas raíz identificadas</h2>
+    <div class="divider"></div>
+
+    <div class="g3" style="margin-top:4px">
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="icon-circle">📡</div>
+          <div class="h3">Información dispersa</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--w70);line-height:1.55">Sin canal unificado: convocatorias en redes sociales y volantes sin fuente oficial ni actualizada.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="icon-circle">🔗</div>
+          <div class="h3">Oferta sin demanda</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--w70);line-height:1.55">Cadenas de WhatsApp sin filtro por tipo de sangre ni cercanía. Tiempos de respuesta lentos.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="icon-circle">🧠</div>
+          <div class="h3">Mitos y desinformación</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--w70);line-height:1.55">Creencias falsas disuaden donantes potenciales que, con información correcta, sí donarían.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="icon-circle">🔔</div>
+          <div class="h3">Sin seguimiento</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--w70);line-height:1.55">El donante no recibe retroalimentación, no tiene historial accesible ni recordatorios de recurrencia.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="icon-circle">🏥</div>
+          <div class="h3">Sin herramientas Pro</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--w70);line-height:1.55">Los centros de salud no tienen medio digital para publicar campañas ni gestionar cupos de forma estándar.</p>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div class="icon-circle">🔒</div>
+          <div class="h3">Comunicación insegura</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--w70);line-height:1.55">Los canales informales no garantizan privacidad ni limitan las interacciones a fines de donación.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 4 — LA SOLUCIÓN ══════════ -->
+<div class="slide" id="s4">
+  <div class="mesh" style="width:600px;height:600px;background:var(--r1);top:-200px;right:-200px;opacity:.09;"></div>
+  <div class="mesh" style="width:300px;height:300px;background:var(--p1);bottom:-100px;left:-80px;opacity:.1;"></div>
+  <div class="inner">
+    <div class="g3-2" style="gap:60px">
+      <div>
+        <div class="eyebrow"><span class="dot-red"></span>La Solución</div>
+        <div class="h2" style="margin-bottom:6px"><span class="grad">!Blood</span></div>
+        <div style="font-size:1.15rem;color:var(--w70);margin-bottom:16px">Aplicación Móvil de Donación de Sangre</div>
+        <div class="divider"></div>
+        <p class="lead" style="max-width:100%;margin-bottom:24px">
+          Centraliza solicitudes, campañas y comunicación entre usuarios, priorizando la <strong style="color:#fff">compatibilidad por tipo de sangre</strong> y la <strong style="color:#fff">cercanía geográfica</strong> para facilitar respuestas oportunas.
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="row-item">
+            <span class="emoji">👥</span>
+            <div class="ri-text">
+              <div class="ri-title">2 perfiles diferenciados</div>
+              <div class="ri-sub">Ciudadano y Profesional de Salud — funcionalidades propias</div>
+            </div>
+          </div>
+          <div class="row-item">
+            <span class="emoji">📍</span>
+            <div class="ri-text">
+              <div class="ri-title">Conexión inteligente</div>
+              <div class="ri-sub">Matching por grupo sanguíneo + geolocalización en tiempo real</div>
+            </div>
+          </div>
+          <div class="row-item">
+            <span class="emoji">🛡️</span>
+            <div class="ri-text">
+              <div class="ri-title">Entorno seguro y moderado</div>
+              <div class="ri-sub">Verificación de identidad, privacidad de datos, moderación activa</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:center">
+        <svg style="filter:drop-shadow(0 0 50px rgba(255,45,32,.6));animation:float 4s ease-in-out infinite" width="220" height="270" viewBox="0 0 90 110" fill="none">
+          <defs>
+            <linearGradient id="dg2" x1="45" y1="5" x2="45" y2="105" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#FF6B6B"/>
+              <stop offset="60%" stop-color="#FF2D20"/>
+              <stop offset="100%" stop-color="#7B0000"/>
+            </linearGradient>
+          </defs>
+          <path d="M45 5 C45 5 8 50 8 72 C8 92 25 105 45 105 C65 105 82 92 82 72 C82 50 45 5 45 5Z" fill="url(#dg2)"/>
+          <path d="M28 80 C26 69 33 60 45 60 C57 60 64 69 62 80" stroke="rgba(255,255,255,.3)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <text x="45" y="97" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="7" font-family="Inter" font-weight="700">!BLOOD</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 5 — MÓDULOS ══════════ -->
+<div class="slide" id="s5">
+  <div class="mesh" style="width:450px;height:450px;background:var(--r1);top:-150px;left:-100px;opacity:.08;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Funcionalidades</div>
+    <h2 class="h2">Módulos <span class="grad">principales</span> de la app</h2>
+    <div class="divider"></div>
+
+    <div class="mod-grid" style="margin-top:8px">
+      <div class="mod"><span class="mod-em">🩸</span><div><div class="mod-t">Splash & Onboarding</div><div class="mod-s">Primera experiencia + eslogan de comunidad</div></div></div>
+      <div class="mod"><span class="mod-em">🔐</span><div><div class="mod-t">Login & Registro</div><div class="mod-s">3 pasos + verificación de identidad + foto en vivo</div></div></div>
+      <div class="mod"><span class="mod-em">📋</span><div><div class="mod-t">Encuesta de Aptitud</div><div class="mod-s">Filtro automático de requisitos mínimos para donar</div></div></div>
+      <div class="mod"><span class="mod-em">🚨</span><div><div class="mod-t">Solicitudes Urgentes</div><div class="mod-s">Publicación y notificación de casos críticos</div></div></div>
+      <div class="mod"><span class="mod-em">📅</span><div><div class="mod-t">Campañas de Donación</div><div class="mod-s">Creación y gestión por profesionales de salud</div></div></div>
+      <div class="mod"><span class="mod-em">📍</span><div><div class="mod-t">Geolocalización</div><div class="mod-s">Matching por tipo + proximidad en tiempo real</div></div></div>
+      <div class="mod"><span class="mod-em">📊</span><div><div class="mod-t">Historial Personal</div><div class="mod-s">Seguimiento + recordatorios automáticos</div></div></div>
+      <div class="mod"><span class="mod-em">🔔</span><div><div class="mod-t">Notificaciones Push</div><div class="mod-s">Alertas de compatibilidad y campañas cercanas</div></div></div>
+      <div class="mod"><span class="mod-em">🏆</span><div><div class="mod-t">Gamificación</div><div class="mod-s">Insignias, rachas y recompensas por donación</div></div></div>
+    </div>
+
+    <div class="quote" style="margin-top:14px;font-size:.82rem">
+      El registro incluye <strong style="color:#fff">foto en vivo</strong> (anti-duplicados por reconocimiento facial), carga de documento de identidad y geolocalización automática de dirección.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 6 — PERFILES ══════════ -->
+<div class="slide" id="s6">
+  <div class="mesh" style="width:500px;height:500px;background:var(--p1);bottom:-200px;right:-150px;opacity:.08;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Usuario</div>
+    <h2 class="h2">3 Perfiles de <span class="grad">Usuario</span></h2>
+    <div class="divider"></div>
+
+    <div class="g3" style="margin-top:8px;gap:18px">
+      <!-- Donante -->
+      <div class="profile p-red">
+        <div class="profile-top">
+          <div class="p-avatar av1">🫀</div>
+          <div>
+            <div class="p-name">Donante Potencial</div>
+            <div class="p-sub">18–65 años · Popayán · Peso &gt;50 kg</div>
+          </div>
+        </div>
+        <span class="pill pill-red">Ciudadano</span>
+        <p class="p-body">Quiere ayudar donando sangre. Necesita claridad sobre requisitos, dónde donar y recordatorios automáticos.</p>
+        <ul class="styled">
+          <li>Hombre: puede donar cada 3 meses</li>
+          <li>Mujer: puede donar cada 6 meses</li>
+          <li>Necesita cuestionario privado y respetuoso</li>
+        </ul>
+      </div>
+
+      <!-- Solicitante -->
+      <div class="profile p-orange">
+        <div class="profile-top">
+          <div class="p-avatar av2">🆘</div>
+          <div>
+            <div class="p-name">Solicitante de Sangre</div>
+            <div class="p-sub">Familiar o cuidador de paciente</div>
+          </div>
+        </div>
+        <span class="pill" style="background:rgba(249,115,22,.12);border-color:rgba(249,115,22,.3);color:#fdba74;">Ciudadano</span>
+        <p class="p-body">Necesita donantes compatibles y cercanos urgentemente. El proceso debe ser <strong style="color:#fff">extremadamente rápido e intuitivo</strong>.</p>
+        <ul class="styled">
+          <li>Capacidad de atención reducida en emergencia</li>
+          <li>No puede filtrar por tipo de sangre en WhatsApp</li>
+          <li>Necesita retroalimentación constante del estado</li>
+        </ul>
+      </div>
+
+      <!-- Profesional -->
+      <div class="profile p-purple">
+        <div class="profile-top">
+          <div class="p-avatar av3">🏥</div>
+          <div>
+            <div class="p-name">Profesional de Salud</div>
+            <div class="p-sub">Hospital · Clínica · Banco de Sangre</div>
+          </div>
+        </div>
+        <span class="pill pill-purple">Profesional</span>
+        <p class="p-body">Crea campañas institucionales, gestiona cupos y comunica requisitos de forma estandarizada.</p>
+        <ul class="styled">
+          <li>Cuenta verificada y contenido oficial</li>
+          <li>Planifica desde su lugar de trabajo</li>
+          <li>Valora formalidad y respaldo institucional</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 7 — USABILIDAD ══════════ -->
+<div class="slide" id="s7">
+  <div class="mesh" style="width:400px;height:400px;background:var(--r1);top:-120px;left:-100px;opacity:.08;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Evaluación</div>
+    <h2 class="h2">Prueba de Usabilidad — <span class="grad">Thinking Aloud</span></h2>
+    <div class="divider"></div>
+
+    <div class="g2-3" style="margin-top:6px;gap:28px">
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card card-accent" style="text-align:center;padding:22px">
+          <div class="bignum">4</div>
+          <div class="num-label">Participantes<br>Estudiantes Ing. Física</div>
+        </div>
+        <div class="card" style="text-align:center;padding:22px">
+          <div class="bignum">12</div>
+          <div class="num-label">Hallazgos<br>clave identificados</div>
+        </div>
+        <div class="quote" style="font-size:.78rem">
+          Técnica: los participantes interactúan con la interfaz expresando en voz alta sus pensamientos, dudas y decisiones.
+        </div>
+      </div>
+
+      <div class="t-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Categoría</th>
+              <th>Hallazgo</th>
+              <th>Recomendación</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="td-cat">Registro</td><td>Demasiados datos al inicio</td><td>Simplificar el registro inicial</td></tr>
+            <tr class="row-alt"><td class="td-cat">Navegación</td><td>Botón "Donar" poco visible</td><td>Ubicar en zona destacada</td></tr>
+            <tr><td class="td-cat">Urgencia</td><td>No es claro cuándo es urgente</td><td>Apoyo con evidencia</td></tr>
+            <tr class="row-alt"><td class="td-cat">Motivación</td><td>No mantiene interés a largo plazo</td><td>Implementar gamificación</td></tr>
+            <tr><td class="td-cat">Reversión</td><td>No permite revertir decisión</td><td>Permitir con advertencia</td></tr>
+            <tr class="row-alt"><td class="td-cat">Identidad</td><td>Nombres "creativos" restan seriedad</td><td>Usar nombres reales</td></tr>
+            <tr><td class="td-cat">Visual</td><td>Logo no se aprovecha</td><td>Gota como elemento interactivo</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 8 — DISPONIBILIDAD ══════════ -->
+<div class="slide" id="s8">
+  <div class="mesh" style="width:500px;height:500px;background:var(--r1);top:-180px;right:-150px;opacity:.08;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Atributo de Calidad #1</div>
+    <h2 class="h2"><span class="grad">Disponibilidad</span> del Sistema</h2>
+    <div class="divider"></div>
+
+    <div class="scenario">
+      <strong>Caso crítico:</strong> El servidor de notificaciones o mensajería deja de responder durante una <strong>solicitud urgente de donación</strong>. El sistema debe detectar la falla y continuar prestando las funciones más críticas.
+    </div>
+
+    <div class="g2">
+      <div class="tactic">
+        <div class="tactic-label">Táctica 1</div>
+        <div class="tactic-name">💓 Heartbeat</div>
+        <div class="tactic-body">
+          Señales periódicas entre monitor y proceso supervisado. Detecta fallos en segundos en:
+        </div>
+        <ul class="styled" style="margin-top:10px">
+          <li>Servicio de notificaciones urgentes</li>
+          <li>Módulo de mensajería entre usuarios</li>
+          <li>Backend de solicitudes de sangre</li>
+          <li>Conexión con base de datos crítica</li>
+        </ul>
+      </div>
+      <div class="tactic">
+        <div class="tactic-label">Táctica 2</div>
+        <div class="tactic-name">⬇️ Degradation</div>
+        <div class="tactic-body">
+          Ante fallo, mantiene funciones críticas y suspende secundarias:
+        </div>
+        <ul class="styled" style="margin-top:10px">
+          <li>Falla chat → solicitudes siguen activas</li>
+          <li>Falla notificaciones → campañas visibles en app</li>
+          <li>Priorizar registro, autenticación, compatibilidad</li>
+          <li>Reportes estadísticos pueden suspenderse</li>
+        </ul>
+        <div style="margin-top:12px;font-size:.8rem;color:var(--r2);font-weight:600">
+          ✓ La plataforma conserva su propósito aun en condiciones adversas
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 9 — MODIFICABILIDAD ══════════ -->
+<div class="slide" id="s9">
+  <div class="mesh" style="width:400px;height:400px;background:var(--p1);bottom:-150px;left:-100px;opacity:.08;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Atributo de Calidad #2</div>
+    <h2 class="h2"><span class="grad">Modificabilidad</span> del Sistema</h2>
+    <div class="divider"></div>
+
+    <div class="scenario">
+      <strong>Caso:</strong> Se detecta uso inapropiado del chat en vivo — usuarios comparten teléfonos o promueven <strong>compra/venta de sangre</strong>. El equipo debe eliminar el módulo <strong>sin afectar el resto del sistema</strong>.
+    </div>
+
+    <div class="g2">
+      <div class="tactic">
+        <div class="tactic-label">Táctica 1</div>
+        <div class="tactic-name">✂️ Dividir Módulo</div>
+        <div class="tactic-body">Cada funcionalidad tiene responsabilidad única e independiente:</div>
+        <ul class="styled" style="margin-top:10px">
+          <li>Chat ≠ Solicitudes de donación</li>
+          <li>Registro ≠ Gestión de perfiles</li>
+          <li>Campañas ≠ Historial de donaciones</li>
+          <li>Notificaciones ≠ Búsqueda de donantes</li>
+        </ul>
+        <div style="margin-top:12px;font-size:.8rem;color:var(--r2);font-weight:600">
+          ✓ Eliminar chat no rompe ninguna otra función
+        </div>
+      </div>
+      <div class="tactic">
+        <div class="tactic-label">Táctica 2</div>
+        <div class="tactic-name">📦 Encapsular</div>
+        <div class="tactic-body">Cada módulo expone solo su API, ocultando la implementación interna:</div>
+        <ul class="styled" style="margin-top:10px">
+          <li>Chat: enviar, bloquear, cerrar conversación</li>
+          <li>Notificaciones: enviar alerta, marcar como leída</li>
+          <li>Compatibilidad: validar grupo sanguíneo</li>
+          <li>Campañas: publicar, actualizar, cerrar jornada</li>
+        </ul>
+        <div style="margin-top:12px;font-size:.8rem;color:var(--r2);font-weight:600">
+          ✓ Cambios internos no se propagan al exterior
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 10 — USABILIDAD (TÁCTICAS) ══════════ -->
+<div class="slide" id="s10">
+  <div class="mesh" style="width:400px;height:400px;background:var(--r1);top:-130px;right:-100px;opacity:.08;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Atributo de Calidad #3</div>
+    <h2 class="h2"><span class="grad">Usabilidad</span> del Sistema</h2>
+    <div class="divider"></div>
+
+    <div class="scenario">
+      <strong>Caso:</strong> Un donante confirma su intención de donar sangre y luego desea <strong>revertir esa decisión</strong> por un error o cambio de disponibilidad. El sistema debe permitirlo sin generar inconsistencias.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:12px">
+      <div class="tactic">
+        <div class="tactic-label">Táctica 1</div>
+        <div class="tactic-name">↩️ Undo</div>
+        <div class="tactic-body">El sistema conserva el estado anterior. El donante puede revertir con una advertencia clara, sin inconsistencias. Restricción parcial: no puede revertirse si ya hay coordinación médica activa.</div>
+      </div>
+      <div class="tactic">
+        <div class="tactic-label">Táctica 2</div>
+        <div class="tactic-name">📊 Modelo del Sistema</div>
+        <div class="tactic-body">Retroalimentación constante del estado:</div>
+        <ul class="styled" style="margin-top:10px">
+          <li>"23 donantes notificados"</li>
+          <li>"2 de 4 donantes confirmados"</li>
+          <li>Progreso en registro de 3 pasos</li>
+          <li>Cupos disponibles en campañas</li>
+        </ul>
+        <div style="margin-top:8px;font-size:.78rem;color:var(--r2)">✓ Reduce ansiedad y abandono</div>
+      </div>
+      <div class="tactic">
+        <div class="tactic-label">Táctica 3</div>
+        <div class="tactic-name">🧩 Modelo de Tarea</div>
+        <div class="tactic-body">La app adapta la interfaz al contexto del usuario:</div>
+        <ul class="styled" style="margin-top:10px">
+          <li>Donante → checklist de salud</li>
+          <li>Solicitante → campos urgentes primero</li>
+          <li>Profesional → cupos, horario, requisitos</li>
+        </ul>
+        <div style="margin-top:8px;font-size:.78rem;color:var(--r2)">✓ Interfaz adaptada por rol</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE: HISTORIAS ÉPICAS ══════════ -->
+<div class="slide" id="s-he">
+  <div class="mesh" style="width:500px;height:500px;background:var(--r1);top:-200px;right:-150px;opacity:.07;"></div>
+  <div class="mesh" style="width:300px;height:300px;background:var(--p1);bottom:-100px;left:-80px;opacity:.08;"></div>
+  <div class="inner" style="padding-top:28px;padding-bottom:46px">
+    <div class="eyebrow"><span class="dot-red"></span>Alcance del Sistema</div>
+    <h2 class="h2">12 Historias <span class="grad">Épicas</span></h2>
+    <div class="divider"></div>
+    <div class="he-grid">
+      <div class="he-card">
+        <div class="he-id">HE-01</div>
+        <div class="he-title">Gestión de Acceso</div>
+        <div class="he-desc">Registro en 3 pasos, login y recuperación de contraseña.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-02</div>
+        <div class="he-title">Gestión del Perfil</div>
+        <div class="he-desc">Info personal, tipo de sangre, estadísticas y configuración.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-03</div>
+        <div class="he-title">Solicitudes de Sangre</div>
+        <div class="he-desc">Crear, publicar y explorar solicitudes con filtros de compatibilidad.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-04</div>
+        <div class="he-title">Proceso de Donación</div>
+        <div class="he-desc">Checklist de salud, confirmación y penalización por cancelación.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-05</div>
+        <div class="he-title">Calificación Mutua</div>
+        <div class="he-desc">1–5 estrellas tras donación completada, con aviso de equidad.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-06</div>
+        <div class="he-title">Campañas de Donación</div>
+        <div class="he-desc">Profesionales de salud crean jornadas; ciudadanos reservan cupos.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-07</div>
+        <div class="he-title">Notificaciones</div>
+        <div class="he-desc">Urgencias compatibles, confirmaciones, recordatorios y logros.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-08</div>
+        <div class="he-title">Moderación y Seguridad</div>
+        <div class="he-desc">Verificación de identidad (doc. + selfie) y control de abuso.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-09</div>
+        <div class="he-title">Estadísticas y Gamificación</div>
+        <div class="he-desc">Insignias, ranking y mensajes motivacionales por donación recurrente.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-10</div>
+        <div class="he-title">Compatibilidad y Geolocalización</div>
+        <div class="he-desc">Matching por grupo sanguíneo y cálculo de distancia en tiempo real.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-11</div>
+        <div class="he-title">Sistema de Penalizaciones</div>
+        <div class="he-desc">Penaliza abuso de urgencia, cancelaciones confirmadas y calificación falsa.</div>
+      </div>
+      <div class="he-card">
+        <div class="he-id">HE-12</div>
+        <div class="he-title">Encuesta de Aptitud</div>
+        <div class="he-desc">8 preguntas Sí/No tras el registro, retomable desde el perfil del usuario.</div>
+      </div>
+    </div>
+    <div class="quote" style="margin-top:12px;font-size:.78rem">
+      Cada historia épica agrupa las <strong style="color:#fff">historias de usuario</strong> correspondientes —
+      definiendo el alcance funcional completo de <strong style="color:var(--r2)">!Blood</strong>.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE 11 — CONCLUSIONES ══════════ -->
+<div class="slide" id="s11">
+  <div class="mesh m1"></div>
+  <div class="mesh m2"></div>
+  <div class="inner" style="justify-content:center;align-items:center;text-align:center">
+    <div class="eyebrow" style="margin:0 auto 16px"><span class="dot-red"></span>Conclusiones</div>
+    <div style="font-family:var(--font2);font-size:clamp(2rem,5vw,3.5rem);font-weight:900;letter-spacing:-.03em;margin-bottom:8px">
+      <span class="grad">!Blood</span> — Tecnología que salva vidas
+    </div>
+    <p style="color:var(--w70);font-size:.95rem;max-width:660px;margin:0 auto 32px;line-height:1.7">
+      Una solución móvil que <strong style="color:#fff">reduce barreras de acceso</strong>, incrementa la donación voluntaria y contribuye directamente a <strong style="color:var(--r2)">salvar vidas en Popayán y el Cauca</strong>.
+    </p>
+
+    <div class="concl-row" style="margin-bottom:36px">
+      <div class="concl"><span class="concl-icon">🩸</span><span class="concl-text">Centraliza la donación de sangre en Popayán</span></div>
+      <div class="concl"><span class="concl-icon">📍</span><span class="concl-text">Matching inteligente por tipo y cercanía</span></div>
+      <div class="concl"><span class="concl-icon">🔒</span><span class="concl-text">Entorno seguro, moderado y verificado</span></div>
+      <div class="concl"><span class="concl-icon">⚙️</span><span class="concl-text">Sistema resiliente y fácilmente adaptable</span></div>
+      <div class="concl"><span class="concl-icon">🎯</span><span class="concl-text">Diseñado desde la usabilidad real</span></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+      <svg style="filter:drop-shadow(0 0 24px rgba(255,45,32,.7));animation:float 3s ease-in-out infinite" width="60" height="74" viewBox="0 0 90 110" fill="none">
+        <defs><linearGradient id="dg3" x1="45" y1="5" x2="45" y2="105" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FF6B6B"/><stop offset="100%" stop-color="#B71C1C"/></linearGradient></defs>
+        <path d="M45 5 C45 5 8 50 8 72 C8 92 25 105 45 105 C65 105 82 92 82 72 C82 50 45 5 45 5Z" fill="url(#dg3)"/>
+      </svg>
+      <div style="font-family:var(--font2);font-weight:800;font-size:1.1rem;color:var(--r2)">!Blood</div>
+      <div style="font-size:.8rem;color:var(--w40);font-style:italic">"Dona vida, recibe vida"</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE: REFERENCIAS ══════════ -->
+<div class="slide" id="s-refs">
+  <div class="mesh" style="width:400px;height:400px;background:var(--p1);top:-150px;right:-100px;opacity:.07;"></div>
+  <div class="inner">
+    <div class="eyebrow"><span class="dot-red"></span>Fuentes</div>
+    <h2 class="h2">Referencias <span class="grad">Bibliográficas</span></h2>
+    <div class="divider"></div>
+    <div style="display:flex;flex-direction:column;gap:11px;margin-top:6px">
+      <div class="ref-item">
+        <div class="ref-num">1</div>
+        <div class="ref-body">
+          Secretaría de Salud Departamental del Cauca.
+          <strong>Dona sangre, dona ahora, dona frecuentemente.</strong>
+          Campaña informativa y requisitos generales. Consultado marzo 2026.<br>
+          <a href="https://www.saludcauca.gov.co" target="_blank">→ saludcauca.gov.co</a>
+        </div>
+      </div>
+      <div class="ref-item">
+        <div class="ref-num">2</div>
+        <div class="ref-body">
+          World Health Organization.
+          <strong>Blood safety and availability.</strong>
+          Fact sheet — disponibilidad y seguridad de la sangre a nivel mundial. Consultado marzo 2026.<br>
+          <a href="https://www.who.int/news-room/fact-sheets/detail/blood-safety-and-availability" target="_blank">→ who.int</a>
+        </div>
+      </div>
+      <div class="ref-item">
+        <div class="ref-num">3</div>
+        <div class="ref-body">
+          Pan American Health Organization.
+          <strong>Supply of Blood for Transfusion in Latin America and Caribbean Countries 2016–2017.</strong>
+          Informe técnico PAHO. Consultado marzo 2026.<br>
+          <a href="https://iris.paho.org/handle/10665.2/5296" target="_blank">→ iris.paho.org</a>
+        </div>
+      </div>
+      <div class="ref-item">
+        <div class="ref-num">4</div>
+        <div class="ref-body">
+          Bass, L., Clements, P. &amp; Kazman, R. (2012).
+          <strong>Software Architecture in Practice</strong> (3rd ed.). Addison-Wesley.<br>
+          <span style="font-size:.74rem;color:var(--w40)">
+            Atributos de calidad: Disponibilidad pp. 106–116 · Modificabilidad pp. 140–146 · Usabilidad pp. 197–202
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SLIDE: GRACIAS ══════════ -->
+<div class="slide" id="s-fin">
+  <div class="mesh" style="width:700px;height:700px;background:var(--r1);top:-250px;right:-200px;opacity:.09;"></div>
+  <div class="mesh" style="width:400px;height:400px;background:var(--p1);bottom:-150px;left:-100px;opacity:.09;"></div>
+  <div class="inner" style="justify-content:center;align-items:center;text-align:center">
+    <!-- Gota animada -->
+    <svg style="filter:drop-shadow(0 0 50px rgba(255,45,32,.75));animation:float 3.5s ease-in-out infinite;margin-bottom:22px" width="80" height="98" viewBox="0 0 90 110" fill="none">
+      <defs>
+        <linearGradient id="dgFin" x1="45" y1="5" x2="45" y2="105" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#FF6B6B"/>
+          <stop offset="100%" stop-color="#8B0000"/>
+        </linearGradient>
+      </defs>
+      <path d="M45 5 C45 5 8 50 8 72 C8 92 25 105 45 105 C65 105 82 92 82 72 C82 50 45 5 45 5Z" fill="url(#dgFin)"/>
+      <path d="M28 80 C26 69 33 60 45 60 C57 60 64 69 62 80" stroke="rgba(255,255,255,.3)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    </svg>
+    <!-- Texto principal -->
+    <div style="font-family:var(--font2);font-size:clamp(3.8rem,10vw,7.5rem);font-weight:900;letter-spacing:-.04em;line-height:1;background:linear-gradient(135deg,#FF6B6B 0%,#FF2D20 45%,#C51010 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+      ¡Gracias!
+    </div>
+    <div style="font-size:1.1rem;color:var(--w70);font-style:italic;margin:14px 0 6px;">"Dona vida, recibe vida"</div>
+    <div style="width:60px;height:3px;background:linear-gradient(90deg,var(--r1),transparent);border-radius:2px;margin:14px auto 22px;"></div>
+    <!-- Info autora -->
+    <div style="font-size:.93rem;color:var(--w70);line-height:2;">
+      <strong style="color:#fff;font-size:1.05rem;">Ana María Campo Agredo</strong><br>
+      Universidad del Cauca · Facultad de Ciencias Naturales<br>
+      Departamento de Física · Popayán, Colombia · 2026
+    </div>
+    <!-- Pills -->
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+      <span class="pill pill-red">🩸 !Blood</span>
+      <span class="pill">📱 App Móvil</span>
+      <span class="pill">📍 Popayán, Cauca</span>
+      <span class="pill pill-purple">🎓 Universidad del Cauca</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- #deck -->
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total  = slides.length;
+  const bar    = document.getElementById('bar');
+  const ctr    = document.getElementById('counter');
+  const dotsEl = document.getElementById('dots');
+  let cur = 0, busy = false;
+
+  // Build dots
+  const dotEls = slides.map((_,i) => {
+    const d = document.createElement('div');
+    d.className = 'dot'; d.onclick = () => go(i);
+    dotsEl.appendChild(d); return d;
+  });
+
+  document.getElementById('prev').onclick = () => go(cur - 1);
+  document.getElementById('next').onclick = () => go(cur + 1);
+
+  function go(n) {
+    if (busy || n === cur || n < 0 || n >= total) return;
+    busy = true;
+    slides[cur].classList.remove('active');
+    cur = n;
+    slides[cur].classList.add('active');
+    upd();
+    setTimeout(() => busy = false, 180);
+  }
+
+  function upd() {
+    dotEls.forEach((d,i) => d.classList.toggle('on', i === cur));
+    bar.style.width = ((cur+1)/total*100) + '%';
+    ctr.textContent = (cur+1) + ' / ' + total;
+  }
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if(['ArrowRight','ArrowDown','Space',' '].includes(e.key)) { e.preventDefault(); go(cur+1); }
+    if(['ArrowLeft','ArrowUp'].includes(e.key)) { e.preventDefault(); go(cur-1); }
+    if(e.key==='Home') go(0);
+    if(e.key==='End')  go(total-1);
+  });
+
+  // Touch swipe
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 50) go(dx < 0 ? cur+1 : cur-1);
+  }, {passive:true});
+
+  upd();
+})();
+
+// ── FULLSCREEN ────────────────────────────────────────────
+function toggleFS() {
+  const btn = document.getElementById('fsBtn');
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fsBtn');
+  const isFS = !!document.fullscreenElement;
+  btn.innerHTML = isFS
+    ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg> Salir pantalla completa'
+    : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg> Pantalla completa';
+});
+</script>
+</body>
+</html>
