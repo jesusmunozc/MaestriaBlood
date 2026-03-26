@@ -1,0 +1,154 @@
+% ============================================================
+%  SECCIÓN 5 – HISTORIAS ÉPICAS E HISTORIAS DE USUARIO
+% ============================================================
+\section{Historias Épicas e Historias de Usuario}
+
+En ingeniería de software ágil, una \textbf{historia épica} agrupa un conjunto de
+\textbf{historias de usuario} relacionadas que, en conjunto, cubren una capacidad funcional
+mayor del sistema. Para el proyecto \textit{!Blood} se identificaron doce historias épicas
+que abarcan la totalidad del alcance funcional de la aplicación.
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Historias Épicas}
+
+La siguiente tabla presenta las doce historias épicas de \textit{!Blood},
+identificadas mediante el prefijo \textbf{HE} seguido de un número secuencial.
+
+\vspace{0.5em}
+
+\begin{longtable}{%
+  |>{\bfseries\centering\arraybackslash}p{1.6cm}%
+  |>{\raggedright\arraybackslash}p{4.2cm}%
+  |>{\raggedright\arraybackslash}p{9.0cm}|}
+
+\caption{Historias épicas del sistema \textit{!Blood}.}
+\label{tab:historias_epicas}\\
+
+\hline
+\rowcolor{darkgray}
+\textcolor{white}{\textbf{ID}} &
+\textcolor{white}{\textbf{Historia Épica}} &
+\textcolor{white}{\textbf{Descripción}} \\
+\hline
+\endfirsthead
+
+\hline
+\rowcolor{darkgray}
+\textcolor{white}{\textbf{ID}} &
+\textcolor{white}{\textbf{Historia Épica}} &
+\textcolor{white}{\textbf{Descripción}} \\
+\hline
+\endhead
+
+\hline
+\endfoot
+
+\hline
+\endlastfoot
+
+HE-01 &
+Gestión de Acceso de Usuarios &
+El sistema debe permitir gestionar el acceso de los usuarios a la plataforma
+\textit{!Blood}: registro en tres pasos con selector de tipo de documento, fotografías del
+documento y selfie con cámara, inicio de sesión y recuperación de contraseña. \\
+\hline
+
+HE-02 &
+Gestión del Perfil de Usuario &
+El sistema debe permitir a cada usuario consultar y actualizar su información personal,
+tipo de sangre, calificación por estrellas, estadísticas de donación, encuesta de aptitud
+y configuración de cuenta. \\
+\hline
+
+HE-03 &
+Gestión de Solicitudes de Sangre &
+El sistema debe permitir crear, publicar, explorar y gestionar solicitudes de donación de
+sangre con filtros por compatibilidad y cercanía geográfica. El detalle de la solicitud
+muestra el botón \textit{Quiero Donar} siempre visible sin necesidad de desplazamiento. \\
+\hline
+
+HE-04 &
+Gestión del Proceso de Donación &
+El sistema debe guiar al donante en la confirmación de donación (lista de verificación de
+salud) e informar que la cancelación posterior implica una penalización de 30 días sin
+poder donar. \\
+\hline
+
+HE-05 &
+Sistema de Calificación Mutua &
+El sistema debe permitir que, tras completarse una donación, tanto el donante como el
+solicitante se califiquen mutuamente con 1--5 estrellas, un aviso de equidad y un
+comentario opcional, contribuyendo a la reputación visible en el perfil. \\
+\hline
+
+HE-06 &
+Gestión de Campañas de Donación &
+El sistema debe permitir a los profesionales de salud crear, publicar y gestionar campañas
+institucionales de donación, y a todos los usuarios explorarlas y reservar cupos. Incluye
+las vistas exclusivas del profesional: \textit{Home Pro}, \textit{Mis Campañas},
+\textit{Gestión de Campaña} y \textit{Perfil Pro}. \\
+\hline
+
+HE-07 &
+Sistema de Notificaciones &
+El sistema debe notificar en tiempo real sobre solicitudes urgentes compatibles, aceptación
+de donación por parte de un donante, recordatorio de campaña próxima y reconocimientos de
+logros. \\
+\hline
+
+HE-08 &
+Moderación y Seguridad de Contenido &
+El sistema debe garantizar la privacidad de los datos de los usuarios, gestionar el proceso
+de verificación de identidad (foto frontal y trasera del documento más selfie) y prevenir
+el uso indebido de la plataforma. \\
+\hline
+
+HE-09 &
+Estadísticas y Gamificación &
+El sistema debe mostrar estadísticas individuales y comunitarias, otorgar insignias,
+mostrar la calificación promedio por estrellas en el perfil y enviar mensajes
+motivacionales para fomentar la donación recurrente. \\
+\hline
+
+HE-10 &
+Compatibilidad Sanguínea y Geolocalización &
+El sistema debe determinar automáticamente la compatibilidad entre tipos de sangre y
+calcular la distancia entre el usuario y cada solicitud o campaña. \\
+\hline
+
+HE-11 &
+Sistema de Penalizaciones &
+El sistema debe aplicar penalizaciones automáticas por: \textit{(1)} abuso de urgencia en
+solicitudes, que resulta en bloqueo temporal de creación de solicitudes; \textit{(2)}
+cancelación de donación confirmada, que impide confirmar donaciones durante 30 días; y
+\textit{(3)} calificación discriminatoria o falsa, que conlleva la suspensión de la cuenta. \\
+\hline
+
+HE-12 &
+Encuesta de Aptitud para Donación &
+El sistema debe presentar al usuario una encuesta de ocho preguntas de sí/no tras completar
+el registro (Paso~3), determinar su aptitud para donar y permitirle retomar la encuesta
+desde su perfil en cualquier momento. \\
+\hline
+
+\end{longtable}
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Historias de Usuario}
+
+Las historias de usuario detallan, para cada historia épica, los criterios de aceptación
+mediante escenarios de prueba funcional (formato \textit{Dado -- Cuando -- Entonces}).
+El documento completo, que incluye las doce épicas con sus respectivas historias de usuario
+y criterios de aceptación, está disponible en el siguiente enlace:
+
+\vspace{0.4em}
+\begin{center}
+  \href{https://drive.google.com/uc?id=1Rqvc8YO-pXUc7-rpU93Pk1LDsg7gfyI4&export=download}{%
+    \textcolor{bloodred}{\textbf{Descargar Excel de Historias Épicas e Historias de Usuario}}%
+  }
+\end{center}
+\vspace{0.4em}
+
+El archivo Excel contiene una hoja por historia épica, con columnas de identificador,
+rol del usuario, enunciado (\textit{Quiero}), propósito (\textit{Para}) y escenarios de
+criterios de aceptación.
