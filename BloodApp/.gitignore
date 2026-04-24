@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Environment variables (contain Supabase keys!)
+.env
+.env.local
+.env.production
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Android build artifacts
+android/app/build/
+android/build/
+android/capacitor-cordova-android-plugins/build/
+android/.gradle/
+android/app/.cxx/
+android/local.properties
+
+# Android keystore (never commit!)
+*.jks
+*.keystore
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Seed scripts with credentials
+seed.mjs
