@@ -196,32 +196,34 @@ export function watchAuthState(
 ): () => void {
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
-    if (!session?.user) {
-      clearStoredAuthUser();
-      callback(null);
-      return;
-    }
+  } = supabase.auth.onAuthStateChange(
+    async (_event: string, session: Session | null) => {
+      if (!session?.user) {
+        clearStoredAuthUser();
+        callback(null);
+        return;
+      }
 
-    // On session restore, load profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("id", session.user.id)
-      .single();
+      // On session restore, load profile
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
 
-    if (profile) {
-      const authUser: AuthUser = {
-        id: session.user.id,
-        email: session.user.email!,
-        profile: profile as Profile,
-      };
-      storeAuthUser(authUser);
-      callback(authUser);
-    } else {
-      callback(null);
-    }
-  });
+      if (profile) {
+        const authUser: AuthUser = {
+          id: session.user.id,
+          email: session.user.email!,
+          profile: profile as Profile,
+        };
+        storeAuthUser(authUser);
+        callback(authUser);
+      } else {
+        callback(null);
+      }
+    },
+  );
 
   return () => subscription.unsubscribe();
 }
