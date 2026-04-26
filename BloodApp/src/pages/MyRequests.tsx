@@ -26,10 +26,13 @@ export default function MyRequests() {
 
   useEffect(() => {
     if (!authUser?.id) return;
-    getUserRequests(authUser.id).then(({ data }) => {
-      setRequests(data);
-      setLoading(false);
-    });
+    getUserRequests(authUser.id)
+      .then(({ data, error }) => {
+        if (error) console.error("[MyRequests] Error:", error);
+        setRequests(data);
+      })
+      .catch((e) => console.error("[MyRequests] Excepción:", e))
+      .finally(() => setLoading(false));
   }, [authUser?.id]);
 
   const filterMap: Record<Tab, string[]> = {

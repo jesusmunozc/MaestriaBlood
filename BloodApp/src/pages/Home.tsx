@@ -50,13 +50,18 @@ export default function Home() {
 
   useEffect(() => {
     async function load() {
-      const [{ data: requests }, { data: campList }] = await Promise.all([
-        getBloodRequests(),
-        getCampaigns(),
-      ]);
-      setNearbyRequests(requests.slice(0, 4));
-      setCampaigns(campList.slice(0, 2));
-      setLoading(false);
+      try {
+        const [{ data: requests }, { data: campList }] = await Promise.all([
+          getBloodRequests(),
+          getCampaigns(),
+        ]);
+        setNearbyRequests(requests.slice(0, 4));
+        setCampaigns(campList.slice(0, 2));
+      } catch (e) {
+        console.error("[Home] Error cargando datos:", e);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
     refreshNotifications();

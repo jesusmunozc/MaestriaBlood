@@ -35,6 +35,18 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Never intercept Supabase API or auth requests
+        navigateFallbackDenylist: [/^\/auth/, /^\/rest/, /^\/storage/],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.hostname.includes("supabase.co"),
+            handler: "NetworkOnly",
+          },
+        ],
+      },
+      // Disable service worker in development to avoid caching issues
+      devOptions: {
+        enabled: false,
       },
     }),
   ],

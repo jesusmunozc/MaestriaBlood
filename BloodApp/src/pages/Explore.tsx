@@ -22,11 +22,14 @@ export default function Explore() {
   const [chip, setChip] = useState<FilterChip>("all");
 
   useEffect(() => {
-    getBloodRequests().then(({ data }) => {
-      setRequests(data);
-      setFiltered(data);
-      setLoading(false);
-    });
+    getBloodRequests()
+      .then(({ data, error }) => {
+        if (error) console.error("[Explore] Error:", error);
+        setRequests(data);
+        setFiltered(data);
+      })
+      .catch((e) => console.error("[Explore] Excepción:", e))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {

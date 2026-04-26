@@ -1,42 +1,32 @@
 -- ============================================================
---  !Blood — Limpieza de usuarios corruptos
---  Ejecutar PRIMERO en: Supabase Dashboard > SQL Editor
+--  !Blood — Limpieza de usuarios de prueba
+--  Ejecutar en: Supabase Dashboard > SQL Editor
+--  Después de esto, ejecuta: node seed.mjs
 -- ============================================================
 
--- Borrar identidades corruptas
-DELETE FROM auth.identities
-WHERE user_id IN (
-  '13fbf1b6-9cbf-41ae-92f1-ca9affe9a879',
-  '7f993570-9b4b-40de-9520-8b3ef60453bc'
-);
+-- Borrar todo lo relacionado con los usuarios de prueba (por email, cubre cualquier ID)
+DO $$
+DECLARE
+  carlos_id UUID;
+  sofia_id  UUID;
+BEGIN
+  SELECT id INTO carlos_id FROM auth.users WHERE email = 'carlos_test@bloodapp.com';
+  SELECT id INTO sofia_id  FROM auth.users WHERE email = 'dra_sofia@bloodapp.com';
 
--- Borrar sessions relacionadas
-DELETE FROM auth.sessions
-WHERE user_id IN (
-  '13fbf1b6-9cbf-41ae-92f1-ca9affe9a879',
-  '7f993570-9b4b-40de-9520-8b3ef60453bc'
-);
+  -- Eliminar tokens y sesiones
+  DELETE FROM auth.refresh_tokens WHERE user_id IN (carlos_id, sofia_id);
+  DELETE FROM auth.sessions       WHERE user_id IN (carlos_id, sofia_id);
+  DELETE FROM auth.mfa_factors    WHERE user_id IN (carlos_id, sofia_id);
+  DELETE FROM auth.identities     WHERE user_id IN (carlos_id, sofia_id);
 
--- Borrar refresh tokens
-DELETE FROM auth.refresh_tokens
-WHERE user_id IN (
-  '13fbf1b6-9cbf-41ae-92f1-ca9affe9a879',
-  '7f993570-9b4b-40de-9520-8b3ef60453bc'
-);
+  -- Eliminar perfil (cascade elimina datos relacionados)
+  DELETE FROM profiles WHERE id IN (carlos_id, sofia_id);
 
--- Borrar perfiles (cascade safe)
-DELETE FROM profiles
-WHERE id IN (
-  '13fbf1b6-9cbf-41ae-92f1-ca9affe9a879',
-  '7f993570-9b4b-40de-9520-8b3ef60453bc'
-);
+  -- Eliminar usuario de auth (debe ser último)
+  DELETE FROM auth.users WHERE id IN (carlos_id, sofia_id);
 
--- Borrar los usuarios corruptos
-DELETE FROM auth.users
-WHERE id IN (
-  '13fbf1b6-9cbf-41ae-92f1-ca9affe9a879',
-  '7f993570-9b4b-40de-9520-8b3ef60453bc'
-);
+  RAISE NOTICE 'Usuarios eliminados correctamente. Ahora ejecuta: node seed.mjs';
+END $$;
 
 -- También limpiar cualquier usuario con esos emails
 DELETE FROM auth.users

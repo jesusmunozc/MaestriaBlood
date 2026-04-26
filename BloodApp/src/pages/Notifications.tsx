@@ -21,10 +21,13 @@ export default function Notifications() {
 
   useEffect(() => {
     if (!authUser?.id) return;
-    getNotifications(authUser.id).then(({ data }) => {
-      setNotifications(data);
-      setLoading(false);
-    });
+    getNotifications(authUser.id)
+      .then(({ data, error }) => {
+        if (error) console.error("[Notifications] Error:", error);
+        setNotifications(data);
+      })
+      .catch((e) => console.error("[Notifications] Excepción:", e))
+      .finally(() => setLoading(false));
   }, [authUser?.id]);
 
   async function handleMarkAll() {

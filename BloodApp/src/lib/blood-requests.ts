@@ -73,7 +73,7 @@ export async function getUserRequests(
   const { data, error } = await supabase
     .from("blood_requests")
     .select("*")
-    .eq("user_id", userId)
+    .eq("requester_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) return { data: [], error: error.message };

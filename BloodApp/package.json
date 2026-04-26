@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite --host",
     "dev:android": "cross-env DEV=true npx cap sync android && vite --host",
+    "dev:device": "cross-env DEVICE=true npx cap sync android && vite --host",
+    "adb:reverse": "%LOCALAPPDATA%\\Android\\Sdk\\platform-tools\\adb reverse tcp:5173 tcp:5173",
+    "android:run": "npx cap run android",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "cap:sync": "npx cap sync",

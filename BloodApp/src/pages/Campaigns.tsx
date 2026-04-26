@@ -19,11 +19,14 @@ export default function Campaigns() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCampaigns().then(({ data }) => {
-      setCampaigns(data);
-      setFiltered(data);
-      setLoading(false);
-    });
+    getCampaigns()
+      .then(({ data, error }) => {
+        if (error) console.error("[Campaigns] Error:", error);
+        setCampaigns(data);
+        setFiltered(data);
+      })
+      .catch((e) => console.error("[Campaigns] Excepción:", e))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {

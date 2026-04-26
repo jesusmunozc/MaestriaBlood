@@ -32,7 +32,10 @@ INSERT INTO auth.users (
   updated_at,
   confirmation_token,
   recovery_token,
-  email_change_confirm_status
+  email_change_confirm_status,
+  is_sso_user,
+  is_anonymous,
+  deleted_at
 ) VALUES
 (
   '13fbf1b6-9cbf-41ae-92f1-ca9affe9a879',
@@ -48,7 +51,10 @@ INSERT INTO auth.users (
   NOW(),
   '',
   '',
-  0
+  0,
+  FALSE,
+  FALSE,
+  NULL
 ),
 (
   '7f993570-9b4b-40de-9520-8b3ef60453bc',
@@ -64,7 +70,10 @@ INSERT INTO auth.users (
   NOW(),
   '',
   '',
-  0
+  0,
+  FALSE,
+  FALSE,
+  NULL
 );
 
 -- ─── 2. IDENTIDADES (necesario para login con email+password) ─────────────────
