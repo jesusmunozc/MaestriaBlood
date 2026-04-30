@@ -6,9 +6,7 @@ dist/
 dist-ssr/
 
 # Environment variables (contain Supabase keys!)
-.env
-.env.local
-.env.production
+
 
 # TypeScript build info
 *.tsbuildinfo
