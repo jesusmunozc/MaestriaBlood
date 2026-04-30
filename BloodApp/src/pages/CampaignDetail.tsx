@@ -73,7 +73,7 @@ export default function CampaignDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center">
+      <div className="min-h-screen bg-app-bg flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-blood-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -87,16 +87,16 @@ export default function CampaignDetail() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] pb-28 page-enter">
+    <div className="min-h-screen bg-app-bg pb-28 page-enter">
       <PageHeader title="Detalle de campaña" onBack={() => navigate(-1)} />
 
       <div className="mx-5 mt-4 space-y-4">
         {/* Hero card */}
-        <div className="bg-gradient-to-br from-blood-900/60 to-[#1a1a2e] border border-blood-700/30 rounded-3xl p-5">
+        <div className="bg-gradient-to-br from-blood-900/60 to-app-card border border-blood-700/30 rounded-3xl p-5">
           <h1 className="text-white text-xl font-extrabold mb-2 leading-tight">
             {campaign.name}
           </h1>
-          <div className="flex items-center gap-2 text-white/40 text-xs mb-4">
+          <div className="flex items-center gap-2 text-app-text/40 text-xs mb-4">
             <MapPin className="w-3 h-3" />
             <span>{campaign.location}</span>
           </div>
@@ -112,7 +112,7 @@ export default function CampaignDetail() {
         </div>
 
         {/* Date & Time */}
-        <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4 flex items-center gap-4">
+        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4 flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-blood-900/40 border border-blood-700/30 flex items-center justify-center shrink-0">
             <Calendar className="w-5 h-5 text-blood-400" />
           </div>
@@ -120,7 +120,7 @@ export default function CampaignDetail() {
             <p className="text-white font-semibold text-sm">
               {formatDate(campaign.date)}
             </p>
-            <p className="text-white/40 text-xs mt-0.5">
+            <p className="text-app-text/40 text-xs mt-0.5">
               {campaign.start_time ? formatTime(campaign.start_time) : "—"} —{" "}
               {campaign.end_time ? formatTime(campaign.end_time) : "—"}
             </p>
@@ -128,8 +128,8 @@ export default function CampaignDetail() {
         </div>
 
         {/* Organizer */}
-        <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
-          <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
+        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
+          <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
             Organizador
           </p>
           <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export default function CampaignDetail() {
                 </p>
                 <BadgeCheck className="w-3.5 h-3.5 text-blood-400" />
               </div>
-              <p className="text-white/30 text-xs">
+              <p className="text-app-text/30 text-xs">
                 Profesional de salud verificado
               </p>
             </div>
@@ -152,11 +152,11 @@ export default function CampaignDetail() {
 
         {/* Description */}
         {campaign.description && (
-          <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
-            <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-2">
+          <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
+            <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider mb-2">
               Descripción
             </p>
-            <p className="text-white/60 text-sm leading-relaxed">
+            <p className="text-app-text/60 text-sm leading-relaxed">
               {campaign.description}
             </p>
           </div>
@@ -164,20 +164,20 @@ export default function CampaignDetail() {
 
         {/* Requirements */}
         {campaign.requirements && (
-          <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
-            <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-2">
+          <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
+            <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider mb-2">
               Requisitos
             </p>
-            <p className="text-white/60 text-sm leading-relaxed whitespace-pre-line">
+            <p className="text-app-text/60 text-sm leading-relaxed whitespace-pre-line">
               {campaign.requirements}
             </p>
           </div>
         )}
 
         {/* Slots */}
-        <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
+        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2 text-white/40 text-xs">
+            <div className="flex items-center gap-2 text-app-text/40 text-xs">
               <Users className="w-3.5 h-3.5" />
               <span className="uppercase tracking-wider font-semibold">
                 Cupos
@@ -187,7 +187,7 @@ export default function CampaignDetail() {
               {campaign.registered_slots}/{campaign.total_slots}
             </span>
           </div>
-          <div className="h-2 bg-white/8 rounded-full overflow-hidden">
+          <div className="h-2 bg-app-border/8 rounded-full overflow-hidden">
             <div
               className="h-full bg-blood-600 rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
@@ -197,7 +197,7 @@ export default function CampaignDetail() {
       </div>
 
       {/* CTA */}
-      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-[#0f0f0f]/95 backdrop-blur-xl border-t border-white/8">
+      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/8">
         {registered ? (
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-900/30 border border-emerald-600/30 text-emerald-400 font-semibold text-sm">

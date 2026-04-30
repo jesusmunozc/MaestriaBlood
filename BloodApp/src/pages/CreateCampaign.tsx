@@ -65,11 +65,11 @@ export default function CreateCampaign() {
 
   if (!canCreate) {
     return (
-      <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-          <Calendar className="w-8 h-8 text-white/20" />
+      <div className="min-h-screen bg-app-bg flex flex-col items-center justify-center px-6 text-center">
+        <div className="w-16 h-16 rounded-full bg-app-border/5 flex items-center justify-center mb-4">
+          <Calendar className="w-8 h-8 text-app-text/20" />
         </div>
-        <p className="text-white/50 text-sm mb-6">
+        <p className="text-app-text/50 text-sm mb-6">
           Solo los profesionales de salud pueden crear campañas.
         </p>
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
@@ -80,16 +80,16 @@ export default function CreateCampaign() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] pb-28 page-enter">
+    <div className="min-h-screen bg-app-bg pb-28 page-enter">
       <PageHeader title="Nueva campaña" onBack={() => navigate(-1)} />
 
       <div className="mx-5 mt-4 space-y-5">
         {/* Pro message */}
-        <div className="bg-gradient-to-br from-blood-900/40 to-[#1a1a2e] border border-blood-700/30 rounded-2xl p-4">
+        <div className="bg-gradient-to-br from-blood-900/40 to-app-card border border-blood-700/30 rounded-2xl p-4">
           <p className="text-blood-300 text-xs font-semibold mb-1">
             ¡Gracias por tu compromiso!
           </p>
-          <p className="text-white/50 text-xs leading-relaxed">
+          <p className="text-app-text/50 text-xs leading-relaxed">
             Como profesional de salud, tus campañas llegan a cientos de donantes
             potenciales y salvan vidas.
           </p>
@@ -143,29 +143,29 @@ export default function CreateCampaign() {
 
         {/* Total slots */}
         <div>
-          <p className="text-white/60 text-sm mb-1">Cupos totales</p>
-          <div className="flex items-center gap-4 bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
+          <p className="text-app-text/60 text-sm mb-1">Cupos totales</p>
+          <div className="flex items-center gap-4 bg-app-card border border-app-border/8 rounded-2xl p-4">
             <button
               onClick={() => setTotalSlots((n) => Math.max(5, n - 5))}
-              className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center active:scale-90 transition-transform"
+              className="w-9 h-9 rounded-full bg-app-border/8 flex items-center justify-center active:scale-90 transition-transform"
             >
-              <Minus className="w-4 h-4 text-white" />
+              <Minus className="w-4 h-4 text-app-text" />
             </button>
-            <span className="flex-1 text-center text-2xl font-extrabold text-white">
+            <span className="flex-1 text-center text-2xl font-extrabold text-app-text">
               {totalSlots}
             </span>
             <button
               onClick={() => setTotalSlots((n) => Math.min(500, n + 5))}
               className="w-9 h-9 rounded-full bg-blood-600 flex items-center justify-center active:scale-90 transition-transform"
             >
-              <Plus className="w-4 h-4 text-white" />
+              <Plus className="w-4 h-4 text-app-text" />
             </button>
           </div>
         </div>
 
         {/* Blood types */}
         <div>
-          <p className="text-white/60 text-sm mb-2">
+          <p className="text-app-text/60 text-sm mb-2">
             Tipos de sangre necesarios
           </p>
           <div className="grid grid-cols-4 gap-2">
@@ -174,7 +174,7 @@ export default function CreateCampaign() {
                 key={t}
                 onClick={() => toggleType(t)}
                 className={`py-2 rounded-xl border text-sm font-bold transition-all
-                  ${selectedTypes.includes(t) ? "bg-blood-600 border-blood-600 text-white scale-105" : "bg-white/5 border-white/10 text-white/50"}`}
+                  ${selectedTypes.includes(t) ? "bg-blood-600 border-blood-600 text-white scale-105" : "bg-app-border/5 border-app-border/10 text-app-text/50"}`}
               >
                 {t}
               </button>
@@ -193,7 +193,7 @@ export default function CreateCampaign() {
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-[#0f0f0f]/95 backdrop-blur-xl border-t border-white/8">
+      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/8">
         <Button
           variant="primary"
           size="lg"

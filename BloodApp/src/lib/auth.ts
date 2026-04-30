@@ -253,9 +253,23 @@ export async function registerUser(
 }
 
 // ─── Sign out ─────────────────────────────────────────────────────────────────
+// Use scope:'local' so the session is cleared from localStorage immediately
+// without waiting for a server round-trip.  This prevents the button from
+// appearing "stuck" when the network is slow or unavailable.
+
+// Flag so watchAuthState can distinguish explicit sign-outs from token errors
+let _isExplicitSignOut = false;
+
 export async function signOut(): Promise<void> {
+  _isExplicitSignOut = true;
   clearStoredAuthUser();
-  await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut({ scope: "local" });
+  } catch {
+    // Local session is already cleared; ignore any server-side error.
+  } finally {
+    _isExplicitSignOut = false;
+  }
 }
 
 // ─── Watch auth state ─────────────────────────────────────────────────────────
@@ -265,14 +279,23 @@ export function watchAuthState(
   const {
     data: { subscription },
   } = supabase.auth.onAuthStateChange(
-    async (_event: string, session: Session | null) => {
-      if (!session?.user) {
-        clearStoredAuthUser();
-        callback(null);
+    async (event: string, session: Session | null) => {
+      // Only clear state on an *explicit* sign-out triggered by the user.
+      // Supabase also emits SIGNED_OUT when a token refresh fails due to
+      // network loss — we must NOT log the user out in that case.
+      if (event === "SIGNED_OUT") {
+        if (_isExplicitSignOut) {
+          clearStoredAuthUser();
+          callback(null);
+        }
+        // Non-explicit SIGNED_OUT (e.g. token refresh failure) → keep stored session
         return;
       }
 
-      // On session restore, load profile
+      // No active session and it's not a sign-out → keep whatever is stored
+      if (!session?.user) return;
+
+      // Try to fetch a fresh profile from the DB
       const { data: profile } = await supabase
         .from("profiles")
         .select("*")
@@ -287,13 +310,36 @@ export function watchAuthState(
         };
         storeAuthUser(authUser);
         callback(authUser);
+        return;
+      }
+
+      // Profile fetch failed (network error, brief disconnect, etc.)
+      // Fall back to what's already stored so the user stays logged in.
+      const stored = getStoredAuthUser();
+      if (stored?.id === session.user.id) {
+        // Stored data is still valid for this session — use it
+        callback(stored);
       } else {
+        // No local fallback — the user has to log in again
+        clearStoredAuthUser();
         callback(null);
       }
     },
   );
 
   return () => subscription.unsubscribe();
+}
+
+// ─── Refresh session ──────────────────────────────────────────────────────────
+// Call this when the app comes back online / returns to the foreground.
+// It forces Supabase to re-validate the stored JWT and re-fires onAuthStateChange
+// if the token was refreshed successfully.
+export async function refreshSession(): Promise<void> {
+  const { error } = await supabase.auth.refreshSession();
+  if (error) {
+    // Token is no longer valid (expired without refresh)
+    clearStoredAuthUser();
+  }
 }
 
 // ─── Update profile ───────────────────────────────────────────────────────────

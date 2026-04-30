@@ -4,6 +4,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme CSS variables ──────────────────────────── */
+:root {
+  /* Light mode (default) */
+  --app-bg: 248 249 250;       /* #f8f9fa */
+  --app-card: 255 255 255;     /* #ffffff */
+  --app-card-alt: 241 245 249; /* #f1f5f9 */
+  --app-border: 15 23 42;      /* near-black, used with /8 /10 opacity */
+  --app-text: 15 23 42;        /* #0f172a */
+  --header-gradient: linear-gradient(180deg, #fce7e7 0%, #f8f9fa 100%);
+  --autofill-color: #0f172a;
+  --autofill-bg: #f1f5f9;
+}
+
+html.dark {
+  /* Dark mode */
+  --app-bg: 15 15 15;          /* #0f0f0f */
+  --app-card: 26 26 46;        /* #1a1a2e */
+  --app-card-alt: 30 30 46;    /* #1e1e2e */
+  --app-border: 255 255 255;   /* white, used with /8 /10 opacity */
+  --app-text: 255 255 255;     /* #ffffff */
+  --header-gradient: linear-gradient(180deg, #1a0a0a 0%, #0f0f0f 100%);
+  --autofill-color: #f1f5f9;
+  --autofill-bg: #1e1e2e;
+}
+
 /* ── Base ─────────────────────────────────────────── */
 * {
   -webkit-tap-highlight-color: transparent;
@@ -14,9 +39,10 @@ html,
 body {
   height: 100%;
   overscroll-behavior: none;
-  background-color: #0f0f0f;
-  color: #f1f5f9;
+  background-color: rgb(var(--app-bg));
+  color: rgb(var(--app-text));
   font-family: "Inter", sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 #root {
@@ -113,8 +139,8 @@ textarea {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #f1f5f9;
-  -webkit-box-shadow: 0 0 0px 1000px #1e1e2e inset;
+  -webkit-text-fill-color: var(--autofill-color);
+  -webkit-box-shadow: 0 0 0px 1000px var(--autofill-bg) inset;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -160,7 +186,7 @@ input:-webkit-autofill:focus {
 
 /* ── Progress bar ─────────────────────────────────── */
 .progress-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgb(var(--app-border) / 0.12);
   border-radius: 999px;
   overflow: hidden;
 }
@@ -171,9 +197,38 @@ input:-webkit-autofill:focus {
   transition: width 0.6s ease;
 }
 
+/* ── Blood stats card (theme-aware) ──────────────── */
+.blood-stats-card {
+  /* Light mode: warm rose gradient */
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 60%, #fecdd3 100%);
+  border: 1px solid rgba(220, 38, 38, 0.20);
+}
+html.dark .blood-stats-card {
+  background: linear-gradient(135deg, #2d0f14 0%, #1a0a0a 60%, #16213e 100%);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+.blood-stats-label {
+  color: rgba(15, 23, 42, 0.45);
+}
+html.dark .blood-stats-label {
+  color: rgba(255, 255, 255, 0.40);
+}
+.blood-stats-value {
+  color: #0f172a;
+}
+html.dark .blood-stats-value {
+  color: #ffffff;
+}
+
 /* ── Bottom nav ──────────────────────────────────── */
 .bottom-nav-safe {
-  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+  /* Always reserve at least 8px + the full Android navigation bar height */
+  padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
+}
+
+/* ── Modal bottom sheet — respect nav bar ─────────── */
+.modal-sheet-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 16px), 16px);
 }
 
 /* ── Modal overlay ───────────────────────────────── */
@@ -197,12 +252,21 @@ input:-webkit-autofill:focus {
 }
 
 /* ── Gradient backgrounds ────────────────────────── */
-.gradient-blood {
-  background: linear-gradient(135deg, #1a0a0a 0%, #2d0f14 40%, #1a0a0a 100%);
+.gradient-blood {  /* Light mode: soft rose/cream gradient */
+  background: linear-gradient(160deg, #fff1f2 0%, #ffe4e6 45%, #fecdd3 100%);
+}
+
+html.dark .gradient-blood {
+  /* Dark mode: dark blood gradient */  background: linear-gradient(135deg, #1a0a0a 0%, #2d0f14 40%, #1a0a0a 100%);
 }
 
 .gradient-card {
   background: linear-gradient(135deg, #1e1e2e 0%, #2a1a2e 100%);
+}
+
+/* ── App header gradient (theme-aware) ───────────── */
+.app-header-gradient {
+  background: var(--header-gradient);
 }
 
 /* ── Chip ────────────────────────────────────────── */

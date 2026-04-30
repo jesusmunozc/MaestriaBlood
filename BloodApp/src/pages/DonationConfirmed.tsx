@@ -8,7 +8,7 @@ export default function DonationConfirmed() {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-6 page-enter">
+    <div className="min-h-screen bg-app-bg flex flex-col items-center justify-center px-6 page-enter">
       {/* Icon */}
       <div className="relative mb-8">
         <div className="w-28 h-28 rounded-full bg-emerald-900/30 border-2 border-emerald-600/50 flex items-center justify-center animate-[fade-in_0.5s_ease-out]">
@@ -24,7 +24,7 @@ export default function DonationConfirmed() {
       <h1 className="text-white text-2xl font-extrabold mb-3 text-center">
         ¡Donación confirmada!
       </h1>
-      <p className="text-white/50 text-center text-sm leading-relaxed mb-10 max-w-xs">
+      <p className="text-app-text/50 text-center text-sm leading-relaxed mb-10 max-w-xs">
         Gracias por tu generosidad. Has confirmado tu intención de donar. El
         solicitante y el personal médico te están esperando.
       </p>
@@ -40,7 +40,7 @@ export default function DonationConfirmed() {
             <div className="w-7 h-7 rounded-full bg-blood-900/50 border border-blood-700/40 flex items-center justify-center text-blood-400 text-xs font-bold shrink-0">
               {i + 1}
             </div>
-            <p className="text-white/60 text-sm">{step}</p>
+            <p className="text-app-text/60 text-sm">{step}</p>
           </div>
         ))}
       </div>

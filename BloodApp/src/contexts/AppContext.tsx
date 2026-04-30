@@ -11,6 +11,7 @@ import type { Profile, Notification } from "../types";
 import {
   getStoredAuthUser,
   watchAuthState,
+  refreshSession,
   signOut as authSignOut,
   type AuthUser,
 } from "../lib/auth";
@@ -29,6 +30,10 @@ interface AppContextType {
   notifications: Notification[];
   /** Loading state */
   isLoading: boolean;
+  /** Current theme */
+  theme: "dark" | "light";
+  /** Toggle dark/light theme */
+  toggleTheme: () => void;
   /** Sign out */
   signOut: () => Promise<void>;
   /** Refresh auth user profile from local storage */
@@ -41,12 +46,36 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | null>(null);
 
+function getInitialTheme(): "dark" | "light" {
+  try {
+    const stored = localStorage.getItem("blood_theme");
+    if (stored === "dark" || stored === "light") return stored;
+  } catch {}
+  return "dark";
+}
+
 export function AppProvider({ children }: { children: ReactNode }) {
   const [authUser, setAuthUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [theme, setTheme] = useState<"dark" | "light">(getInitialTheme);
   const unsubRef = useRef<(() => void) | null>(null);
+
+  // Apply dark class to <html> whenever theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    try { localStorage.setItem("blood_theme", theme); } catch {}
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  }, []);
 
   const refreshNotifications = useCallback(async () => {
     const user = getStoredAuthUser();
@@ -77,10 +106,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await authSignOut();
-    setAuthUser(null);
-    setUnreadCount(0);
-    setNotifications([]);
+    try {
+      await authSignOut();
+    } finally {
+      setAuthUser(null);
+      setUnreadCount(0);
+      setNotifications([]);
+    }
   }, []);
 
   useEffect(() => {
@@ -106,9 +138,28 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // Fallback: if no response after 2s, stop loading
     const timer = setTimeout(() => setIsLoading(false), 2000);
 
+    // ── Reconnection recovery ──────────────────────────────────────────────
+    // When the device regains network access or the app comes back to the
+    // foreground, ask Supabase to re-validate the stored JWT.  If the token
+    // was refreshed it re-fires onAuthStateChange which updates the state.
+    async function handleReconnect() {
+      await refreshSession();
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === "visible") {
+        handleReconnect();
+      }
+    }
+
+    window.addEventListener("online", handleReconnect);
+    document.addEventListener("visibilitychange", handleVisibility);
+
     return () => {
       unsub();
       clearTimeout(timer);
+      window.removeEventListener("online", handleReconnect);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [refreshNotifications]);
 
@@ -118,6 +169,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     unreadCount,
     notifications,
     isLoading,
+    theme,
+    toggleTheme,
     signOut,
     refreshUser,
     updateLocalProfile,

@@ -41,7 +41,7 @@ export default function Login() {
       <div className="safe-top pt-4 px-4">
         <button
           onClick={() => navigate("/")}
-          className="p-2 rounded-full bg-white/10 text-white/70 active:scale-95 transition-transform"
+          className="p-2 rounded-full bg-app-border/10 text-app-text/70 active:scale-95 transition-transform"
         >
           <svg
             className="w-5 h-5"
@@ -65,8 +65,8 @@ export default function Login() {
           <div className="w-16 h-16 rounded-full bg-blood-600/15 border border-blood-500/30 flex items-center justify-center mb-4">
             <Droplets className="w-8 h-8 text-blood-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Bienvenido</h1>
-          <p className="text-white/50 text-sm mt-1">Ingresa a tu cuenta</p>
+          <h1 className="text-2xl font-bold text-app-text">Bienvenido</h1>
+          <p className="text-app-text/50 text-sm mt-1">Ingresa a tu cuenta</p>
         </div>
 
         {/* Form */}
@@ -93,7 +93,7 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
-                className="text-white/40 hover:text-white/70"
+                className="text-app-text/40 hover:text-app-text/70"
               >
                 {showPass ? (
                   <EyeOff className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function Login() {
         </form>
 
         {/* Footer */}
-        <p className="text-center text-white/40 text-sm mt-6">
+        <p className="text-center text-app-text/40 text-sm mt-6">
           ¿No tienes cuenta?{" "}
           <button
             onClick={() => navigate("/register")}

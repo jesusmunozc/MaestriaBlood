@@ -48,7 +48,7 @@ export default function Notifications() {
   const unread = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f0f0f] pb-20 page-enter">
+    <div className="min-h-screen flex flex-col bg-app-bg pb-20 page-enter">
       <PageHeader
         title="Notificaciones"
         onBack={() => navigate(-1)}
@@ -65,22 +65,22 @@ export default function Notifications() {
         }
       />
 
-      <div className="flex-1 overflow-y-auto px-5 pt-3">
+      <div className="flex-1 overflow-y-auto px-5 pt-3 pb-24">
         {loading ? (
           <div className="space-y-2">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="h-16 rounded-xl bg-white/5 animate-pulse"
+                className="h-16 rounded-xl bg-app-border/5 animate-pulse"
               />
             ))}
           </div>
         ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center py-16">
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <BellOff className="w-8 h-8 text-white/20" />
+            <div className="w-16 h-16 rounded-full bg-app-border/5 flex items-center justify-center mb-4">
+              <BellOff className="w-8 h-8 text-app-text/20" />
             </div>
-            <p className="text-white/30 text-sm">Sin notificaciones</p>
+            <p className="text-app-text/30 text-sm">Sin notificaciones</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -123,19 +123,19 @@ function NotificationItem({
         ${
           !n.is_read
             ? "bg-blood-900/20 border border-blood-700/20 cursor-pointer active:scale-[0.98]"
-            : "bg-[#1a1a2e] border border-white/5"
+            : "bg-app-card border border-app-border/5"
         }`}
     >
-      <div className="w-9 h-9 rounded-xl bg-white/8 flex items-center justify-center text-base shrink-0">
+      <div className="w-9 h-9 rounded-xl bg-app-border/8 flex items-center justify-center text-base shrink-0">
         {iconMap[n.type] ?? "🔔"}
       </div>
       <div className="flex-1 min-w-0">
         <p
-          className={`text-sm leading-snug ${n.is_read ? "text-white/50" : "text-white font-medium"}`}
+          className={`text-sm leading-snug ${n.is_read ? "text-app-text/50" : "text-white font-medium"}`}
         >
           {n.message}
         </p>
-        <p className="text-white/25 text-[10px] mt-0.5">
+        <p className="text-app-text/25 text-[10px] mt-0.5">
           {timeAgo(n.created_at)}
         </p>
       </div>

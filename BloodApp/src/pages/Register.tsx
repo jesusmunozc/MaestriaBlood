@@ -160,12 +160,12 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f0f0f] page-enter">
+    <div className="min-h-screen flex flex-col bg-app-bg page-enter">
       {/* Header */}
-      <div className="safe-top bg-[#0f0f0f]/90 backdrop-blur-md border-b border-white/5 px-4 py-3 flex items-center gap-3">
+      <div className="safe-top bg-app-bg/90 backdrop-blur-md border-b border-app-border/5 px-4 py-3 flex items-center gap-3">
         <button
           onClick={() => (step > 1 ? setStep((s) => s - 1) : navigate("/"))}
-          className="p-2 rounded-full bg-white/10 text-white/60 active:scale-95"
+          className="p-2 rounded-full bg-app-border/10 text-app-text/60 active:scale-95"
         >
           <svg
             className="w-5 h-5"
@@ -181,10 +181,10 @@ export default function Register() {
             />
           </svg>
         </button>
-        <h1 className="flex-1 text-base font-semibold text-white">
+        <h1 className="flex-1 text-base font-semibold text-app-text">
           Crear cuenta
         </h1>
-        <span className="text-xs text-white/40 font-medium">{step}/3</span>
+        <span className="text-xs text-app-text/40 font-medium">{step}/3</span>
       </div>
 
       <div className="flex-1 overflow-y-auto px-6 py-6">
@@ -195,7 +195,7 @@ export default function Register() {
           <div className="flex flex-col gap-5 page-enter">
             {/* User type */}
             <div>
-              <label className="text-sm font-medium text-white/70 mb-2 block">
+              <label className="text-sm font-medium text-app-text/70 mb-2 block">
                 Tipo de usuario
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -218,7 +218,7 @@ export default function Register() {
                       ${
                         userType === value
                           ? "border-blood-500 bg-blood-600/15 text-blood-400"
-                          : "border-white/10 bg-[#1e1e2e] text-white/50"
+                          : "border-app-border/10 bg-app-card-alt text-app-text/50"
                       }
                     `}
                   >
@@ -248,7 +248,7 @@ export default function Register() {
                 onChange={(e) => setBirthDate(e.target.value)}
               />
               <div>
-                <label className="text-sm font-medium text-white/70 mb-1.5 block">
+                <label className="text-sm font-medium text-app-text/70 mb-1.5 block">
                   Tipo de sangre
                 </label>
                 <div className="grid grid-cols-4 gap-1.5">
@@ -261,8 +261,8 @@ export default function Register() {
                         py-1.5 rounded-lg text-xs font-bold transition-all
                         ${
                           bloodType === bt
-                            ? "bg-blood-600 text-white"
-                            : "bg-[#1e1e2e] text-white/40 border border-white/10"
+                            ? "bg-blood-600 text-app-text"
+                            : "bg-app-card-alt text-app-text/40 border border-app-border/10"
                         }
                       `}
                     >
@@ -319,10 +319,10 @@ export default function Register() {
           <div className="flex flex-col gap-5 page-enter">
             {/* Front doc */}
             <div>
-              <h3 className="text-sm font-semibold text-white/80 mb-1">
+              <h3 className="text-sm font-semibold text-app-text mb-1">
                 Documento de identidad — Cara frontal
               </h3>
-              <p className="text-xs text-white/40 mb-2">
+              <p className="text-xs text-app-text/40 mb-2">
                 Fotografía o sube la cara frontal de tu documento
               </p>
               <button
@@ -330,7 +330,7 @@ export default function Register() {
                 onClick={() => handleFileUpload(setFrontDoc)}
                 className={`
                   w-full h-28 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all
-                  ${frontDoc ? "border-blood-500 bg-blood-600/10" : "border-white/15 bg-[#1e1e2e]"}
+                  ${frontDoc ? "border-blood-500 bg-blood-600/10" : "border-app-border/20 bg-app-card-alt"}
                 `}
               >
                 {frontDoc ? (
@@ -343,7 +343,7 @@ export default function Register() {
                 ) : (
                   <>
                     <svg
-                      className="w-8 h-8 text-white/30"
+                      className="w-8 h-8 text-app-text/30"
                       fill="none"
                       viewBox="0 0 24 24"
                     >
@@ -362,7 +362,7 @@ export default function Register() {
                         strokeWidth="1.5"
                       />
                     </svg>
-                    <span className="text-xs text-white/30">
+                    <span className="text-xs text-app-text/30">
                       Cara frontal del documento
                     </span>
                   </>
@@ -372,10 +372,10 @@ export default function Register() {
 
             {/* Back doc */}
             <div>
-              <h3 className="text-sm font-semibold text-white/80 mb-1">
+              <h3 className="text-sm font-semibold text-app-text mb-1">
                 Documento de identidad — Cara posterior
               </h3>
-              <p className="text-xs text-white/40 mb-2">
+              <p className="text-xs text-app-text/40 mb-2">
                 Fotografía o sube la cara posterior de tu documento
               </p>
               <button
@@ -383,7 +383,7 @@ export default function Register() {
                 onClick={() => handleFileUpload(setBackDoc)}
                 className={`
                   w-full h-28 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all
-                  ${backDoc ? "border-blood-500 bg-blood-600/10" : "border-white/15 bg-[#1e1e2e]"}
+                  ${backDoc ? "border-blood-500 bg-blood-600/10" : "border-app-border/20 bg-app-card-alt"}
                 `}
               >
                 {backDoc ? (
@@ -396,7 +396,7 @@ export default function Register() {
                 ) : (
                   <>
                     <svg
-                      className="w-8 h-8 text-white/30"
+                      className="w-8 h-8 text-app-text/30"
                       fill="none"
                       viewBox="0 0 24 24"
                     >
@@ -415,7 +415,7 @@ export default function Register() {
                         strokeWidth="1.5"
                       />
                     </svg>
-                    <span className="text-xs text-white/30">
+                    <span className="text-xs text-app-text/30">
                       Cara posterior del documento
                     </span>
                   </>
@@ -425,10 +425,10 @@ export default function Register() {
 
             {/* Profile photo */}
             <div>
-              <h3 className="text-sm font-semibold text-white/80 mb-1">
+              <h3 className="text-sm font-semibold text-app-text mb-1">
                 Tu foto de perfil
               </h3>
-              <p className="text-xs text-white/40 mb-2">
+              <p className="text-xs text-app-text/40 mb-2">
                 Toca para abrir la cámara y tomarte una foto. Fondo claro,
                 rostro visible.
               </p>
@@ -437,7 +437,7 @@ export default function Register() {
                 onClick={() => handleFileUpload(setProfilePhoto)}
                 className={`
                   w-full h-32 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all
-                  ${profilePhoto ? "border-blood-500 bg-blood-600/10" : "border-white/15 bg-[#1e1e2e]"}
+                  ${profilePhoto ? "border-blood-500 bg-blood-600/10" : "border-app-border/20 bg-app-card-alt"}
                 `}
               >
                 {profilePhoto ? (
@@ -449,15 +449,15 @@ export default function Register() {
                   </>
                 ) : (
                   <>
-                    <Camera className="w-8 h-8 text-white/30" />
-                    <span className="text-xs text-white/30">Abrir cámara</span>
-                    <span className="text-[10px] text-white/20">
+                    <Camera className="w-8 h-8 text-app-text/30" />
+                    <span className="text-xs text-app-text/30">Abrir cámara</span>
+                    <span className="text-[10px] text-app-text/20">
                       No se puede subir desde galería
                     </span>
                   </>
                 )}
               </button>
-              <p className="text-[10px] text-white/30 mt-1.5">
+              <p className="text-[10px] text-app-text/30 mt-1.5">
                 ℹ️ Esta foto se usa para verificar que no existan cuentas
                 duplicadas.
               </p>
@@ -529,7 +529,7 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="text-white/40"
+                  className="text-app-text/40"
                 >
                   {showPass ? (
                     <EyeOff className="w-4 h-4" />
@@ -543,12 +543,12 @@ export default function Register() {
             {/* Password strength */}
             {password && (
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-app-border/10 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${passwordStrength.className}`}
                   />
                 </div>
-                <span className="text-xs text-white/50">
+                <span className="text-xs text-app-text/50">
                   {passwordStrength.label}
                 </span>
               </div>
@@ -604,12 +604,12 @@ export default function Register() {
                     onClick={() => onChange(!checked)}
                     className={`
                       mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all
-                      ${checked ? "bg-blood-600 border-blood-600" : "border-white/30 bg-transparent"}
+                      ${checked ? "bg-blood-600 border-blood-600" : "border-app-border/40 bg-app-card"}
                     `}
                   >
-                    {checked && <Check className="w-3 h-3 text-white" />}
+                    {checked && <Check className="w-3 h-3 text-app-text" />}
                   </div>
-                  <span className="text-xs text-white/60">{label}</span>
+                  <span className="text-xs text-app-text/60">{label}</span>
                 </label>
               ))}
             </div>

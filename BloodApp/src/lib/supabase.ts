@@ -18,6 +18,22 @@ export type { Session } from "@supabase/supabase-js";
 export const supabase = createClient(
   supabaseUrl || "https://placeholder.supabase.co",
   supabaseAnonKey || "placeholder-key",
+  {
+    auth: {
+      // Keep the session alive between page loads / app restores
+      persistSession: true,
+      // Automatically refresh the JWT before it expires
+      autoRefreshToken: true,
+      // Mobile app: never read the session from the URL hash
+      detectSessionInUrl: false,
+      // Dedicated storage key so it doesn't clash with other libs
+      storageKey: "blood_supabase_auth",
+    },
+    global: {
+      // Surface connection errors in the console for easier debugging
+      headers: { "x-application-name": "blood-app" },
+    },
+  },
 );
 
 export const isSupabaseConfigured =

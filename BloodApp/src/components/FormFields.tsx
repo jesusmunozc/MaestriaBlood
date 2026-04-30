@@ -39,26 +39,26 @@ export function InputField({
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-white/70">{label}</label>
+        <label className="text-sm font-medium text-app-text/70">{label}</label>
       )}
       <div
         className={`
           flex items-center gap-3
-          bg-[#1e1e2e]
-          border ${error ? "border-red-500/60" : "border-white/10 focus-within:border-blood-500/60"}
+          bg-app-card-alt
+          border ${error ? "border-red-500/60" : "border-app-border/10 focus-within:border-blood-500/60"}
           rounded-xl
           px-4 py-3.5
           transition-colors
         `}
       >
-        {Icon && <Icon className="w-4 h-4 text-white/40 shrink-0" />}
+        {Icon && <Icon className="w-4 h-4 text-app-text/40 shrink-0" />}
         <input
           {...props}
-          className={`w-full bg-transparent text-white text-sm placeholder-white/30 ${className}`}
+          className={`w-full bg-transparent text-app-text text-sm placeholder-app-text/30 ${className}`}
         />
         {rightElement}
       </div>
-      {hint && !error && <span className="text-xs text-white/40">{hint}</span>}
+      {hint && !error && <span className="text-xs text-app-text/40">{hint}</span>}
       {error && <span className="text-xs text-red-400">{error}</span>}
     </div>
   );
@@ -76,22 +76,22 @@ export function SelectField({
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-white/70">{label}</label>
+        <label className="text-sm font-medium text-app-text/70">{label}</label>
       )}
       <div
         className={`
           flex items-center gap-3
-          bg-[#1e1e2e]
-          border ${error ? "border-red-500/60" : "border-white/10 focus-within:border-blood-500/60"}
+          bg-app-card-alt
+          border ${error ? "border-red-500/60" : "border-app-border/10 focus-within:border-blood-500/60"}
           rounded-xl
           px-4 py-3.5
           transition-colors
         `}
       >
-        {Icon && <Icon className="w-4 h-4 text-white/40 shrink-0" />}
+        {Icon && <Icon className="w-4 h-4 text-app-text/40 shrink-0" />}
         <select
           {...props}
-          className={`w-full bg-transparent text-white text-sm appearance-none ${className}`}
+          className={`w-full bg-transparent text-app-text text-sm appearance-none ${className}`}
         >
           {children}
         </select>
@@ -113,12 +113,12 @@ export function TextareaField({
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label className="text-sm font-medium text-white/70">{label}</label>
+        <label className="text-sm font-medium text-app-text/70">{label}</label>
       )}
       <div
         className={`
-          bg-[#1e1e2e]
-          border ${error ? "border-red-500/60" : "border-white/10 focus-within:border-blood-500/60"}
+          bg-app-card-alt
+          border ${error ? "border-red-500/60" : "border-app-border/10 focus-within:border-blood-500/60"}
           rounded-xl
           px-4 py-3.5
           transition-colors
@@ -127,10 +127,10 @@ export function TextareaField({
         <textarea
           {...props}
           maxLength={maxLength}
-          className={`w-full bg-transparent text-white text-sm placeholder-white/30 resize-none min-h-[80px] ${className}`}
+          className={`w-full bg-transparent text-app-text text-sm placeholder-app-text/30 resize-none min-h-[80px] ${className}`}
         />
         {maxLength && charCount !== undefined && (
-          <span className="block text-right text-xs text-white/30 mt-1">
+          <span className="block text-right text-xs text-app-text/30 mt-1">
             {charCount}/{maxLength}
           </span>
         )}

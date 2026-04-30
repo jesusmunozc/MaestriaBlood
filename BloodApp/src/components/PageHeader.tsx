@@ -27,21 +27,21 @@ export default function PageHeader({
         sticky top-0 z-40
         flex items-center gap-3
         px-4 py-3
-        ${transparent ? "bg-transparent" : "bg-[#0f0f0f]/90 backdrop-blur-md border-b border-white/5"}
+        ${transparent ? "bg-transparent" : "bg-app-bg/90 backdrop-blur-md border-b border-app-border/5"}
         ${className}
       `}
     >
       {(onBack !== undefined || onBack === undefined) && (
         <button
           onClick={onBack ?? (() => navigate(-1))}
-          className="p-2 -ml-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 active:scale-95 transition-all"
+          className="p-2 -ml-2 rounded-full text-app-text/70 hover:text-app-text hover:bg-app-border/10 active:scale-95 transition-all"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
       )}
 
       {title && (
-        <h1 className="flex-1 text-base font-semibold text-white truncate">
+        <h1 className="flex-1 text-base font-semibold text-app-text truncate">
           {title}
         </h1>
       )}

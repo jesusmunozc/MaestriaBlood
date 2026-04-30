@@ -88,13 +88,13 @@ export default function CreateRequest() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] pb-28 page-enter">
+    <div className="min-h-screen bg-app-bg pb-28 page-enter">
       <PageHeader title="Nueva solicitud" onBack={() => navigate(-1)} />
 
       <div className="mx-5 mt-4 space-y-5">
         {/* Blood type */}
         <div>
-          <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-3">
+          <p className="text-app-text/40 text-xs font-semibold uppercase tracking-wider mb-3">
             Tipo de sangre requerido
           </p>
           <div className="grid grid-cols-4 gap-2">
@@ -106,7 +106,7 @@ export default function CreateRequest() {
                   ${
                     bloodType === t
                       ? "bg-blood-600 border-blood-600 text-white scale-105"
-                      : "bg-white/5 border-white/10 text-white/50"
+                      : "bg-app-border/5 border-app-border/10 text-app-text/50"
                   }`}
               >
                 {t}
@@ -117,21 +117,21 @@ export default function CreateRequest() {
 
         {/* Units */}
         <div>
-          <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-3">
+          <p className="text-app-text/40 text-xs font-semibold uppercase tracking-wider mb-3">
             Unidades necesarias
           </p>
-          <div className="flex items-center justify-between bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
+          <div className="flex items-center justify-between bg-app-card border border-app-border/8 rounded-2xl p-4">
             <button
               onClick={() => setUnits((u) => Math.max(1, u - 1))}
-              className="w-10 h-10 rounded-full bg-white/8 flex items-center justify-center active:scale-90 transition-transform"
+              className="w-10 h-10 rounded-full bg-app-border/8 flex items-center justify-center active:scale-90 transition-transform"
             >
-              <Minus className="w-4 h-4 text-white" />
+              <Minus className="w-4 h-4 text-app-text" />
             </button>
             <div className="text-center">
-              <span className="text-3xl font-extrabold text-white">
+              <span className="text-3xl font-extrabold text-app-text">
                 {units}
               </span>
-              <p className="text-white/40 text-xs mt-0.5">
+              <p className="text-app-text/40 text-xs mt-0.5">
                 {units === 1 ? "unidad" : "unidades"}
               </p>
             </div>
@@ -139,14 +139,14 @@ export default function CreateRequest() {
               onClick={() => setUnits((u) => Math.min(10, u + 1))}
               className="w-10 h-10 rounded-full bg-blood-600 flex items-center justify-center active:scale-90 transition-transform"
             >
-              <Plus className="w-4 h-4 text-white" />
+              <Plus className="w-4 h-4 text-app-text" />
             </button>
           </div>
         </div>
 
         {/* Urgency */}
         <div>
-          <p className="text-white/40 text-xs font-semibold uppercase tracking-wider mb-3">
+          <p className="text-app-text/40 text-xs font-semibold uppercase tracking-wider mb-3">
             Urgencia
           </p>
           <div className="space-y-2">
@@ -154,8 +154,8 @@ export default function CreateRequest() {
               <button
                 key={id}
                 onClick={() => selectUrgency(id)}
-                className={`w-full flex items-center gap-3 bg-[#1a1a2e] border rounded-2xl p-3.5 transition-all
-                  ${urgency === id ? `border-current ${color} bg-opacity-20` : "border-white/8 text-white/40"}`}
+                className={`w-full flex items-center gap-3 bg-app-card border rounded-2xl p-3.5 transition-all
+                  ${urgency === id ? `border-current ${color} bg-opacity-20` : "border-app-border/8 text-app-text/40"}`}
               >
                 <div
                   className={`w-3 h-3 rounded-full flex-shrink-0 ${urgency === id ? "bg-current" : "bg-white/20"}`}
@@ -196,7 +196,7 @@ export default function CreateRequest() {
       </div>
 
       {/* Submit */}
-      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-[#0f0f0f]/95 backdrop-blur-xl border-t border-white/8">
+      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/8">
         <Button
           variant="primary"
           size="lg"
@@ -220,7 +220,7 @@ export default function CreateRequest() {
             <AlertTriangle className="w-8 h-8 text-red-400" />
           </div>
           <h3 className="text-white font-bold text-lg mb-2">¿Urgencia alta?</h3>
-          <p className="text-white/50 text-sm mb-5">
+          <p className="text-app-text/50 text-sm mb-5">
             Marca urgente sólo si la sangre se necesita en las{" "}
             <span className="text-red-400 font-semibold">próximas horas</span>.
             Las falsas urgencias afectan la confianza de la comunidad.

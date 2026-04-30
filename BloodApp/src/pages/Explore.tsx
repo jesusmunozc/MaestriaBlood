@@ -60,27 +60,27 @@ export default function Explore() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f0f0f] pb-20 page-enter">
+    <div className="min-h-screen flex flex-col bg-app-bg pb-20 page-enter">
       <PageHeader
         title="Solicitudes"
         onBack={() => navigate("/home")}
         right={
-          <button className="p-2 rounded-full bg-white/8 text-white/60 active:scale-95 transition-transform">
+          <button className="p-2 rounded-full bg-app-border/8 text-app-text/60 active:scale-95 transition-transform">
             <Filter className="w-4 h-4" />
           </button>
         }
       />
 
-      <div className="flex-1 overflow-y-auto px-5 pt-3">
+      <div className="flex-1 overflow-y-auto px-5 pt-3 pb-24">
         {/* Search */}
-        <div className="flex items-center gap-3 bg-[#1e1e2e] border border-white/10 rounded-2xl px-4 py-3 mb-4">
-          <Search className="w-4 h-4 text-white/30 shrink-0" />
+        <div className="flex items-center gap-3 bg-app-card-alt border border-app-border/10 rounded-2xl px-4 py-3 mb-4">
+          <Search className="w-4 h-4 text-app-text/30 shrink-0" />
           <input
             type="text"
             placeholder="Buscar por nombre o tipo de sangre"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-white text-sm placeholder-white/30"
+            className="flex-1 bg-transparent text-app-text text-sm placeholder-app-text/30"
           />
         </div>
 
@@ -92,7 +92,7 @@ export default function Explore() {
               onClick={() => setChip(id)}
               className={`
                 shrink-0 px-4 py-1.5 rounded-full text-xs font-semibold transition-all
-                ${chip === id ? "chip-active" : "bg-white/8 text-white/50 border border-white/10"}
+                ${chip === id ? "chip-active" : "bg-app-border/8 text-app-text/50 border border-app-border/10"}
               `}
             >
               {label}
@@ -112,10 +112,10 @@ export default function Explore() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-center">
-            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
-              <Search className="w-8 h-8 text-white/20" />
+            <div className="w-16 h-16 rounded-full bg-app-border/5 flex items-center justify-center mb-4">
+              <Search className="w-8 h-8 text-app-text/20" />
             </div>
-            <p className="text-white/30 text-sm">
+            <p className="text-app-text/30 text-sm">
               No se encontraron solicitudes
             </p>
           </div>
@@ -155,36 +155,36 @@ function RequestCard({
   return (
     <div
       onClick={onClick}
-      className={`bg-[#1a1a2e] border ${borderColor} rounded-2xl p-4 card-hover cursor-pointer active:scale-[0.98] transition-transform`}
+      className={`bg-app-card border ${borderColor} rounded-2xl p-4 card-hover cursor-pointer active:scale-[0.98] transition-transform`}
     >
       <div className="flex items-start justify-between mb-3">
         <UrgencyBadge urgency={req.urgency} size="sm" />
-        <span className="text-white/30 text-[10px]">
+        <span className="text-app-text/30 text-[10px]">
           {timeAgo(req.created_at)}
         </span>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/60 font-semibold text-sm shrink-0">
+        <div className="w-10 h-10 rounded-full bg-app-border/10 flex items-center justify-center text-app-text/60 font-semibold text-sm shrink-0">
           {req.profile?.full_name?.charAt(0) ?? "?"}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold text-sm">
+          <p className="text-app-text font-semibold text-sm">
             {req.profile?.full_name ?? "Usuario"}
           </p>
           <div className="flex items-center gap-3 mt-0.5">
-            <span className="text-white/40 text-xs">
+            <span className="text-app-text/40 text-xs">
               Necesita:{" "}
               <span className="text-blood-400 font-semibold">
                 {req.blood_type}
               </span>
             </span>
-            <span className="text-white/40 text-xs">
+            <span className="text-app-text/40 text-xs">
               {req.units_needed}{" "}
               {req.units_needed === 1 ? "unidad" : "unidades"}
             </span>
           </div>
-          <p className="text-white/30 text-xs mt-1 truncate">
+          <p className="text-app-text/30 text-xs mt-1 truncate">
             🏥 {req.health_center}
           </p>
         </div>
@@ -192,7 +192,7 @@ function RequestCard({
       </div>
 
       {req.message && (
-        <p className="text-white/30 text-xs mt-2 italic truncate">
+        <p className="text-app-text/30 text-xs mt-2 italic truncate">
           "{req.message}"
         </p>
       )}

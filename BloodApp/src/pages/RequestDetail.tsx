@@ -58,7 +58,7 @@ export default function RequestDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center">
+      <div className="min-h-screen bg-app-bg flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-blood-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -66,8 +66,8 @@ export default function RequestDetail() {
 
   if (!request) {
     return (
-      <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center">
-        <p className="text-white/40">Solicitud no encontrada</p>
+      <div className="min-h-screen bg-app-bg flex flex-col items-center justify-center">
+        <p className="text-app-text/40">Solicitud no encontrada</p>
         <Button
           variant="ghost"
           size="sm"
@@ -83,11 +83,11 @@ export default function RequestDetail() {
   const accepted = donors.filter((d: any) => d.status === "confirmed").length;
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] pb-32 page-enter">
+    <div className="min-h-screen bg-app-bg pb-32 page-enter">
       <PageHeader title="Detalle de solicitud" onBack={() => navigate(-1)} />
 
       {/* Hero */}
-      <div className="mx-5 mt-4 bg-gradient-to-br from-blood-900/60 to-[#1a1a2e] border border-blood-700/30 rounded-3xl p-5">
+      <div className="mx-5 mt-4 bg-gradient-to-br from-blood-900/60 to-app-card border border-blood-700/30 rounded-3xl p-5">
         <div className="flex items-center justify-between mb-3">
           <UrgencyBadge urgency={request.urgency} />
           <BloodTypeBadge type={request.blood_type} size="lg" glow />
@@ -96,7 +96,7 @@ export default function RequestDetail() {
           Se necesita sangre{" "}
           <span className="text-blood-400">{request.blood_type}</span>
         </h1>
-        <p className="text-white/50 text-sm">{timeAgo(request.created_at)}</p>
+        <p className="text-app-text/50 text-sm">{timeAgo(request.created_at)}</p>
 
         <div className="flex gap-4 mt-3">
           <Stat label="Unidades" value={`${request.units_needed}`} />
@@ -111,14 +111,14 @@ export default function RequestDetail() {
         {/* Requester */}
         <SectionCard title="Solicitante">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-base">
+            <div className="w-12 h-12 rounded-full bg-app-border/10 flex items-center justify-center text-white font-bold text-base">
               {request.profile?.full_name?.charAt(0) ?? "?"}
             </div>
             <div>
               <p className="text-white font-semibold">
                 {request.profile?.full_name ?? "Usuario"}
               </p>
-              <p className="text-white/40 text-xs">
+              <p className="text-app-text/40 text-xs">
                 @{request.profile?.username ?? "—"}
               </p>
             </div>
@@ -139,7 +139,7 @@ export default function RequestDetail() {
                 {request.health_center}
               </p>
               {request.address && (
-                <p className="text-white/40 text-xs mt-0.5">
+                <p className="text-app-text/40 text-xs mt-0.5">
                   {request.address}
                 </p>
               )}
@@ -150,7 +150,7 @@ export default function RequestDetail() {
         {/* Message */}
         {request.message && (
           <SectionCard title="Mensaje del solicitante">
-            <p className="text-white/60 text-sm italic">"{request.message}"</p>
+            <p className="text-app-text/60 text-sm italic">"{request.message}"</p>
           </SectionCard>
         )}
 
@@ -184,13 +184,13 @@ export default function RequestDetail() {
               {donors.slice(0, 8).map((d: any) => (
                 <div
                   key={d.id}
-                  className="w-9 h-9 rounded-full bg-blood-800/40 border border-blood-600/30 flex items-center justify-center text-xs font-semibold text-white"
+                  className="w-9 h-9 rounded-full bg-blood-800/40 border border-blood-600/30 flex items-center justify-center text-xs font-semibold text-app-text"
                 >
                   {d.full_name?.charAt(0) ?? "?"}
                 </div>
               ))}
               {donors.length > 8 && (
-                <div className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center text-xs text-white/50">
+                <div className="w-9 h-9 rounded-full bg-app-border/8 flex items-center justify-center text-xs text-app-text/50">
                   +{donors.length - 8}
                 </div>
               )}
@@ -201,7 +201,7 @@ export default function RequestDetail() {
 
       {/* Donate CTA */}
       {!isOwner && request.status === "open" && (
-        <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-[#0f0f0f]/95 backdrop-blur-xl border-t border-white/8">
+        <div className="fixed bottom-0 left-0 right-0 px-5 py-4 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/8">
           {alreadyDonating ? (
             <div className="flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-900/30 border border-emerald-600/30 text-emerald-400 font-semibold text-sm">
               <CheckCircle className="w-4 h-4" />
@@ -234,7 +234,7 @@ export default function RequestDetail() {
           <h3 className="text-white font-bold text-lg mb-2">
             Incompatibilidad detectada
           </h3>
-          <p className="text-white/50 text-sm mb-5">
+          <p className="text-app-text/50 text-sm mb-5">
             Tu tipo de sangre{" "}
             <span className="text-white font-semibold">
               {profile?.blood_type}
@@ -272,9 +272,9 @@ export default function RequestDetail() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-white/5 rounded-xl px-3 py-2 text-center">
+    <div className="bg-app-border/5 rounded-xl px-3 py-2 text-center">
       <p className="text-white font-bold">{value}</p>
-      <p className="text-white/40 text-[10px]">{label}</p>
+      <p className="text-app-text/40 text-[10px]">{label}</p>
     </div>
   );
 }
@@ -287,8 +287,8 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
-      <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
+    <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
+      <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
         {title}
       </p>
       {children}

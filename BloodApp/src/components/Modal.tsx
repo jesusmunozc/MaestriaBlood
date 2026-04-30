@@ -30,11 +30,11 @@ export default function Modal({
       <div
         className={`
           modal-sheet
-          bg-[#1a1a2e]
-          border border-white/10
+          bg-app-card
+          border border-app-border/10
           w-full max-w-[430px]
           rounded-t-3xl sm:rounded-3xl
-          p-6 pb-8
+          p-6 modal-sheet-bottom
           relative
           ${variant === "center" ? "sm:mx-4" : ""}
         `}
@@ -42,11 +42,11 @@ export default function Modal({
       >
         {title && (
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-lg font-semibold text-white">{title}</h3>
+            <h3 className="text-lg font-semibold text-app-text">{title}</h3>
             {onClose && (
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-full bg-white/10 text-white/60 hover:text-white transition-colors"
+                className="p-1.5 rounded-full bg-app-border/10 text-app-text/60 hover:text-app-text transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>

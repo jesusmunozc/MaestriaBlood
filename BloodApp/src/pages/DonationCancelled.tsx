@@ -7,21 +7,21 @@ export default function DonationCancelled() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-6 page-enter">
+    <div className="min-h-screen bg-app-bg flex flex-col items-center justify-center px-6 page-enter">
       {/* Icon */}
       <div className="relative mb-8">
         <div className="w-28 h-28 rounded-full bg-red-900/20 border-2 border-red-700/40 flex items-center justify-center">
           <XCircle className="w-14 h-14 text-red-400" />
         </div>
         <div className="absolute -top-1 -right-1 w-8 h-8 rounded-full bg-amber-600 flex items-center justify-center">
-          <Clock className="w-4 h-4 text-white" />
+          <Clock className="w-4 h-4 text-app-text" />
         </div>
       </div>
 
       <h1 className="text-white text-2xl font-extrabold mb-3 text-center">
         Donación cancelada
       </h1>
-      <p className="text-white/50 text-center text-sm leading-relaxed mb-6 max-w-xs">
+      <p className="text-app-text/50 text-center text-sm leading-relaxed mb-6 max-w-xs">
         Lamentamos que hayas cancelado. Esperamos que en un futuro puedas ser
         parte de nuestra comunidad de donantes.
       </p>

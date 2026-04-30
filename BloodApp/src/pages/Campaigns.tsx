@@ -50,19 +50,19 @@ export default function Campaigns() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f0f0f] pb-20 page-enter">
+    <div className="min-h-screen flex flex-col bg-app-bg pb-20 page-enter">
       <PageHeader title="Campañas" />
 
-      <div className="flex-1 overflow-y-auto px-5 pt-3">
+      <div className="flex-1 overflow-y-auto px-5 pt-3 pb-24">
         {/* Search */}
-        <div className="flex items-center gap-3 bg-[#1e1e2e] border border-white/10 rounded-2xl px-4 py-3 mb-4">
-          <Search className="w-4 h-4 text-white/30 shrink-0" />
+        <div className="flex items-center gap-3 bg-app-card-alt border border-app-border/10 rounded-2xl px-4 py-3 mb-4">
+          <Search className="w-4 h-4 text-app-text/30 shrink-0" />
           <input
             type="text"
             placeholder="Buscar campaña o ciudad"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-white text-sm placeholder-white/30"
+            className="flex-1 bg-transparent text-app-text text-sm placeholder-app-text/30"
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function Campaigns() {
               key={id}
               onClick={() => setChip(id)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all
-                ${chip === id ? "chip-active" : "bg-white/8 text-white/50 border border-white/10"}`}
+                ${chip === id ? "chip-active" : "bg-app-border/8 text-app-text/50 border border-app-border/10"}`}
             >
               {label}
             </button>
@@ -85,13 +85,13 @@ export default function Campaigns() {
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-36 rounded-2xl bg-white/5 animate-pulse"
+                className="h-36 rounded-2xl bg-app-border/5 animate-pulse"
               />
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center py-16">
-            <p className="text-white/30 text-sm">No hay campañas disponibles</p>
+            <p className="text-app-text/30 text-sm">No hay campañas disponibles</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -123,7 +123,7 @@ function CampaignCard({
   return (
     <div
       onClick={onClick}
-      className="bg-[#1a1a2e] border border-white/8 rounded-2xl overflow-hidden card-hover cursor-pointer active:scale-[0.98] transition-transform"
+      className="bg-app-card border border-app-border/8 rounded-2xl overflow-hidden card-hover cursor-pointer active:scale-[0.98] transition-transform"
     >
       {/* Date banner */}
       <div className="bg-gradient-to-r from-blood-700/40 to-blood-900/30 px-4 py-2 flex items-center justify-between">
@@ -142,20 +142,20 @@ function CampaignCard({
         <h3 className="text-white font-bold text-sm mb-1 line-clamp-2">
           {c.name}
         </h3>
-        <div className="flex items-center gap-2 text-white/40 text-xs mb-3">
+        <div className="flex items-center gap-2 text-app-text/40 text-xs mb-3">
           <MapPin className="w-3 h-3 shrink-0" />
           <span className="truncate">{c.location}</span>
         </div>
 
         {/* Slots bar */}
         <div>
-          <div className="flex items-center justify-between text-[10px] text-white/30 mb-1">
+          <div className="flex items-center justify-between text-[10px] text-app-text/30 mb-1">
             <span>Cupos</span>
-            <span className="text-white/50 font-semibold">
+            <span className="text-app-text/50 font-semibold">
               {c.registered_slots}/{c.total_slots}
             </span>
           </div>
-          <div className="h-1.5 bg-white/8 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-app-border/8 rounded-full overflow-hidden">
             <div
               className="h-full bg-blood-600 rounded-full transition-all"
               style={{

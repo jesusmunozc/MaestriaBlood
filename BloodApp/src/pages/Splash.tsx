@@ -19,10 +19,10 @@ export default function Splash() {
         </div>
 
         <div className="text-center">
-          <h1 className="text-5xl font-extrabold text-white tracking-tight">
+          <h1 className="text-5xl font-extrabold text-app-text tracking-tight">
             <span className="text-blood-500">!</span>Blood
           </h1>
-          <p className="text-white/60 text-base mt-2 font-medium">
+          <p className="text-app-text/60 text-base mt-2 font-medium">
             Dona vida, recibe vida
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function Splash() {
           Registrarme
         </Button>
 
-        <p className="text-center text-white/30 text-xs mt-2 leading-relaxed">
+        <p className="text-center text-app-text/30 text-xs mt-2 leading-relaxed">
           Juntos creamos una comunidad
           <br />
           que salva vidas

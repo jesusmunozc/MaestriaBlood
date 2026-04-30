@@ -74,7 +74,7 @@ export default function DonorSurvey() {
   if (showResult) {
     const result = evaluateAptitude(answers as AptitudeSurveyAnswers);
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-8 py-10 bg-[#0f0f0f] page-enter">
+      <div className="min-h-screen flex flex-col items-center justify-center px-8 py-10 bg-app-bg page-enter">
         <div
           className={`
             w-24 h-24 rounded-full flex items-center justify-center mb-6 float-icon
@@ -91,7 +91,7 @@ export default function DonorSurvey() {
             ? "¡Pareces ser un buen donante!"
             : "Gracias por responder"}
         </h2>
-        <p className="text-white/50 text-center text-sm leading-relaxed mb-8">
+        <p className="text-app-text/50 text-center text-sm leading-relaxed mb-8">
           {result.message}
         </p>
 
@@ -116,10 +116,10 @@ export default function DonorSurvey() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f0f0f] page-enter">
+    <div className="min-h-screen flex flex-col bg-app-bg page-enter">
       {/* Header */}
-      <div className="safe-top bg-[#0f0f0f]/90 border-b border-white/5 px-4 py-3 flex justify-center">
-        <h1 className="text-base font-semibold text-white">
+      <div className="safe-top bg-app-bg/90 border-b border-app-border/5 px-4 py-3 flex justify-center">
+        <h1 className="text-base font-semibold text-app-text">
           Encuesta de donante
         </h1>
       </div>
@@ -133,7 +133,7 @@ export default function DonorSurvey() {
           <h2 className="text-xl font-bold text-white mb-2">
             ¿Eres apto para donar sangre?
           </h2>
-          <p className="text-white/50 text-sm">
+          <p className="text-app-text/50 text-sm">
             Responde estas preguntas para saber si podrías ser donante. No
             afectan tu registro.
           </p>
@@ -144,7 +144,7 @@ export default function DonorSurvey() {
           {QUESTIONS.map((q, i) => (
             <div
               key={q.key}
-              className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4"
+              className="bg-app-card border border-app-border/8 rounded-2xl p-4"
             >
               <p className="text-sm text-white/80 font-medium mb-3">
                 {i + 1}. {q.text}
@@ -162,7 +162,7 @@ export default function DonorSurvey() {
                           ? val
                             ? "bg-emerald-500/20 border border-emerald-500/50 text-emerald-400"
                             : "bg-red-500/20 border border-red-500/50 text-red-400"
-                          : "bg-white/5 border border-white/10 text-white/50"
+                          : "bg-app-border/5 border border-app-border/10 text-app-text/50"
                       }
                     `}
                   >

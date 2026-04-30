@@ -36,6 +36,12 @@ export default {
           card: "#16213E",
           elevated: "#0F3460",
         },
+        // ── Semantic theme colors (CSS variables) ─────────────────────────
+        "app-bg": "rgb(var(--app-bg) / <alpha-value>)",
+        "app-card": "rgb(var(--app-card) / <alpha-value>)",
+        "app-card-alt": "rgb(var(--app-card-alt) / <alpha-value>)",
+        "app-border": "rgb(var(--app-border) / <alpha-value>)",
+        "app-text": "rgb(var(--app-text) / <alpha-value>)",
       },
       fontFamily: {
         sans: [

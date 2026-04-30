@@ -29,7 +29,7 @@ export default function StarRating({ value, onChange, size = 36 }: Props) {
               className={
                 isFilled
                   ? "fill-amber-400 text-amber-400 scale-110"
-                  : "text-white/20"
+                  : "text-app-text/20"
               }
             />
           </button>

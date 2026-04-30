@@ -59,20 +59,20 @@ export default function ConfirmDonation() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] pb-28 page-enter">
+    <div className="min-h-screen bg-app-bg pb-28 page-enter">
       <PageHeader title="Confirmar donación" onBack={() => navigate(-1)} />
 
       <div className="mx-5 mt-4 space-y-4">
         {/* Request summary */}
         {request && (
-          <div className="bg-gradient-to-br from-blood-900/40 to-[#1a1a2e] border border-blood-700/30 rounded-2xl p-4">
+          <div className="bg-gradient-to-br from-blood-900/40 to-app-card border border-blood-700/30 rounded-2xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white/40 text-xs">Beneficiario</p>
+                <p className="text-app-text/40 text-xs">Beneficiario</p>
                 <p className="text-white font-semibold mt-0.5">
                   {request.profile?.full_name ?? "Usuario"}
                 </p>
-                <p className="text-white/40 text-xs mt-1">
+                <p className="text-app-text/40 text-xs mt-1">
                   🏥 {request.health_center}
                 </p>
               </div>
@@ -101,8 +101,8 @@ export default function ConfirmDonation() {
         </div>
 
         {/* Commitment */}
-        <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
-          <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
+        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
+          <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
             Compromiso
           </p>
           <label className="flex items-start gap-3 cursor-pointer">
@@ -110,7 +110,7 @@ export default function ConfirmDonation() {
               checked={commitment}
               onChange={() => setCommitment(!commitment)}
             />
-            <span className="text-white/70 text-sm leading-relaxed">
+            <span className="text-app-text/70 text-sm leading-relaxed">
               Me comprometo a asistir al centro médico indicado y completar el
               proceso de donación.
             </span>
@@ -118,10 +118,10 @@ export default function ConfirmDonation() {
         </div>
 
         {/* Health checklist */}
-        <div className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4">
+        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-3">
             <Shield className="w-4 h-4 text-blood-400" />
-            <p className="text-white/40 text-[10px] font-semibold uppercase tracking-wider">
+            <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider">
               Aptitud médica
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function ConfirmDonation() {
             {HEALTH_POINTS.map((point, i) => (
               <label key={i} className="flex items-center gap-3 cursor-pointer">
                 <Checkbox checked={checks[i]} onChange={() => toggle(i)} />
-                <span className="text-white/70 text-sm">{point}</span>
+                <span className="text-app-text/70 text-sm">{point}</span>
               </label>
             ))}
           </div>
@@ -137,7 +137,7 @@ export default function ConfirmDonation() {
       </div>
 
       {/* Actions */}
-      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 flex flex-col gap-2 bg-[#0f0f0f]/95 backdrop-blur-xl border-t border-white/8">
+      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 flex flex-col gap-2 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/8">
         <Button
           variant="primary"
           size="lg"
@@ -171,7 +171,7 @@ export default function ConfirmDonation() {
           <h3 className="text-white font-bold text-lg mb-2">
             Penalización por cancelar
           </h3>
-          <p className="text-white/50 text-sm mb-5">
+          <p className="text-app-text/50 text-sm mb-5">
             Si confirmas y luego cancelas tu donación, tu cuenta quedará
             penalizada por
             <span className="text-amber-400 font-semibold"> 30 días</span>.
@@ -206,7 +206,7 @@ function Checkbox({
         ${checked ? "bg-blood-600 border-blood-600" : "border-white/20 bg-transparent"}`}
     >
       {checked && (
-        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
+        <svg className="w-3 h-3 text-app-text" fill="none" viewBox="0 0 12 12">
           <path
             d="M2 6l3 3 5-5"
             stroke="currentColor"

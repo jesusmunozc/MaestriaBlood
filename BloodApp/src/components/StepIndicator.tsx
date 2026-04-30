@@ -25,9 +25,9 @@ export default function StepIndicator({ steps, currentStep }: Props) {
                 className={`
                   w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold
                   transition-all duration-300
-                  ${isDone ? "bg-blood-600 text-white" : ""}
+                  ${isDone ? "bg-blood-600 text-app-text" : ""}
                   ${isActive ? "bg-blood-600/20 border-2 border-blood-500 text-blood-400" : ""}
-                  ${!isDone && !isActive ? "bg-white/10 text-white/30" : ""}
+                  ${!isDone && !isActive ? "bg-app-border/10 text-app-text/30" : ""}
                 `}
               >
                 {isDone ? <Check className="w-3.5 h-3.5" /> : stepNum}
@@ -37,8 +37,8 @@ export default function StepIndicator({ steps, currentStep }: Props) {
                   isActive
                     ? "text-blood-400"
                     : isDone
-                      ? "text-white/50"
-                      : "text-white/20"
+                      ? "text-app-text/50"
+                      : "text-app-text/20"
                 }`}
               >
                 {step.label}
@@ -47,7 +47,7 @@ export default function StepIndicator({ steps, currentStep }: Props) {
             {i < steps.length - 1 && (
               <div
                 className={`flex-1 h-0.5 mx-2 mb-4 rounded transition-colors ${
-                  stepNum < currentStep ? "bg-blood-600" : "bg-white/10"
+                  stepNum < currentStep ? "bg-blood-600" : "bg-app-border/10"
                 }`}
               />
             )}

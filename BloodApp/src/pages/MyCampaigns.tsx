@@ -26,8 +26,8 @@ export default function MyCampaigns() {
 
   if (profile?.user_type !== "professional") {
     return (
-      <div className="min-h-screen bg-[#0f0f0f] flex flex-col items-center justify-center px-6 text-center">
-        <p className="text-white/40 text-sm mb-4">
+      <div className="min-h-screen bg-app-bg flex flex-col items-center justify-center px-6 text-center">
+        <p className="text-app-text/40 text-sm mb-4">
           Solo disponible para profesionales de salud.
         </p>
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
@@ -38,7 +38,7 @@ export default function MyCampaigns() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0f0f0f] pb-20 page-enter">
+    <div className="min-h-screen flex flex-col bg-app-bg pb-20 page-enter">
       <PageHeader
         title="Mis campañas"
         onBack={() => navigate("/home")}
@@ -47,24 +47,24 @@ export default function MyCampaigns() {
             onClick={() => navigate("/create-campaign")}
             className="w-8 h-8 rounded-full bg-blood-600 flex items-center justify-center active:scale-95 transition-transform"
           >
-            <Plus className="w-4 h-4 text-white" />
+            <Plus className="w-4 h-4 text-app-text" />
           </button>
         }
       />
 
-      <div className="flex-1 overflow-y-auto px-5 pt-4">
+      <div className="flex-1 overflow-y-auto px-5 pt-4 pb-24">
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
               <div
                 key={i}
-                className="h-24 rounded-2xl bg-white/5 animate-pulse"
+                className="h-24 rounded-2xl bg-app-border/5 animate-pulse"
               />
             ))}
           </div>
         ) : campaigns.length === 0 ? (
           <div className="flex flex-col items-center py-16 text-center">
-            <p className="text-white/30 text-sm mb-4">
+            <p className="text-app-text/30 text-sm mb-4">
               Aún no has creado campañas
             </p>
             <Button
@@ -81,17 +81,17 @@ export default function MyCampaigns() {
               <div
                 key={c.id}
                 onClick={() => navigate(`/campaign/${c.id}`)}
-                className="bg-[#1a1a2e] border border-white/8 rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-transform cursor-pointer"
+                className="bg-app-card border border-app-border/8 rounded-2xl p-4 flex items-center gap-3 active:scale-[0.98] transition-transform cursor-pointer"
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-white font-semibold text-sm truncate">
                     {c.name}
                   </p>
-                  <p className="text-white/40 text-xs mt-0.5">
+                  <p className="text-app-text/40 text-xs mt-0.5">
                     {formatDate(c.date)} · {c.registered_slots}/{c.total_slots}{" "}
                     cupos
                   </p>
-                  <div className="h-1 bg-white/8 rounded-full mt-2">
+                  <div className="h-1 bg-app-border/8 rounded-full mt-2">
                     <div
                       className="h-full bg-blood-600 rounded-full"
                       style={{
@@ -100,7 +100,7 @@ export default function MyCampaigns() {
                     />
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-white/20 shrink-0" />
+                <ChevronRight className="w-4 h-4 text-app-text/20 shrink-0" />
               </div>
             ))}
           </div>

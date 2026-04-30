@@ -13,8 +13,8 @@ export default function Card({ children, onClick, className = "" }: Props) {
       onClick={onClick}
       className={`
         card-hover
-        bg-[#1a1a2e]/80
-        border border-white/8
+        bg-app-card/80
+        border border-app-border/8
         rounded-2xl
         ${onClick ? "cursor-pointer active:scale-[0.98]" : ""}
         ${className}
