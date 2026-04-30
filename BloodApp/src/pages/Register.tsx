@@ -103,42 +103,59 @@ export default function Register() {
     setLoading(true);
     setError(null);
 
-    const step1: RegisterStep1 = {
-      user_type: userType,
-      full_name: fullName,
-      birth_date: birthDate,
-      blood_type: bloodType,
-      id_type: idType,
-      id_number: idNumber,
-    };
-    const step2: RegisterStep2 = {
-      front_doc_url: frontDoc,
-      back_doc_url: backDoc,
-      avatar_url: profilePhoto,
-      city,
-      address,
-    };
-    const step3: RegisterStep3 = {
-      username,
-      password,
-      terms_accepted: termsAccepted,
-      donation_commitment: donationCommitment,
-    };
+    try {
+      const step1: RegisterStep1 = {
+        user_type: userType,
+        full_name: fullName,
+        birth_date: birthDate,
+        blood_type: bloodType,
+        id_type: idType,
+        id_number: idNumber,
+      };
+      const step2: RegisterStep2 = {
+        front_doc_url: frontDoc,
+        back_doc_url: backDoc,
+        avatar_url: profilePhoto,
+        city,
+        address,
+      };
+      const step3: RegisterStep3 = {
+        username,
+        password,
+        terms_accepted: termsAccepted,
+        donation_commitment: donationCommitment,
+      };
 
-    const { error: err } = await registerUser(step1, step2, step3);
-    setLoading(false);
+      const { user, error: err } = await registerUser(step1, step2, step3);
 
-    if (err) {
-      setError(err);
-      return;
-    }
+      if (err) {
+        setError(err);
+        return;
+      }
 
-    refreshUser();
-    // Navigate to survey for citizens
-    if (userType === "donor") {
-      navigate("/donor-survey", { replace: true });
-    } else {
-      navigate("/home", { replace: true });
+      // user is null when Supabase requires email confirmation
+      if (!user) {
+        setError(
+          "Cuenta creada. Revisa tu correo y confirma tu email para continuar.",
+        );
+        return;
+      }
+
+      refreshUser();
+      // Navigate to survey for donors, home for professionals
+      if (userType === "donor") {
+        navigate("/donor-survey", { replace: true });
+      } else {
+        navigate("/home", { replace: true });
+      }
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Ocurrió un error inesperado. Inténtalo de nuevo.",
+      );
+    } finally {
+      setLoading(false);
     }
   }
 

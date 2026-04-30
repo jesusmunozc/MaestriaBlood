@@ -41,3 +41,5 @@ Thumbs.db
 
 # Seed scripts with credentials
 seed.mjs
+
+/src/generated/prisma

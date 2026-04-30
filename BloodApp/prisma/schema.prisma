@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["public", "auth"]
+}
+
+model Profile {
+  id                String    @id @db.Uuid
+  full_name         String
+  username          String    @unique
+  email             String?
+  blood_type        String?
+  user_type         String    @default("donor")
+  id_type           String?
+  id_number         String?
+  birth_date        DateTime? @db.Date
+  city              String?
+  address           String?
+  profile_image_url String?
+  front_doc_url     String?
+  back_doc_url      String?
+  avg_rating        Decimal?  @default(0) @db.Decimal(3, 2)
+  total_donations   Int       @default(0)
+  penalty_until     DateTime? @db.Timestamptz(6)
+  survey_done       Boolean   @default(false)
+  aptitude_eligible Boolean   @default(true)
+  created_at        DateTime? @default(now()) @db.Timestamptz(6)
+
+  blood_requests         BloodRequest[]
+  donations              Donation[]
+  campaigns              Campaign[]
+  campaign_registrations CampaignRegistration[]
+  notifications          Notification[]
+  ratings_given          Rating[]              @relation("rater")
+  ratings_received       Rating[]              @relation("rated")
+
+  @@map("profiles")
+  @@schema("public")
+}
+
+model BloodRequest {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  requester_id    String    @db.Uuid
+  blood_type      String
+  units_needed    Int       @default(1)
+  donors_needed   Int       @default(1)
+  donors_accepted Int       @default(0)
+  urgency         String    @default("medium")
+  health_center   String
+  address         String?
+  message         String?
+  status          String    @default("open")
+  created_at      DateTime? @default(now()) @db.Timestamptz(6)
+
+  requester Profile    @relation(fields: [requester_id], references: [id], onDelete: Cascade)
+  donations Donation[]
+
+  @@map("blood_requests")
+  @@schema("public")
+}
+
+model Donation {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  donor_id     String    @db.Uuid
+  request_id   String    @db.Uuid
+  status       String    @default("confirmed")
+  confirmed_at DateTime? @default(now()) @db.Timestamptz(6)
+  cancelled_at DateTime? @db.Timestamptz(6)
+  created_at   DateTime? @default(now()) @db.Timestamptz(6)
+
+  donor   Profile      @relation(fields: [donor_id], references: [id], onDelete: Cascade)
+  request BloodRequest @relation(fields: [request_id], references: [id], onDelete: Cascade)
+  ratings Rating[]
+
+  @@unique([donor_id, request_id])
+  @@map("donations")
+  @@schema("public")
+}
+
+model Campaign {
+  id                 String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  organizer_id       String    @db.Uuid
+  name               String
+  description        String?
+  location           String
+  date               DateTime  @db.Date
+  start_time         DateTime? @db.Time(6)
+  end_time           DateTime? @db.Time(6)
+  total_slots        Int       @default(20)
+  registered_slots   Int       @default(0)
+  blood_types_needed String[]
+  requirements       String?
+  status             String    @default("upcoming")
+  created_at         DateTime? @default(now()) @db.Timestamptz(6)
+
+  organizer     Profile                @relation(fields: [organizer_id], references: [id], onDelete: Cascade)
+  registrations CampaignRegistration[]
+
+  @@map("campaigns")
+  @@schema("public")
+}
+
+model CampaignRegistration {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id       String    @db.Uuid
+  campaign_id   String    @db.Uuid
+  status        String    @default("registered")
+  registered_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  user     Profile  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  campaign Campaign @relation(fields: [campaign_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, campaign_id])
+  @@map("campaign_registrations")
+  @@schema("public")
+}
+
+model Notification {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id    String    @db.Uuid
+  type       String
+  message    String
+  related_id String?   @db.Uuid
+  is_read    Boolean   @default(false)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+
+  user Profile @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+  @@schema("public")
+}
+
+model Rating {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  rater_id    String    @db.Uuid
+  rated_id    String    @db.Uuid
+  donation_id String?   @db.Uuid
+  stars       Int
+  comment     String?
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+
+  rater    Profile   @relation("rater", fields: [rater_id], references: [id], onDelete: Cascade)
+  rated    Profile   @relation("rated", fields: [rated_id], references: [id], onDelete: Cascade)
+  donation Donation? @relation(fields: [donation_id], references: [id])
+
+  @@unique([rater_id, donation_id])
+  @@map("ratings")
+  @@schema("public")
+}

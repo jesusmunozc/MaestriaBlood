@@ -126,7 +126,10 @@ export async function registerUser(
   });
 
   if (error) {
-    if (error.message.includes("already registered")) {
+    if (
+      error.message.toLowerCase().includes("already registered") ||
+      error.message.toLowerCase().includes("already been registered")
+    ) {
       return { user: null, error: "El nombre de usuario ya está en uso." };
     }
     return { user: null, error: error.message };
@@ -136,7 +139,7 @@ export async function registerUser(
     return { user: null, error: "Error al crear la cuenta." };
   }
 
-  // Create the profile in the profiles table
+  // ── Build profile payload (used by both insertion paths)
   const profilePayload: Partial<Profile> = {
     id: data.user.id,
     username: step3.username,
@@ -147,41 +150,106 @@ export async function registerUser(
     birth_date: step1.birth_date,
     city: step2.city,
     address: step2.address,
-    avatar_url: step2.avatar_url || null,
+    profile_image_url: step2.avatar_url || null,
     front_doc_url: step2.front_doc_url || null,
     back_doc_url: step2.back_doc_url || null,
     user_type: step1.user_type,
-    is_verified: false,
-    donations_count: 0,
     total_donations: 0,
     avg_rating: 0,
     penalty_until: null,
-    aptitude_survey: null,
+    survey_done: false,
   };
 
-  const { error: profileError } = await supabase
-    .from("profiles")
-    .insert(profilePayload);
+  // ── Path 1: SECURITY DEFINER RPC — works even without an active session
+  //    (required when Supabase email confirmation is enabled, because
+  //    auth.uid() is NULL until the user confirms their email)
+  const { error: profileError } = await supabase.rpc("create_user_profile", {
+    p_id: data.user.id,
+    p_username: step3.username,
+    p_full_name: step1.full_name,
+    p_blood_type: step1.blood_type ?? null,
+    p_id_type: step1.id_type ?? null,
+    p_id_number: step1.id_number ?? null,
+    p_birth_date: step1.birth_date ?? null,
+    p_city: step2.city ?? null,
+    p_address: step2.address ?? null,
+    // avatar_url from the form maps to profile_image_url in the DB
+    p_profile_image_url: step2.avatar_url || null,
+    p_front_doc_url: step2.front_doc_url || null,
+    p_back_doc_url: step2.back_doc_url || null,
+    p_user_type: step1.user_type,
+  });
 
   if (profileError) {
-    // Rollback: delete the auth user if profile creation fails
-    await supabase.auth.admin?.deleteUser(data.user.id);
-    return {
-      user: null,
-      error: profileError.message.includes("unique")
-        ? "El nombre de usuario ya está en uso."
-        : "Error al crear el perfil.",
-    };
+    // ── Path 2 fallback: direct INSERT when:
+    //    a) email confirmation is DISABLED (session is returned immediately)
+    //    b) the SECURITY DEFINER function hasn't been created yet
+    const rpcMissing =
+      profileError.message.toLowerCase().includes("could not find") ||
+      profileError.message.toLowerCase().includes("does not exist") ||
+      profileError.code === "PGRST202";
+
+    if (rpcMissing && data.session) {
+      // We have a live session → auth.uid() is set → RLS allows the INSERT
+      const { error: insertError } = await supabase.from("profiles").insert({
+        id: data.user.id,
+        username: step3.username,
+        full_name: step1.full_name,
+        blood_type: step1.blood_type ?? null,
+        id_type: step1.id_type ?? null,
+        id_number: step1.id_number ?? null,
+        birth_date: step1.birth_date ?? null,
+        city: step2.city ?? null,
+        address: step2.address ?? null,
+        profile_image_url: step2.avatar_url || null,
+        front_doc_url: step2.front_doc_url || null,
+        back_doc_url: step2.back_doc_url || null,
+        user_type: step1.user_type,
+        total_donations: 0,
+        avg_rating: 0,
+      });
+
+      if (insertError) {
+        return {
+          user: null,
+          error: insertError.message.toLowerCase().includes("unique")
+            ? "El nombre de usuario ya está en uso."
+            : `Error al crear el perfil: ${insertError.message}`,
+        };
+      }
+    } else if (rpcMissing && !data.session) {
+      // Function missing AND no session → cannot create profile.
+      // → Either disable email confirmation in Supabase Auth settings,
+      //   or run the SQL in the file supabase/migrations/001_fix_profiles.sql
+      return {
+        user: null,
+        error:
+          "Configuración pendiente: desactiva la confirmación de email en Supabase (Auth → Providers → Email → desactivar 'Confirm email') o crea la función create_user_profile desde el SQL Editor.",
+      };
+    } else {
+      return {
+        user: null,
+        error: profileError.message.toLowerCase().includes("unique")
+          ? "El nombre de usuario ya está en uso."
+          : `Error al crear el perfil: ${profileError.message}`,
+      };
+    }
   }
 
-  const authUser: AuthUser = {
-    id: data.user.id,
-    email,
-    profile: profilePayload as Profile,
-  };
+  // If Supabase returned a session (email confirmation disabled), store it.
+  // Otherwise the user will need to confirm their email before logging in.
+  if (data.session) {
+    const authUser: AuthUser = {
+      id: data.user.id,
+      email,
+      profile: profilePayload as Profile,
+    };
+    storeAuthUser(authUser);
+    return { user: authUser, error: null };
+  }
 
-  storeAuthUser(authUser);
-  return { user: authUser, error: null };
+  // No session → email confirmation is required; profile was created via RPC
+  return { user: null, error: null };
 }
 
 // ─── Sign out ─────────────────────────────────────────────────────────────────
@@ -250,9 +318,15 @@ export async function updateProfile(
 }
 
 // ─── Save aptitude survey ─────────────────────────────────────────────────────
+// Persists only the derived result fields that exist in the DB schema.
 export async function saveAptitudeSurvey(
   userId: string,
   answers: import("../types").AptitudeSurveyAnswers,
 ): Promise<{ error: string | null }> {
-  return updateProfile(userId, { aptitude_survey: answers });
+  const { evaluateAptitude } = await import("./utils");
+  const result = evaluateAptitude(answers);
+  return updateProfile(userId, {
+    survey_done: true,
+    aptitude_eligible: result.isEligible,
+  });
 }

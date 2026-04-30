@@ -82,9 +82,9 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              {profile?.avatar_url ? (
+              {profile?.profile_image_url ? (
                 <img
-                  src={profile.avatar_url}
+                  src={profile.profile_image_url}
                   alt="Avatar"
                   className="w-11 h-11 rounded-full object-cover border-2 border-blood-600/50"
                 />
@@ -143,7 +143,7 @@ export default function Home() {
               <div className="flex gap-6">
                 <div className="text-center">
                   <span className="text-2xl font-extrabold text-white block">
-                    {profile.donations_count}
+                    {profile.total_donations ?? 0}
                   </span>
                   <span className="text-white/40 text-xs">Donaciones</span>
                 </div>

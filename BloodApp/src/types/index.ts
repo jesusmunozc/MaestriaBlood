@@ -41,24 +41,25 @@ export interface Profile {
   id: string;
   username: string;
   full_name: string;
+  email?: string;
   blood_type?: BloodType;
   id_type?: IdType;
+  /** Stored in DB column id_number */
   id_number?: string;
+  /** Stored in DB column birth_date */
   birth_date?: string;
   city?: string;
   address?: string;
+  /** DB column: profile_image_url */
   profile_image_url?: string | null;
-  avatar_url?: string | null;
   front_doc_url?: string | null;
   back_doc_url?: string | null;
   user_type?: UserType;
-  is_verified?: boolean;
   total_donations?: number;
-  donations_count?: number;
   avg_rating?: number;
   penalty_until?: string | null;
   survey_done?: boolean;
-  aptitude_survey?: AptitudeSurveyAnswers | null;
+  aptitude_eligible?: boolean;
   created_at?: string;
 }
 

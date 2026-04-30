@@ -59,8 +59,12 @@ export default function DonorSurvey() {
     const fullAnswers = answers as AptitudeSurveyAnswers;
 
     if (authUser) {
+      const surveyResult = evaluateAptitude(fullAnswers);
       await saveAptitudeSurvey(authUser.id, fullAnswers);
-      updateLocalProfile({ aptitude_survey: fullAnswers });
+      updateLocalProfile({
+        survey_done: true,
+        aptitude_eligible: surveyResult.isEligible,
+      });
     }
 
     setLoading(false);
