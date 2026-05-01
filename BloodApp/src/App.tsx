@@ -14,6 +14,7 @@ import { AppProvider, useApp } from "./contexts/AppContext";
 import Splash from "./pages/Splash";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
 import DonorSurvey from "./pages/DonorSurvey";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
@@ -24,10 +25,12 @@ import DonationCancelled from "./pages/DonationCancelled";
 import CreateRequest from "./pages/CreateRequest";
 import Campaigns from "./pages/Campaigns";
 import CampaignDetail from "./pages/CampaignDetail";
+import CampaignParticipants from "./pages/CampaignParticipants";
 import CreateCampaign from "./pages/CreateCampaign";
 import MyRequests from "./pages/MyRequests";
 import MyCampaigns from "./pages/MyCampaigns";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import Notifications from "./pages/Notifications";
 import RateExperience from "./pages/RateExperience";
 import LoadingScreen from "./components/LoadingScreen";
@@ -37,8 +40,15 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const { authUser, isLoading } = useApp();
   if (isLoading) return <LoadingScreen />;
   if (!authUser) return <Navigate to="/" replace />;
-  return <>{children}</>;
-}
+  return <>{children}</>;}
+
+// ─── Professional-only guard ─────────────────────────────────────
+function ProfessionalGuard({ children }: { children: React.ReactNode }) {
+  const { authUser, profile, isLoading } = useApp();
+  if (isLoading) return <LoadingScreen />;
+  if (!authUser) return <Navigate to="/" replace />;
+  if (profile?.user_type !== "professional") return <Navigate to="/home" replace />;
+  return <>{children}</>;}
 
 // ─── Back button handler for Android ─────────────────────────────────────────
 function BackButtonHandler() {
@@ -72,6 +82,7 @@ export default function App() {
           {/* Public */}
           <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/donor-survey" element={<DonorSurvey />} />
 
@@ -149,11 +160,19 @@ export default function App() {
             }
           />
           <Route
-            path="/create-campaign"
+            path="/campaign/:id/participants"
             element={
               <AuthGuard>
-                <CreateCampaign />
+                <CampaignParticipants />
               </AuthGuard>
+            }
+          />
+          <Route
+            path="/create-campaign"
+            element={
+              <ProfessionalGuard>
+                <CreateCampaign />
+              </ProfessionalGuard>
             }
           />
           <Route
@@ -167,9 +186,9 @@ export default function App() {
           <Route
             path="/my-campaigns"
             element={
-              <AuthGuard>
+              <ProfessionalGuard>
                 <MyCampaigns />
-              </AuthGuard>
+              </ProfessionalGuard>
             }
           />
           <Route
@@ -177,6 +196,14 @@ export default function App() {
             element={
               <AuthGuard>
                 <Profile />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <AuthGuard>
+                <Settings />
               </AuthGuard>
             }
           />

@@ -65,14 +65,14 @@ export default function ConfirmDonation() {
       <div className="mx-5 mt-4 space-y-4">
         {/* Request summary */}
         {request && (
-          <div className="bg-gradient-to-br from-blood-900/40 to-app-card border border-blood-700/30 rounded-2xl p-4">
+          <div className="bg-gradient-to-br from-blood-600 to-blood-800 dark:from-blood-900/40 dark:to-surface border border-blood-500/50 dark:border-blood-700/30 rounded-2xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-app-text/40 text-xs">Beneficiario</p>
+                <p className="text-white/60 text-xs">Beneficiario</p>
                 <p className="text-white font-semibold mt-0.5">
                   {request.profile?.full_name ?? "Usuario"}
                 </p>
-                <p className="text-app-text/40 text-xs mt-1">
+                <p className="text-white/70 text-xs mt-1">
                   🏥 {request.health_center}
                 </p>
               </div>
@@ -84,25 +84,25 @@ export default function ConfirmDonation() {
         {/* 30-day warning */}
         <div
           onClick={() => setShowPenaltyModal(true)}
-          className="bg-amber-900/20 border border-amber-600/30 rounded-2xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform"
+          className="bg-amber-50 border border-amber-400 dark:bg-amber-900/20 dark:border-amber-600/30 rounded-2xl p-3 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform"
         >
-          <div className="w-9 h-9 rounded-xl bg-amber-900/40 flex items-center justify-center shrink-0">
-            <Clock className="w-4 h-4 text-amber-400" />
+          <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
+            <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
           </div>
           <div className="flex-1">
-            <p className="text-amber-300 text-xs font-semibold">
+            <p className="text-amber-700 dark:text-amber-300 text-xs font-semibold">
               Aviso de cancelación
             </p>
-            <p className="text-amber-400/60 text-[10px] mt-0.5">
+            <p className="text-amber-600 dark:text-amber-400/60 text-[10px] mt-0.5">
               Si cancelas tendrás 30 días de penalización
             </p>
           </div>
-          <ChevronRight className="w-4 h-4 text-amber-400/40 shrink-0" />
+          <ChevronRight className="w-4 h-4 text-amber-500 dark:text-amber-400/40 shrink-0" />
         </div>
 
         {/* Commitment */}
-        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
-          <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider mb-3">
+        <div className="bg-app-card border border-app-border/20 dark:border-app-border/8 rounded-2xl p-4">
+          <p className="text-app-text/60 text-[10px] font-semibold uppercase tracking-wider mb-3">
             Compromiso
           </p>
           <label className="flex items-start gap-3 cursor-pointer">
@@ -110,7 +110,7 @@ export default function ConfirmDonation() {
               checked={commitment}
               onChange={() => setCommitment(!commitment)}
             />
-            <span className="text-app-text/70 text-sm leading-relaxed">
+            <span className="text-app-text/85 text-sm leading-relaxed">
               Me comprometo a asistir al centro médico indicado y completar el
               proceso de donación.
             </span>
@@ -118,10 +118,10 @@ export default function ConfirmDonation() {
         </div>
 
         {/* Health checklist */}
-        <div className="bg-app-card border border-app-border/8 rounded-2xl p-4">
+        <div className="bg-app-card border border-app-border/20 dark:border-app-border/8 rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-3">
-            <Shield className="w-4 h-4 text-blood-400" />
-            <p className="text-app-text/40 text-[10px] font-semibold uppercase tracking-wider">
+            <Shield className="w-4 h-4 text-blood-500" />
+            <p className="text-app-text/60 text-[10px] font-semibold uppercase tracking-wider">
               Aptitud médica
             </p>
           </div>
@@ -129,7 +129,7 @@ export default function ConfirmDonation() {
             {HEALTH_POINTS.map((point, i) => (
               <label key={i} className="flex items-center gap-3 cursor-pointer">
                 <Checkbox checked={checks[i]} onChange={() => toggle(i)} />
-                <span className="text-app-text/70 text-sm">{point}</span>
+                <span className="text-app-text/85 text-sm">{point}</span>
               </label>
             ))}
           </div>
@@ -137,7 +137,7 @@ export default function ConfirmDonation() {
       </div>
 
       {/* Actions */}
-      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 flex flex-col gap-2 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/8">
+      <div className="fixed bottom-0 left-0 right-0 px-5 py-4 flex flex-col gap-2 bg-app-bg/95 backdrop-blur-xl border-t border-app-border/20 dark:border-app-border/8">
         <Button
           variant="primary"
           size="lg"
@@ -165,16 +165,16 @@ export default function ConfirmDonation() {
         variant="center"
       >
         <div className="text-center px-2">
-          <div className="w-16 h-16 rounded-full bg-amber-900/30 border border-amber-600/30 flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle className="w-8 h-8 text-amber-400" />
+          <div className="w-16 h-16 rounded-full bg-amber-100 dark:bg-amber-900/30 border border-amber-400 dark:border-amber-600/30 flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle className="w-8 h-8 text-amber-600 dark:text-amber-400" />
           </div>
-          <h3 className="text-white font-bold text-lg mb-2">
+          <h3 className="text-app-text font-bold text-lg mb-2">
             Penalización por cancelar
           </h3>
-          <p className="text-app-text/50 text-sm mb-5">
+          <p className="text-app-text/70 text-sm mb-5">
             Si confirmas y luego cancelas tu donación, tu cuenta quedará
             penalizada por
-            <span className="text-amber-400 font-semibold"> 30 días</span>.
+            <span className="text-amber-600 dark:text-amber-400 font-semibold"> 30 días</span>.
             Durante ese tiempo no podrás confirmar otras donaciones.
           </p>
           <Button
@@ -203,7 +203,7 @@ function Checkbox({
       type="button"
       onClick={onChange}
       className={`w-5 h-5 rounded-md border-2 shrink-0 flex items-center justify-center transition-all
-        ${checked ? "bg-blood-600 border-blood-600" : "border-white/20 bg-transparent"}`}
+        ${checked ? "bg-blood-600 border-blood-600" : "border-app-border/40 dark:border-white/20 bg-transparent"}`}
     >
       {checked && (
         <svg className="w-3 h-3 text-app-text" fill="none" viewBox="0 0 12 12">

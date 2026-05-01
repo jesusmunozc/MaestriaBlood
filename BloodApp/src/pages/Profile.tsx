@@ -175,7 +175,7 @@ export default function Profile() {
             <MenuItem
               icon={<Settings className="w-4 h-4 text-app-text/40" />}
               label="Configuración"
-              onClick={() => {}}
+              onClick={() => navigate("/settings")}
             />
             <MenuItem
               icon={<LogOut className="w-4 h-4 text-red-400" />}

@@ -2,12 +2,13 @@ import type { BloodType } from "../types";
 
 interface Props {
   type: BloodType;
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   glow?: boolean;
   className?: string;
 }
 
 const SIZE_MAP = {
+  xs: "w-6 h-6 text-[10px] font-bold rounded-lg",
   sm: "w-8 h-8 text-xs font-bold",
   md: "w-12 h-12 text-sm font-bold",
   lg: "w-16 h-16 text-lg font-extrabold",
@@ -25,7 +26,7 @@ export default function BloodTypeBadge({
     <div
       className={`
         ${SIZE_MAP[size]}
-        rounded-2xl
+        ${size !== "xs" ? "rounded-2xl" : ""}
         bg-gradient-to-br from-blood-600 to-blood-800
         flex items-center justify-center
         text-white

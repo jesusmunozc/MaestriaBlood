@@ -17,7 +17,8 @@ import Card from "../components/Card";
 import { useApp } from "../contexts/AppContext";
 import { getBloodRequests } from "../lib/blood-requests";
 import { getCampaigns } from "../lib/campaigns";
-import type { BloodRequest, Campaign } from "../types";
+import { getMyDonations } from "../lib/donations";
+import type { BloodRequest, Campaign, Donation } from "../types";
 import { timeAgo } from "../lib/utils";
 
 const DONOR_QUICK_ACTIONS = [
@@ -34,10 +35,10 @@ const DONOR_QUICK_ACTIONS = [
     color: "text-blue-400 bg-blue-600/15",
   },
   {
-    icon: Megaphone,
-    label: "Campañas",
-    path: "/campaigns",
-    color: "text-purple-400 bg-purple-600/15",
+    icon: ClipboardList,
+    label: "Mis\nsolicitudes",
+    path: "/my-requests",
+    color: "text-emerald-400 bg-emerald-600/15",
   },
 ] as const;
 
@@ -71,15 +72,15 @@ const PRO_QUICK_ACTIONS = [
 // ─── Home page — diferencia donante / profesional ────────────────────────────
 export default function Home() {
   const navigate = useNavigate();
-  const { profile, unreadCount, refreshNotifications } = useApp();
+  const { authUser, profile, unreadCount, refreshNotifications } = useApp();
+  const isProfessional = profile?.user_type === "professional";
 
   const [nearbyRequests, setNearbyRequests] = useState<BloodRequest[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [myCampaigns, setMyCampaigns] = useState<Campaign[]>([]);
+  const [myAcceptedDonations, setMyAcceptedDonations] = useState<Donation[]>([]);
   const [loading, setLoading] = useState(true);
   const [avatarError, setAvatarError] = useState(false);
-
-  const isProfessional = profile?.user_type === "professional";
 
   useEffect(() => {
     async function load() {
@@ -94,6 +95,13 @@ export default function Home() {
           setMyCampaigns(campList.slice(0, 2));
         } else {
           setCampaigns(campList.slice(0, 2));
+        }
+        // Load accepted donations for donors
+        if (!isProfessional && authUser?.id) {
+          const { data: donations } = await getMyDonations(authUser.id);
+          setMyAcceptedDonations(
+            donations.filter((d) => d.status === "confirmed").slice(0, 3),
+          );
         }
       } catch (e) {
         console.error("[Home] Error cargando datos:", e);
@@ -167,26 +175,30 @@ export default function Home() {
         {isProfessional && profile && (
           <div className="relative rounded-3xl overflow-hidden mb-5 p-5 blood-stats-card mt-4">
             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl -translate-y-4 translate-x-4" />
-            <div className="relative flex items-center gap-4">
+            <div className="relative flex items-center gap-3">
               <div className="w-14 h-14 rounded-2xl bg-blue-600/20 flex items-center justify-center shrink-0">
                 <Stethoscope className="w-7 h-7 text-blue-400" />
               </div>
-              <div className="flex gap-5 flex-1">
-                <div className="text-center">
+              <div className="flex flex-1 justify-evenly">
+                <div className="text-center flex-1">
                   <span className="text-2xl font-extrabold blood-stats-value block">
                     {myCampaigns.length}
                   </span>
-                  <span className="blood-stats-label text-xs">Campañas</span>
+                  <span className="blood-stats-label text-[11px] leading-tight block">Campañas</span>
                 </div>
-                <div className="text-center">
-                  <span className="text-2xl font-extrabold blood-stats-value block">0</span>
-                  <span className="blood-stats-label text-xs">Participantes</span>
+                <div className="w-px bg-app-border/10 self-stretch" />
+                <div className="text-center flex-1">
+                  <span className="text-2xl font-extrabold blood-stats-value block">
+                    {myCampaigns.reduce((s, c) => s + (c.registered_slots ?? 0), 0)}
+                  </span>
+                  <span className="blood-stats-label text-[11px] leading-tight block">Participantes</span>
                 </div>
-                <div className="text-center">
+                <div className="w-px bg-app-border/10 self-stretch" />
+                <div className="text-center flex-1">
                   <span className="text-2xl font-extrabold blood-stats-value block">
                     {profile.total_donations ?? 0}
                   </span>
-                  <span className="blood-stats-label text-xs">Donaciones</span>
+                  <span className="blood-stats-label text-[11px] leading-tight block">Donaciones</span>
                 </div>
               </div>
             </div>
@@ -295,6 +307,66 @@ export default function Home() {
                         <p className="text-app-text/40 text-xs">{c.institution}</p>
                         <p className="text-app-text/30 text-xs mt-0.5">{c.date}</p>
                       </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── Mis donaciones aceptadas (solo donante) ──── */}
+        {!isProfessional && (
+          <div className="mb-5">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-app-text font-semibold text-sm">
+                Mis donaciones aceptadas
+              </h3>
+              <button
+                onClick={() => navigate("/explore")}
+                className="text-blood-400 text-xs font-medium"
+              >
+                Ver solicitudes
+              </button>
+            </div>
+            {loading ? (
+              <div className="h-16 rounded-2xl bg-app-border/5 animate-pulse" />
+            ) : myAcceptedDonations.length === 0 ? (
+              <div className="bg-app-card border border-app-border/8 rounded-2xl p-4 text-center">
+                <HandHeart className="w-8 h-8 text-app-text/20 mx-auto mb-1" />
+                <p className="text-app-text/30 text-sm">
+                  Aún no has aceptado ninguna donación
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2.5">
+                {myAcceptedDonations.map((donation) => (
+                  <Card
+                    key={donation.id}
+                    onClick={() =>
+                      navigate(`/request/${donation.request_id}`)
+                    }
+                    className="p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-full bg-blood-600/20 flex items-center justify-center shrink-0">
+                        <HandHeart className="w-4 h-4 text-blood-400" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-app-text text-sm font-medium truncate">
+                          {donation.blood_request?.health_center ??
+                            "Centro de salud"}
+                        </p>
+                        <p className="text-app-text/40 text-xs">
+                          {timeAgo(donation.confirmed_at ?? "")}
+                        </p>
+                      </div>
+                      {donation.blood_request?.blood_type && (
+                        <BloodTypeBadge
+                          type={donation.blood_request.blood_type}
+                          size="sm"
+                        />
+                      )}
                     </div>
                   </Card>
                 ))}

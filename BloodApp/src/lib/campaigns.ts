@@ -9,6 +9,8 @@ export interface CreateCampaignPayload {
   institution?: string;
   location?: string;
   address?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   date: string;
   start_time?: string;
   end_time?: string;
@@ -19,6 +21,7 @@ export interface CreateCampaignPayload {
   blood_types?: BloodType[];
   description?: string;
   requirements?: string | string[];
+  images?: string[] | null;
   status?: string;
 }
 
@@ -140,4 +143,75 @@ export async function getUserCampaignRegistration(
     .maybeSingle();
 
   return data as CampaignRegistration | null;
+}
+
+export async function getOrganizerCampaignStats(
+  organizerId: string,
+): Promise<{ campaigns: number; participants: number }> {
+  const { data } = await supabase
+    .from("campaigns")
+    .select("id, registered_slots")
+    .eq("organizer_id", organizerId);
+
+  const campaigns = data?.length ?? 0;
+  const participants = data?.reduce((sum, c) => sum + (c.registered_slots ?? 0), 0) ?? 0;
+  return { campaigns, participants };
+}
+
+export async function uploadCampaignImage(
+  file: File,
+  campaignId: string,
+): Promise<{ url: string | null; error: string | null }> {
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `campaigns/${campaignId}/${Date.now()}.${ext}`;
+  const { error } = await supabase.storage
+    .from("campaign-images")
+    .upload(path, file, { upsert: true });
+  if (error) return { url: null, error: error.message };
+  const { data } = supabase.storage.from("campaign-images").getPublicUrl(path);
+  return { url: data.publicUrl, error: null };
+}
+
+export async function getCampaignParticipants(
+  campaignId: string,
+): Promise<{ data: Array<{ id: string; full_name: string; avatar_url: string | null; registered_at: string }>; error: string | null }> {
+  const { data, error } = await supabase
+    .from("campaign_registrations")
+    .select("id, created_at, profiles(full_name, avatar_url)")
+    .eq("campaign_id", campaignId)
+    .neq("status", "cancelled")
+    .order("created_at", { ascending: true });
+
+  if (error) return { data: [], error: error.message };
+
+  const participants = (data ?? []).map((r: any) => ({
+    id: r.id,
+    full_name: r.profiles?.full_name ?? "Participante",
+    avatar_url: r.profiles?.avatar_url ?? null,
+    registered_at: r.created_at,
+  }));
+
+  return { data: participants, error: null };
+}
+
+export async function completeCampaign(
+  campaignId: string,
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("campaigns")
+    .update({ status: "completed" })
+    .eq("id", campaignId);
+
+  return { error: error?.message ?? null };
+}
+
+export async function closeCampaign(
+  campaignId: string,
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("campaigns")
+    .update({ status: "cancelled" })
+    .eq("id", campaignId);
+
+  return { error: error?.message ?? null };
 }

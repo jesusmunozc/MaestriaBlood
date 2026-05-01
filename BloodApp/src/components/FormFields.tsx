@@ -54,7 +54,12 @@ export function InputField({
         {Icon && <Icon className="w-4 h-4 text-app-text/40 shrink-0" />}
         <input
           {...props}
-          className={`w-full bg-transparent text-app-text text-sm placeholder-app-text/30 ${className}`}
+          className={`flex-1 min-w-0 bg-transparent text-app-text text-sm placeholder-app-text/30 focus:outline-none
+            [&::-webkit-calendar-picker-indicator]:opacity-0
+            [&::-webkit-calendar-picker-indicator]:absolute
+            [&::-webkit-inner-spin-button]:appearance-none
+            [&::-webkit-datetime-edit-fields-wrapper]:p-0
+            ${className}`}
         />
         {rightElement}
       </div>

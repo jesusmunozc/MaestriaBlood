@@ -31,7 +31,7 @@ export default function Modal({
         className={`
           modal-sheet
           bg-app-card
-          border border-app-border/10
+          border border-app-border/20 dark:border-app-border/10
           w-full max-w-[430px]
           rounded-t-3xl sm:rounded-3xl
           p-6 modal-sheet-bottom

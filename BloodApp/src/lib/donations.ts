@@ -98,3 +98,18 @@ export async function checkPenalty(userId: string): Promise<boolean> {
   if (!data?.penalty_until) return false;
   return new Date(data.penalty_until) > new Date();
 }
+
+/** Returns the user's current active (confirmed, not yet completed) donation, if any. */
+export async function getActiveDonation(
+  donorId: string,
+): Promise<{ data: Donation | null; error: string | null }> {
+  const { data, error } = await supabase
+    .from("donations")
+    .select("*, blood_request:blood_requests(*, profile:profiles(*))")
+    .eq("donor_id", donorId)
+    .eq("status", "confirmed")
+    .maybeSingle();
+
+  if (error) return { data: null, error: error.message };
+  return { data: (data as Donation | null), error: null };
+}

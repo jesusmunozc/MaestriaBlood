@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   User,
@@ -9,6 +9,7 @@ import {
   Eye,
   EyeOff,
   AtSign,
+  Mail,
   Camera,
   MapPin,
   Navigation,
@@ -57,6 +58,7 @@ export default function Register() {
   // Step 1 state
   const [userType, setUserType] = useState<UserType>("donor");
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [bloodType, setBloodType] = useState<BloodType>("O+");
   const [idType, setIdType] = useState<IdType>("CC");
@@ -66,6 +68,7 @@ export default function Register() {
   const [frontDoc, setFrontDoc] = useState("");
   const [backDoc, setBackDoc] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
+  const [professionalCard, setProfessionalCard] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
 
@@ -78,6 +81,17 @@ export default function Register() {
   const [donationCommitment, setDonationCommitment] = useState(false);
 
   const passwordStrength = getPasswordStrength(password);
+
+  // ── Apply lila/pro theme while registering as professional ─────────────────
+  useEffect(() => {
+    const root = document.documentElement;
+    if (userType === "professional") {
+      root.classList.add("theme-pro");
+    } else {
+      root.classList.remove("theme-pro");
+    }
+    return () => root.classList.remove("theme-pro");
+  }, [userType]);
 
   function handleFileUpload(setter: (v: string) => void) {
     // In a real app, use Capacitor Camera plugin
@@ -99,7 +113,6 @@ export default function Register() {
       setError("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
-
     setLoading(true);
     setError(null);
 
@@ -118,9 +131,13 @@ export default function Register() {
         avatar_url: profilePhoto,
         city,
         address,
+        ...(userType === "professional" && professionalCard
+          ? { professional_card_url: professionalCard }
+          : {}),
       };
       const step3: RegisterStep3 = {
         username,
+        email: email.trim().toLowerCase(),
         password,
         terms_accepted: termsAccepted,
         donation_commitment: donationCommitment,
@@ -239,6 +256,17 @@ export default function Register() {
               onChange={(e) => setFullName(e.target.value)}
             />
 
+            <InputField
+              label="Correo electrónico"
+              icon={Mail}
+              type="email"
+              placeholder="tu@correo.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              inputMode="email"
+            />
+
             <div className="grid grid-cols-2 gap-3">
               <InputField
                 label="Fecha de nacimiento"
@@ -303,6 +331,10 @@ export default function Register() {
               onClick={() => {
                 if (!fullName || !birthDate || !idNumber) {
                   setError("Completa todos los campos obligatorios.");
+                  return;
+                }
+                if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+                  setError("Ingresa un correo electrónico válido.");
                   return;
                 }
                 setError(null);
@@ -484,6 +516,61 @@ export default function Register() {
               }
             />
 
+            {/* Tarjeta profesional — solo para profesionales de salud */}
+            {userType === "professional" && (
+              <div>
+                <h3 className="text-sm font-semibold text-app-text mb-1">
+                  Tarjeta profesional *
+                </h3>
+                <p className="text-xs text-app-text/40 mb-2">
+                  Adjunta una foto clara de tu tarjeta profesional. Esta
+                  información será usada para validar tu perfil como profesional
+                  de salud.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => handleFileUpload(setProfessionalCard)}
+                  className={`
+                    w-full h-32 rounded-2xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-all
+                    ${professionalCard ? "border-blood-500 bg-blood-600/10" : "border-app-border/20 bg-app-card-alt"}
+                  `}
+                >
+                  {professionalCard ? (
+                    <>
+                      <Check className="w-8 h-8 text-blood-400" />
+                      <span className="text-xs text-blood-400 font-medium">
+                        Tarjeta cargada
+                      </span>
+                      <span
+                        className="text-[10px] text-blood-300/60 underline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setProfessionalCard("");
+                        }}
+                      >
+                        Cambiar imagen
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <Stethoscope className="w-8 h-8 text-app-text/30" />
+                      <span className="text-xs text-app-text/40 font-medium">
+                        Tomar foto o subir imagen
+                      </span>
+                      <span className="text-[10px] text-app-text/20">
+                        Tarjeta profesional
+                      </span>
+                    </>
+                  )}
+                </button>
+                {!professionalCard && error?.includes("tarjeta") && (
+                  <p className="text-xs text-red-400 mt-1">
+                    Debes adjuntar una foto de tu tarjeta profesional para continuar.
+                  </p>
+                )}
+              </div>
+            )}
+
             {error && <p className="text-red-400 text-sm">{error}</p>}
 
             <Button
@@ -493,6 +580,12 @@ export default function Register() {
               onClick={() => {
                 if (!city) {
                   setError("Ingresa tu ciudad.");
+                  return;
+                }
+                if (userType === "professional" && !professionalCard) {
+                  setError(
+                    "Debes adjuntar una foto de tu tarjeta profesional para continuar."
+                  );
                   return;
                 }
                 setError(null);

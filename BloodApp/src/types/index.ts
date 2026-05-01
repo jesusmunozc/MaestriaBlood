@@ -79,10 +79,12 @@ export interface RegisterStep2 {
   avatar_url: string;
   city: string;
   address: string;
+  professional_card_url?: string;
 }
 
 export interface RegisterStep3 {
   username: string;
+  email: string;
   password: string;
   terms_accepted: boolean;
   donation_commitment: boolean;
@@ -147,6 +149,9 @@ export interface Campaign {
   organizer_id: string;
   name: string;
   institution?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  images?: string[] | null;
   location: string;
   address?: string;
   date: string;

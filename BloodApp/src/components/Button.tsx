@@ -11,12 +11,12 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 const VARIANT_STYLES: Record<string, string> = {
   primary:
     "bg-gradient-to-r from-blood-600 to-blood-700 hover:from-blood-500 hover:to-blood-600 text-white shadow-md shadow-blood-600/30",
-  secondary: "bg-app-border/10 hover:bg-app-border/15 text-app-text border border-app-border/10",
+  secondary: "bg-app-border/10 hover:bg-app-border/15 text-app-text border border-app-border/20",
   outline:
-    "border border-blood-600/60 hover:border-blood-500 text-blood-400 hover:text-blood-300",
+    "border border-blood-500 hover:border-blood-600 text-blood-600 dark:border-blood-600/60 dark:hover:border-blood-500 dark:text-blood-400 dark:hover:text-blood-300",
   danger:
-    "bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-600/40",
-  ghost: "text-app-text/60 hover:text-app-text hover:bg-app-border/5",
+    "bg-red-100 hover:bg-red-200 text-red-700 border border-red-300 dark:bg-red-600/20 dark:hover:bg-red-600/30 dark:text-red-400 dark:border-red-600/40",
+  ghost: "text-app-text/70 hover:text-app-text hover:bg-app-border/8",
 };
 
 const SIZE_STYLES: Record<string, string> = {

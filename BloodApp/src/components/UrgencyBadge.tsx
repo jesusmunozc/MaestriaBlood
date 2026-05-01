@@ -12,20 +12,20 @@ const URGENCY_STYLES: Record<
   { bg: string; text: string; icon: typeof Zap; pulse: boolean }
 > = {
   urgent: {
-    bg: "bg-red-600/20 border border-red-500/40",
-    text: "text-red-400",
+    bg: "bg-red-100 border border-red-400 dark:bg-red-600/20 dark:border-red-500/40",
+    text: "text-red-700 dark:text-red-400",
     icon: Zap,
     pulse: true,
   },
   medium: {
-    bg: "bg-amber-500/20 border border-amber-500/40",
-    text: "text-amber-400",
+    bg: "bg-amber-100 border border-amber-400 dark:bg-amber-500/20 dark:border-amber-500/40",
+    text: "text-amber-700 dark:text-amber-400",
     icon: AlertTriangle,
     pulse: false,
   },
   low: {
-    bg: "bg-emerald-500/20 border border-emerald-500/40",
-    text: "text-emerald-400",
+    bg: "bg-emerald-100 border border-emerald-400 dark:bg-emerald-500/20 dark:border-emerald-500/40",
+    text: "text-emerald-700 dark:text-emerald-400",
     icon: Clock,
     pulse: false,
   },

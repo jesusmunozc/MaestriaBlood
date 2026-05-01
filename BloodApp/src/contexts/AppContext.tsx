@@ -73,6 +73,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try { localStorage.setItem("blood_theme", theme); } catch {}
   }, [theme]);
 
+  // Apply lila/pro theme class based on user type
+  useEffect(() => {
+    const root = document.documentElement;
+    if (authUser?.profile?.user_type === "professional") {
+      root.classList.add("theme-pro");
+    } else {
+      root.classList.remove("theme-pro");
+    }
+  }, [authUser?.profile?.user_type]);
+
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, []);

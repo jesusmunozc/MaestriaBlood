@@ -143,6 +143,7 @@ export async function registerUser(
   const profilePayload: Partial<Profile> = {
     id: data.user.id,
     username: step3.username,
+    email: step3.email,
     full_name: step1.full_name,
     blood_type: step1.blood_type,
     id_type: step1.id_type,
@@ -178,6 +179,7 @@ export async function registerUser(
     p_front_doc_url: step2.front_doc_url || null,
     p_back_doc_url: step2.back_doc_url || null,
     p_user_type: step1.user_type,
+    p_email: step3.email || null,
   });
 
   if (profileError) {
@@ -205,6 +207,7 @@ export async function registerUser(
         front_doc_url: step2.front_doc_url || null,
         back_doc_url: step2.back_doc_url || null,
         user_type: step1.user_type,
+        email: step3.email || null,
         total_donations: 0,
         avg_rating: 0,
       });
@@ -375,4 +378,29 @@ export async function saveAptitudeSurvey(
     survey_done: true,
     aptitude_eligible: result.isEligible,
   });
+}
+
+// ─── Send password reset ───────────────────────────────────────────────────────
+// Looks up the profile by real email, derives the internal Supabase auth email
+// (username@bloodapp.com) and sends the reset link.
+// Always returns success to avoid email-enumeration attacks.
+export async function sendPasswordReset(
+  realEmail: string,
+): Promise<{ error: string | null }> {
+  // 1. Find the profile with this real email
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("username")
+    .eq("email", realEmail.trim().toLowerCase())
+    .maybeSingle();
+
+  if (profile?.username) {
+    const internalEmail = `${profile.username}@bloodapp.com`;
+    await supabase.auth.resetPasswordForEmail(internalEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+  }
+
+  // Always report success (prevents revealing whether an email exists)
+  return { error: null };
 }
