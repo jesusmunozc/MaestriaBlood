@@ -42,20 +42,20 @@ export async function signIn(
   // Allow both email and username login
   let email = usernameOrEmail;
 
-  // If it doesn't look like an email, verify the username exists and build the email
+  // If it doesn't look like an email, look up the real email from the profile
   if (!usernameOrEmail.includes("@")) {
     const { data, error } = await supabase
       .from("profiles")
-      .select("id")
+      .select("email")
       .eq("username", usernameOrEmail)
       .single();
 
-    if (error || !data) {
+    if (error || !data?.email) {
       return { user: null, error: "Usuario no encontrado." };
     }
 
-    // Email is always username@bloodapp.com
-    email = `${usernameOrEmail}@bloodapp.com`;
+    // Use the real email stored in the profile
+    email = data.email;
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
@@ -111,8 +111,8 @@ export async function registerUser(
     };
   }
 
-  // Use username@bloodapp.com as the internal email
-  const email = `${step3.username}@bloodapp.com`;
+  // Use the real email for Supabase Auth so password reset emails arrive correctly
+  const email = step3.email.trim().toLowerCase();
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -128,9 +128,10 @@ export async function registerUser(
   if (error) {
     if (
       error.message.toLowerCase().includes("already registered") ||
-      error.message.toLowerCase().includes("already been registered")
+      error.message.toLowerCase().includes("already been registered") ||
+      error.message.toLowerCase().includes("user already registered")
     ) {
-      return { user: null, error: "El nombre de usuario ya está en uso." };
+      return { user: null, error: "El correo electrónico ya está registrado." };
     }
     return { user: null, error: error.message };
   }
@@ -381,26 +382,15 @@ export async function saveAptitudeSurvey(
 }
 
 // ─── Send password reset ───────────────────────────────────────────────────────
-// Looks up the profile by real email, derives the internal Supabase auth email
-// (username@bloodapp.com) and sends the reset link.
-// Always returns success to avoid email-enumeration attacks.
+// Supabase Auth ahora guarda el correo real del usuario, por lo que
+// resetPasswordForEmail envía el enlace directamente sin Edge Functions.
+// Siempre retorna éxito para evitar enumeración de emails.
 export async function sendPasswordReset(
   realEmail: string,
 ): Promise<{ error: string | null }> {
-  // 1. Find the profile with this real email
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("username")
-    .eq("email", realEmail.trim().toLowerCase())
-    .maybeSingle();
+  await supabase.auth.resetPasswordForEmail(realEmail.trim().toLowerCase(), {
+    redirectTo: `${window.location.origin}/forgot-password`,
+  });
 
-  if (profile?.username) {
-    const internalEmail = `${profile.username}@bloodapp.com`;
-    await supabase.auth.resetPasswordForEmail(internalEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-  }
-
-  // Always report success (prevents revealing whether an email exists)
   return { error: null };
 }

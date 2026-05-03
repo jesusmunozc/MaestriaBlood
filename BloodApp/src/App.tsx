@@ -15,6 +15,7 @@ import Splash from "./pages/Splash";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import DonorSurvey from "./pages/DonorSurvey";
 import Home from "./pages/Home";
 import Explore from "./pages/Explore";
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="/" element={<Splash />} />
           <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/register" element={<Register />} />
           <Route path="/donor-survey" element={<DonorSurvey />} />
 

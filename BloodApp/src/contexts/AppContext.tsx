@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -44,7 +43,8 @@ interface AppContextType {
   refreshNotifications: () => Promise<void>;
 }
 
-const AppContext = createContext<AppContextType | null>(null);
+export type { AppContextType };
+export const AppContext = createContext<AppContextType | null>(null);
 
 function getInitialTheme(): "dark" | "light" {
   try {
@@ -190,8 +190,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
-export function useApp(): AppContextType {
-  const ctx = useContext(AppContext);
-  if (!ctx) throw new Error("useApp must be used inside AppProvider");
-  return ctx;
-}
+// Re-exportar desde el archivo separado para no romper imports existentes
+export { useApp } from "./useApp";
+

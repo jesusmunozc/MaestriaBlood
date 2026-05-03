@@ -24,7 +24,8 @@ export const supabase = createClient(
       persistSession: true,
       // Automatically refresh the JWT before it expires
       autoRefreshToken: true,
-      // Mobile app: never read the session from the URL hash
+      // false: no consumir el ?code= automáticamente — ForgotPassword.tsx
+      // lo intercambia manualmente para tener control total del timing.
       detectSessionInUrl: false,
       // Dedicated storage key so it doesn't clash with other libs
       storageKey: "blood_supabase_auth",
