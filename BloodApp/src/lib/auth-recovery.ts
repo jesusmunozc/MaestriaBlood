@@ -72,7 +72,8 @@ export function extractRecoveryPayloadFromLocation(
   const authError = hashParams.get("error") ?? queryParams.get("error");
   if (authError) {
     const detailedMessage = decodeMessage(
-      hashParams.get("error_description") ?? queryParams.get("error_description"),
+      hashParams.get("error_description") ??
+        queryParams.get("error_description"),
     );
 
     return {

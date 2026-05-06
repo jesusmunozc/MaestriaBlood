@@ -12,6 +12,8 @@ import type { PluginListenerHandle } from "@capacitor/core";
 import type { Profile, Notification } from "../types";
 import {
   getStoredAuthUser,
+  hydrateStoredAuthUser,
+  setStoredAuthUser,
   watchAuthState,
   refreshSession,
   signOut as authSignOut,
@@ -74,7 +76,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } else {
       root.classList.remove("dark");
     }
-    try { localStorage.setItem("blood_theme", theme); } catch {}
+    try {
+      localStorage.setItem("blood_theme", theme);
+    } catch {}
   }, [theme]);
 
   // Apply lila/pro theme class based on user type
@@ -114,7 +118,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         ...prev,
         profile: { ...prev.profile, ...updates },
       };
-      localStorage.setItem("blood_auth_user", JSON.stringify(updated));
+      setStoredAuthUser(updated);
       return updated;
     });
   }, []);
@@ -140,6 +144,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       refreshNotifications();
     }
+
+    // ── 1.b Hydrate from native storage (Preferences) on Android/iOS ───────
+    // This covers cases where WebView localStorage is wiped but native storage
+    // still has the user snapshot.
+    void hydrateStoredAuthUser().then((hydrated) => {
+      if (disposed || !hydrated) return;
+      setAuthUser(hydrated);
+      setIsLoading(false);
+      void refreshNotifications();
+    });
 
     // ── 2. Watch Supabase auth for authoritative updates ─────────────────────
     // watchAuthState now handles INITIAL_SESSION (null) → callback(null) when
@@ -169,7 +183,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // network on Android wake-up can no longer silently log the user out.
     async function handleReconnect(forceRefresh = false) {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         if (session) {
           const expiresAt = session.expires_at ?? 0;
           const nowSec = Math.floor(Date.now() / 1000);
@@ -273,4 +289,3 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 // Re-exportar desde el archivo separado para no romper imports existentes
 export { useApp } from "./useApp";
-

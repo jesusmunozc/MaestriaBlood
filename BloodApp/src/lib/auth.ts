@@ -1,5 +1,7 @@
 import { supabase } from "./supabase";
 import type { Session } from "./supabase";
+import { Capacitor } from "@capacitor/core";
+import { Preferences } from "@capacitor/preferences";
 import type {
   Profile,
   RegisterStep1,
@@ -16,9 +18,14 @@ export interface AuthUser {
 }
 
 const AUTH_USER_KEY = "blood_auth_user";
+const AUTH_USER_NATIVE_KEY = "blood_auth_user";
 const AUTH_TIMEOUT_MS = 20000;
+let authUserCache: AuthUser | null | undefined;
 
-function withTimeout<T>(promiseLike: PromiseLike<T>, timeoutMs = AUTH_TIMEOUT_MS): Promise<T> {
+function withTimeout<T>(
+  promiseLike: PromiseLike<T>,
+  timeoutMs = AUTH_TIMEOUT_MS,
+): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const promise = Promise.resolve(promiseLike);
 
@@ -43,20 +50,80 @@ function getTimeoutMessage(): string {
 }
 
 export function getStoredAuthUser(): AuthUser | null {
+  if (authUserCache !== undefined) return authUserCache;
+
   try {
     const raw = localStorage.getItem(AUTH_USER_KEY);
-    return raw ? (JSON.parse(raw) as AuthUser) : null;
+    authUserCache = raw ? (JSON.parse(raw) as AuthUser) : null;
+    return authUserCache;
   } catch {
+    authUserCache = null;
     return null;
   }
 }
 
+async function persistAuthUserNative(user: AuthUser | null): Promise<void> {
+  if (!Capacitor.isNativePlatform()) return;
+
+  try {
+    if (user) {
+      await Preferences.set({
+        key: AUTH_USER_NATIVE_KEY,
+        value: JSON.stringify(user),
+      });
+    } else {
+      await Preferences.remove({ key: AUTH_USER_NATIVE_KEY });
+    }
+  } catch {
+    // Ignore native storage failures and keep local fallback.
+  }
+}
+
+export async function hydrateStoredAuthUser(): Promise<AuthUser | null> {
+  const webValue = getStoredAuthUser();
+
+  if (!Capacitor.isNativePlatform()) {
+    return webValue;
+  }
+
+  try {
+    const { value } = await Preferences.get({ key: AUTH_USER_NATIVE_KEY });
+    if (value) {
+      const parsed = JSON.parse(value) as AuthUser;
+      authUserCache = parsed;
+      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(parsed));
+      return parsed;
+    }
+
+    if (webValue) {
+      await Preferences.set({
+        key: AUTH_USER_NATIVE_KEY,
+        value: JSON.stringify(webValue),
+      });
+      return webValue;
+    }
+  } catch {
+    return webValue;
+  }
+
+  authUserCache = null;
+  return null;
+}
+
 function storeAuthUser(user: AuthUser): void {
+  authUserCache = user;
   localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+  void persistAuthUserNative(user);
+}
+
+export function setStoredAuthUser(user: AuthUser): void {
+  storeAuthUser(user);
 }
 
 function clearStoredAuthUser(): void {
+  authUserCache = null;
   localStorage.removeItem(AUTH_USER_KEY);
+  void persistAuthUserNative(null);
 }
 
 // ─── Sign in ───────────────────────────────────────────────────────────────────
@@ -109,11 +176,7 @@ export async function signIn(
 
     // Load profile
     const { data: profile, error: profileError } = await withTimeout(
-      supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", data.user.id)
-        .single(),
+      supabase.from("profiles").select("*").eq("id", data.user.id).single(),
     );
 
     if (profileError || !profile) {
@@ -134,7 +197,8 @@ export async function signIn(
     }
     return {
       user: null,
-      error: "No fue posible iniciar sesión en este momento. Intenta nuevamente.",
+      error:
+        "No fue posible iniciar sesión en este momento. Intenta nuevamente.",
     };
   }
 }
@@ -175,7 +239,10 @@ export async function registerUser(
         error.message.toLowerCase().includes("already been registered") ||
         error.message.toLowerCase().includes("user already registered")
       ) {
-        return { user: null, error: "El correo electrónico ya está registrado." };
+        return {
+          user: null,
+          error: "El correo electrónico ya está registrado.",
+        };
       }
       return { user: null, error: error.message };
     }
@@ -334,14 +401,12 @@ export async function signOut(): Promise<void> {
 }
 
 // ─── Watch auth state ─────────────────────────────────────────────────────────
-async function buildAuthUserFromSession(session: Session): Promise<AuthUser | null> {
+async function buildAuthUserFromSession(
+  session: Session,
+): Promise<AuthUser | null> {
   try {
     const { data: profile } = await withTimeout(
-      supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .single(),
+      supabase.from("profiles").select("*").eq("id", session.user.id).single(),
     );
 
     if (profile) {
@@ -370,7 +435,10 @@ export function watchAuthState(
 ): () => void {
   let eventVersion = 0;
 
-  async function handleAuthEvent(event: string, session: Session | null): Promise<void> {
+  async function handleAuthEvent(
+    event: string,
+    session: Session | null,
+  ): Promise<void> {
     // PASSWORD_RECOVERY: Supabase fires this when the user follows a
     // password-reset link.  It's a temporary, limited-privilege session;
     // ForgotPassword.tsx manages it directly.  We must NOT write it to
@@ -431,10 +499,12 @@ export function watchAuthState(
 
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange((event: string, session: Session | null) => {
-    // Avoid returning a Promise directly from onAuthStateChange callback.
-    void handleAuthEvent(event, session);
-  });
+  } = supabase.auth.onAuthStateChange(
+    (event: string, session: Session | null) => {
+      // Avoid returning a Promise directly from onAuthStateChange callback.
+      void handleAuthEvent(event, session);
+    },
+  );
 
   return () => subscription.unsubscribe();
 }
@@ -539,7 +609,8 @@ export async function sendPasswordReset(
       return { error: getTimeoutMessage() };
     }
     return {
-      error: "No fue posible enviar el correo de recuperación. Intenta nuevamente.",
+      error:
+        "No fue posible enviar el correo de recuperación. Intenta nuevamente.",
     };
   }
 }

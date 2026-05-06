@@ -34,7 +34,9 @@ export default function ForgotPassword() {
   // ── Modo reset (token en URL) ─────────────────────────────────────────────
   const [resetMode, setResetMode] = useState(false);
   // sessionStatus: 'loading' → 'ready' | 'error'
-  const [sessionStatus, setSessionStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [sessionStatus, setSessionStatus] = useState<
+    "loading" | "ready" | "error"
+  >("loading");
   const [sessionInitError, setSessionInitError] = useState<string | null>(null);
   // Persiste la carga útil del enlace de recuperación entre montajes.
   const recoveryPayloadRef = useRef<RecoveryPayload | null>(null);
@@ -93,26 +95,27 @@ export default function ForgotPassword() {
     setResetMode(true);
 
     // Suscribirse ANTES de intercambiar/validar el token.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (cancelled || resolved) return;
-        if (
-          session &&
-          (event === "SIGNED_IN" ||
-            event === "TOKEN_REFRESHED" ||
-            event === "PASSWORD_RECOVERY")
-        ) {
-          resolved = true;
-          setSessionStatus("ready");
-        }
-      },
-    );
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (cancelled || resolved) return;
+      if (
+        session &&
+        (event === "SIGNED_IN" ||
+          event === "TOKEN_REFRESHED" ||
+          event === "PASSWORD_RECOVERY")
+      ) {
+        resolved = true;
+        setSessionStatus("ready");
+      }
+    });
 
     async function runRecoveryExchange() {
       if (!exchangeStartedRef.current) {
         exchangeStartedRef.current = true;
 
-        const { error: exchangeError } = await establishRecoverySession(recoveryPayload);
+        const { error: exchangeError } =
+          await establishRecoverySession(recoveryPayload);
         if (cancelled || resolved) return;
 
         if (exchangeError) {
@@ -125,7 +128,9 @@ export default function ForgotPassword() {
         }
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (cancelled || resolved) return;
 
       if (session) {
@@ -139,7 +144,9 @@ export default function ForgotPassword() {
     // Fallback: si después de 10 s aún no hay sesión, verificar una última vez
     const timer = setTimeout(async () => {
       if (resolved) return;
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!cancelled) {
         resolved = true;
         if (session) {
@@ -202,23 +209,33 @@ export default function ForgotPassword() {
     setResetLoading(true);
     try {
       // Verificar que la sesión de recuperación esté activa
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
-        setResetError("El enlace de recuperación expiró o ya fue usado. Solicita uno nuevo.");
+        setResetError(
+          "El enlace de recuperación expiró o ya fue usado. Solicita uno nuevo.",
+        );
         return;
       }
 
-      const { error: updateError } = await supabase.auth.updateUser({ password });
+      const { error: updateError } = await supabase.auth.updateUser({
+        password,
+      });
 
       if (updateError) {
         if (
           updateError.message === "Auth session missing!" ||
           updateError.message.toLowerCase().includes("session")
         ) {
-          setResetError("El enlace de recuperación expiró o ya fue usado. Solicita uno nuevo.");
+          setResetError(
+            "El enlace de recuperación expiró o ya fue usado. Solicita uno nuevo.",
+          );
         } else {
-          setResetError("No se pudo actualizar la contraseña. Intenta de nuevo.");
+          setResetError(
+            "No se pudo actualizar la contraseña. Intenta de nuevo.",
+          );
         }
         return;
       }
@@ -469,8 +486,8 @@ export default function ForgotPassword() {
                 Recuperar contraseña
               </h1>
               <p className="text-app-text/50 text-sm mt-1 text-center">
-                Ingresa el correo asociado a tu cuenta y te enviaremos un
-                enlace para restablecer tu contraseña.
+                Ingresa el correo asociado a tu cuenta y te enviaremos un enlace
+                para restablecer tu contraseña.
               </p>
             </div>
 

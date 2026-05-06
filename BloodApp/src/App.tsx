@@ -42,15 +42,26 @@ function AuthGuard({ children }: { children: React.ReactNode }) {
   const { authUser, isLoading } = useApp();
   if (isLoading) return <LoadingScreen />;
   if (!authUser) return <Navigate to="/" replace />;
-  return <>{children}</>;}
+  return <>{children}</>;
+}
 
 // ─── Professional-only guard ─────────────────────────────────────
 function ProfessionalGuard({ children }: { children: React.ReactNode }) {
   const { authUser, profile, isLoading } = useApp();
   if (isLoading) return <LoadingScreen />;
   if (!authUser) return <Navigate to="/" replace />;
-  if (profile?.user_type !== "professional") return <Navigate to="/home" replace />;
-  return <>{children}</>;}
+  if (profile?.user_type !== "professional")
+    return <Navigate to="/home" replace />;
+  return <>{children}</>;
+}
+
+// ─── Guest-only guard (redirect authenticated users) ───────────────────────
+function GuestGuard({ children }: { children: React.ReactNode }) {
+  const { authUser, isLoading } = useApp();
+  if (isLoading) return <LoadingScreen />;
+  if (authUser) return <Navigate to="/home" replace />;
+  return <>{children}</>;
+}
 
 // ─── Back button handler for Android ─────────────────────────────────────────
 function BackButtonHandler() {
@@ -96,11 +107,32 @@ export default function App() {
         <BackButtonHandler />
         <Routes>
           {/* Public */}
-          <Route path="/" element={<Splash />} />
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <GuestGuard>
+                <Splash />
+              </GuestGuard>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <GuestGuard>
+                <Login />
+              </GuestGuard>
+            }
+          />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/register"
+            element={
+              <GuestGuard>
+                <Register />
+              </GuestGuard>
+            }
+          />
           <Route path="/donor-survey" element={<DonorSurvey />} />
 
           {/* Protected */}
