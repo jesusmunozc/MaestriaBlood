@@ -3,14 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Droplets, CheckCircle2, Lock, Eye, EyeOff } from "lucide-react";
 import { sendPasswordReset } from "../lib/auth";
 import { supabase } from "../lib/supabase";
+import {
+  extractRecoveryPayloadFromLocation,
+  establishRecoverySession,
+  sanitizeRecoveryUrl,
+  type RecoveryPayload,
+} from "../lib/auth-recovery";
 import { InputField } from "../components/FormFields";
 import Button from "../components/Button";
 
 // ─── Forgot Password page ─────────────────────────────────────────────────────
 // Maneja dos modos:
-//   1. Modo normal   — el usuario ingresa su correo para pedir el enlace.
-//   2. Modo reset    — Supabase redirigió aquí con #access_token=...&type=recovery;
-//                      se muestra el formulario para establecer la nueva contraseña.
+//   1. Modo normal — el usuario ingresa su correo para pedir el enlace.
+//   2. Modo reset  — llega desde un enlace de Supabase y muestra el formulario
+//                    para establecer la nueva contraseña.
+//
+// Se aceptan callbacks con:
+//   • hash access/refresh tokens (implicit)
+//   • code PKCE
+//   • token_hash / token OTP de recuperación
 export default function ForgotPassword() {
   const navigate = useNavigate();
 
@@ -22,9 +33,12 @@ export default function ForgotPassword() {
 
   // ── Modo reset (token en URL) ─────────────────────────────────────────────
   const [resetMode, setResetMode] = useState(false);
-  const [sessionReady, setSessionReady] = useState(false);
-  const sessionPromiseRef = useRef<Promise<boolean>>(Promise.resolve(false));
-  // Evita que React StrictMode ejecute el intercambio de código dos veces
+  // sessionStatus: 'loading' → 'ready' | 'error'
+  const [sessionStatus, setSessionStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [sessionInitError, setSessionInitError] = useState<string | null>(null);
+  // Persiste la carga útil del enlace de recuperación entre montajes.
+  const recoveryPayloadRef = useRef<RecoveryPayload | null>(null);
+  // Evita procesar el enlace dos veces (el token de refresh o code es de un uso)
   const exchangeStartedRef = useRef(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -35,70 +49,115 @@ export default function ForgotPassword() {
   const [resetError, setResetError] = useState<string | null>(null);
 
   // ── Detectar y procesar el enlace de recuperación ───────────────────────
-  // detectSessionInUrl está en false, así que el ?code= NO es consumido por
-  // Supabase al inicializar — lo intercambiamos aquí manualmente para tener
-  // control total. Soporta ambos formatos que Supabase puede enviar:
-  //   PKCE (v2 por defecto): ?code=xxx
-  //   Implícito (legacy):    #access_token=xxx&refresh_token=xxx&type=recovery
+  // Soporta todos los formatos habituales de Supabase:
+  //   1) #access_token=...&refresh_token=...&type=recovery  (implicit)
+  //   2) ?code=...&type=recovery                            (PKCE)
+  //   3) ?token_hash=...&type=recovery                      (OTP hash)
+  //      y ?token=... como alias legado.
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const hashParams  = new URLSearchParams(
-      window.location.hash ? window.location.hash.substring(1) : "",
-    );
+    let cancelled = false;
+    let resolved = false;
 
-    const code         = queryParams.get("code");
-    const accessToken  = hashParams.get("access_token");
-    const refreshToken = hashParams.get("refresh_token");
-    const typeHash     = hashParams.get("type");
+    const parsed = extractRecoveryPayloadFromLocation();
 
-    // ── Flujo PKCE: ?code=xxx ──────────────────────────────────────────────
-    if (code) {
-      // Guardia StrictMode: los refs persisten entre las dos ejecuciones del
-      // efecto en desarrollo. Si ya iniciamos el intercambio, no repetirlo.
-      if (exchangeStartedRef.current) return;
-      exchangeStartedRef.current = true;
+    if (!recoveryPayloadRef.current && parsed.payload) {
+      recoveryPayloadRef.current = parsed.payload;
+    }
 
+    const payload = recoveryPayloadRef.current;
+
+    if (parsed.shouldSanitizeUrl) {
+      sanitizeRecoveryUrl();
+    }
+
+    if (parsed.error) {
       setResetMode(true);
-      // Limpiar la URL de inmediato para que la segunda ejecución StrictMode
-      // no encuentre el ?code= y no intente intercambiarlo nuevamente.
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      sessionPromiseRef.current = supabase.auth
-        .exchangeCodeForSession(code)
-        .then(({ error: sessionError }) => {
-          if (sessionError) {
-            console.warn("[ForgotPassword] exchangeCodeForSession:", sessionError.message);
-            return false;
-          }
-          setSessionReady(true);
-          return true;
-        })
-        .catch((err) => {
-          console.warn("[ForgotPassword] exchangeCodeForSession threw:", err);
-          return false;
-        });
+      setSessionInitError(parsed.error);
+      setSessionStatus("error");
       return;
     }
 
-    // ── Flujo implícito: #access_token=...&type=recovery ──────────────────
-    if (typeHash === "recovery" && accessToken && refreshToken) {
-      if (exchangeStartedRef.current) return;
-      exchangeStartedRef.current = true;
-
-      setResetMode(true);
-      window.history.replaceState({}, document.title, window.location.pathname);
-
-      supabase.auth
-        .setSession({ access_token: accessToken, refresh_token: refreshToken })
-        .then(({ error: sessionError }) => {
-          if (sessionError) {
-            console.warn("[ForgotPassword] setSession:", sessionError.message);
-            // No establecer error aquí — handleResetSubmit lo detectará via getSession()
-          } else {
-            setSessionReady(true);
-          }
-        });
+    if (!payload) {
+      if (parsed.hadRecoveryHint) {
+        setResetMode(true);
+        setSessionInitError(
+          "El enlace no contiene credenciales de recuperación válidas. Solicita uno nuevo. Si persiste, configura la plantilla de Supabase para enviar token_hash a /forgot-password.",
+        );
+        setSessionStatus("error");
+      }
+      return;
     }
+
+    const recoveryPayload = payload;
+
+    setResetMode(true);
+
+    // Suscribirse ANTES de intercambiar/validar el token.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (cancelled || resolved) return;
+        if (
+          session &&
+          (event === "SIGNED_IN" ||
+            event === "TOKEN_REFRESHED" ||
+            event === "PASSWORD_RECOVERY")
+        ) {
+          resolved = true;
+          setSessionStatus("ready");
+        }
+      },
+    );
+
+    async function runRecoveryExchange() {
+      if (!exchangeStartedRef.current) {
+        exchangeStartedRef.current = true;
+
+        const { error: exchangeError } = await establishRecoverySession(recoveryPayload);
+        if (cancelled || resolved) return;
+
+        if (exchangeError) {
+          resolved = true;
+          setSessionInitError(
+            "El enlace de recuperación no es válido o ya expiró. Por favor solicita uno nuevo.",
+          );
+          setSessionStatus("error");
+          return;
+        }
+      }
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled || resolved) return;
+
+      if (session) {
+        resolved = true;
+        setSessionStatus("ready");
+      }
+    }
+
+    void runRecoveryExchange();
+
+    // Fallback: si después de 10 s aún no hay sesión, verificar una última vez
+    const timer = setTimeout(async () => {
+      if (resolved) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!cancelled) {
+        resolved = true;
+        if (session) {
+          setSessionStatus("ready");
+        } else {
+          setSessionInitError(
+            "El enlace de recuperación no es válido o ya expiró. Por favor solicita uno nuevo.",
+          );
+          setSessionStatus("error");
+        }
+      }
+    }, 8000);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+      subscription.unsubscribe();
+    };
   }, []);
 
   // ── Enviar solicitud de reset ──────────────────────────────────────────────
@@ -142,11 +201,7 @@ export default function ForgotPassword() {
 
     setResetLoading(true);
     try {
-      // Esperar a que el intercambio PKCE/implícito termine (puede estar en curso)
-      await sessionPromiseRef.current;
-
-      // Verificar sesión real desde localStorage — evita falsos negativos por
-      // React StrictMode que puede resetear el estado sessionReady.
+      // Verificar que la sesión de recuperación esté activa
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
@@ -169,7 +224,8 @@ export default function ForgotPassword() {
       }
 
       setResetDone(true);
-      await supabase.auth.signOut();
+      // Cerrar la sesión de recuperación para que el usuario inicie sesión con la nueva contraseña
+      await supabase.auth.signOut({ scope: "local" });
       setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
       console.error("[handleResetSubmit]", err);
@@ -179,29 +235,87 @@ export default function ForgotPassword() {
     }
   }
 
-  // ── Render: nueva contraseña guardada ─────────────────────────────────────
-  if (resetMode && resetDone) {
-    return (
-      <div className="min-h-screen flex flex-col gradient-blood page-enter">
-        <div className="flex-1 flex flex-col justify-center items-center px-8 pb-10">
-          <div className="w-20 h-20 rounded-full bg-green-600/15 border border-green-500/30 flex items-center justify-center mb-5">
-            <CheckCircle2 className="w-10 h-10 text-green-400" />
-          </div>
-          <h1 className="text-xl font-bold text-app-text mb-2 text-center">
-            ¡Contraseña actualizada!
-          </h1>
-          <p className="text-app-text/50 text-sm text-center">
-            Tu contraseña fue restablecida con éxito.
-            <br />
-            Redirigiendo al inicio de sesión…
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Render: formulario nueva contraseña ───────────────────────────────────
+  // ── Render: modo reset ──────────────────────────────────────────────────────
   if (resetMode) {
+    // ── Éxito: contraseña actualizada ────────────────────────────────────
+    if (resetDone) {
+      return (
+        <div className="min-h-screen flex flex-col gradient-blood page-enter">
+          <div className="flex-1 flex flex-col justify-center items-center px-8 pb-10">
+            <div className="w-20 h-20 rounded-full bg-green-600/15 border border-green-500/30 flex items-center justify-center mb-5">
+              <CheckCircle2 className="w-10 h-10 text-green-400" />
+            </div>
+            <h1 className="text-xl font-bold text-app-text mb-2 text-center">
+              ¡Contraseña actualizada!
+            </h1>
+            <p className="text-app-text/50 text-sm text-center">
+              Tu contraseña fue restablecida con éxito.
+              <br />
+              Redirigiendo al inicio de sesión…
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Cargando: esperando que se establezca la sesión de recuperación ──────
+    if (sessionStatus === "loading") {
+      return (
+        <div className="min-h-screen flex flex-col gradient-blood page-enter">
+          <div className="flex-1 flex flex-col justify-center items-center px-8 pb-10 gap-4">
+            <div className="w-16 h-16 rounded-full bg-blood-600/15 border border-blood-500/30 flex items-center justify-center">
+              <Lock className="w-8 h-8 text-blood-400 animate-pulse" />
+            </div>
+            <p className="text-app-text/60 text-sm text-center">
+              Verificando enlace de recuperación…
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Error: enlace inválido o expirado ─────────────────────────────────────
+    if (sessionStatus === "error") {
+      return (
+        <div className="min-h-screen flex flex-col gradient-blood page-enter">
+          <div className="flex-1 flex flex-col justify-center items-center px-8 pb-10 gap-5">
+            <div className="w-16 h-16 rounded-full bg-red-600/15 border border-red-500/30 flex items-center justify-center">
+              <Lock className="w-8 h-8 text-red-400" />
+            </div>
+            <div className="text-center">
+              <h2 className="text-lg font-bold text-app-text mb-2">
+                Enlace no válido
+              </h2>
+              <p className="text-app-text/50 text-sm leading-relaxed">
+                {sessionInitError}
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              fullWidth
+              onClick={() => {
+                setResetMode(false);
+                setSessionStatus("loading");
+                setSessionInitError(null);
+                exchangeStartedRef.current = false;
+                recoveryPayloadRef.current = null;
+              }}
+            >
+              Solicitar nuevo enlace
+            </Button>
+            <button
+              type="button"
+              onClick={() => navigate("/login")}
+              className="text-app-text/40 text-sm hover:text-app-text/70 transition-colors"
+            >
+              Volver al inicio de sesión
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Formulario: sesión lista, mostrar campos para nueva contraseña ────────
     return (
       <div className="min-h-screen flex flex-col gradient-blood page-enter">
         <div className="flex-1 flex flex-col justify-center px-8 pb-10">
@@ -218,97 +332,101 @@ export default function ForgotPassword() {
             </p>
           </div>
 
-          {/* El formulario siempre se muestra; los errores se muestran inline */}
-          {(
-            <form onSubmit={handleResetSubmit} className="flex flex-col gap-4">
-              {/* Nueva contraseña */}
-              <div>
-                <label className="block text-xs font-semibold text-app-text/60 mb-1 pl-1">
-                  Nueva contraseña
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-app-text/30 pointer-events-none" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Mínimo 8 caracteres"
-                    autoComplete="new-password"
-                    className="w-full bg-app-border/10 border border-app-border/30 rounded-xl pl-10 pr-11 py-3.5 text-app-text placeholder:text-app-text/30 focus:outline-none focus:border-blood-500/60 text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-app-text/40 p-1"
-                    aria-label={showPassword ? "Ocultar" : "Mostrar"}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* Confirmar contraseña */}
-              <div>
-                <label className="block text-xs font-semibold text-app-text/60 mb-1 pl-1">
-                  Confirmar contraseña
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-app-text/30 pointer-events-none" />
-                  <input
-                    type={showConfirm ? "text" : "password"}
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    placeholder="Repite la contraseña"
-                    autoComplete="new-password"
-                    className="w-full bg-app-border/10 border border-app-border/30 rounded-xl pl-10 pr-11 py-3.5 text-app-text placeholder:text-app-text/30 focus:outline-none focus:border-blood-500/60 text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirm((v) => !v)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-app-text/40 p-1"
-                    aria-label={showConfirm ? "Ocultar" : "Mostrar"}
-                  >
-                    {showConfirm ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {resetError && (
-                <div className="bg-red-600/10 border border-red-500/30 rounded-xl px-4 py-3">
-                  <p className="text-red-400 text-sm text-center">{resetError}</p>
-                </div>
-              )}
-
-              <Button
-                type="submit"
-                loading={resetLoading}
-                disabled={!password || !confirm}
-                fullWidth
-                className="mt-2"
-              >
-                Actualizar contraseña
-              </Button>
-
-              {resetError && (
-                <Button
-                  variant="outline"
+          <form onSubmit={handleResetSubmit} className="flex flex-col gap-4">
+            {/* Nueva contraseña */}
+            <div>
+              <label className="block text-xs font-semibold text-app-text/60 mb-1 pl-1">
+                Nueva contraseña
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-app-text/30 pointer-events-none" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Mínimo 8 caracteres"
+                  autoComplete="new-password"
+                  className="w-full bg-app-border/10 border border-app-border/30 rounded-xl pl-10 pr-11 py-3.5 text-app-text placeholder:text-app-text/30 focus:outline-none focus:border-blood-500/60 text-sm"
+                />
+                <button
                   type="button"
-                  onClick={() => { setResetMode(false); setResetError(null); }}
-                  fullWidth
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-app-text/40 p-1"
+                  aria-label={showPassword ? "Ocultar" : "Mostrar"}
                 >
-                  Solicitar nuevo enlace
-                </Button>
-              )}
-            </form>
-          )}
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirmar contraseña */}
+            <div>
+              <label className="block text-xs font-semibold text-app-text/60 mb-1 pl-1">
+                Confirmar contraseña
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-app-text/30 pointer-events-none" />
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  placeholder="Repite la contraseña"
+                  autoComplete="new-password"
+                  className="w-full bg-app-border/10 border border-app-border/30 rounded-xl pl-10 pr-11 py-3.5 text-app-text placeholder:text-app-text/30 focus:outline-none focus:border-blood-500/60 text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm((v) => !v)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-app-text/40 p-1"
+                  aria-label={showConfirm ? "Ocultar" : "Mostrar"}
+                >
+                  {showConfirm ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {resetError && (
+              <div className="bg-red-600/10 border border-red-500/30 rounded-xl px-4 py-3">
+                <p className="text-red-400 text-sm text-center">{resetError}</p>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              loading={resetLoading}
+              disabled={!password || !confirm}
+              fullWidth
+              className="mt-2"
+            >
+              Actualizar contraseña
+            </Button>
+
+            {resetError && (
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  setResetMode(false);
+                  setResetError(null);
+                  setSessionStatus("loading");
+                  setSessionInitError(null);
+                  exchangeStartedRef.current = false;
+                  recoveryPayloadRef.current = null;
+                }}
+                fullWidth
+              >
+                Solicitar nuevo enlace
+              </Button>
+            )}
+          </form>
         </div>
       </div>
     );

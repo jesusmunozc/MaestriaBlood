@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { authStorage } from "./auth-storage";
 
 // These env vars must be set in a .env file at the root of BloodApp:
 // VITE_SUPABASE_URL=https://your-project.supabase.co
@@ -22,10 +23,20 @@ export const supabase = createClient(
     auth: {
       // Keep the session alive between page loads / app restores
       persistSession: true,
+      // Use Capacitor Preferences on native builds and localStorage on web.
+      storage: authStorage,
       // Automatically refresh the JWT before it expires
       autoRefreshToken: true,
-      // false: no consumir el ?code= automáticamente — ForgotPassword.tsx
-      // lo intercambia manualmente para tener control total del timing.
+      // Use implicit flow instead of PKCE so that password-reset links work
+      // from any browser or device.  PKCE stores a code-verifier in the
+      // *requesting* browser's sessionStorage; if the user clicks the email
+      // link in a different tab / browser / email client (which is the common
+      // case on Android), that verifier is gone and exchangeCodeForSession
+      // fails silently.  With implicit flow, Supabase embeds the tokens
+      // directly in the URL hash — no verifier needed anywhere.
+      flowType: "implicit",
+      // false: don't let Supabase parse the URL automatically — ForgotPassword.tsx
+      // reads the hash/query params manually for full timing control.
       detectSessionInUrl: false,
       // Dedicated storage key so it doesn't clash with other libs
       storageKey: "blood_supabase_auth",
