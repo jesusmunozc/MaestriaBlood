@@ -14,6 +14,7 @@ ALTER TABLE public.profiles
 --    immediately after signUp — auth.uid() would be NULL and the
 --    direct INSERT would be rejected by the "Users can manage own
 --    profile" policy.
+
 CREATE OR REPLACE FUNCTION public.create_user_profile(
   p_id                UUID,
   p_username          TEXT,

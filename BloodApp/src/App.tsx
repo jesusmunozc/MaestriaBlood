@@ -8,6 +8,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import { App as CapApp } from "@capacitor/app";
+import type { PluginListenerHandle } from "@capacitor/core";
 import { AppProvider, useApp } from "./contexts/AppContext";
 
 // Pages
@@ -58,15 +59,29 @@ function BackButtonHandler() {
 
   useEffect(() => {
     const root = ["/", "/login", "/home"];
-    CapApp.addListener("backButton", ({ canGoBack }) => {
+
+    let disposed = false;
+    let listener: PluginListenerHandle | null = null;
+
+    void CapApp.addListener("backButton", ({ canGoBack }) => {
       if (root.includes(location.pathname) || !canGoBack) {
         CapApp.exitApp();
       } else {
         navigate(-1);
       }
+    }).then((handle) => {
+      listener = handle;
+      if (disposed && listener) {
+        void listener.remove();
+        listener = null;
+      }
     });
+
     return () => {
-      CapApp.removeAllListeners();
+      disposed = true;
+      if (listener) {
+        void listener.remove();
+      }
     };
   }, [navigate, location.pathname]);
 

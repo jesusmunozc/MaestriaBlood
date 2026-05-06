@@ -6,6 +6,9 @@ import React, {
   useCallback,
   type ReactNode,
 } from "react";
+import { App as CapApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+import type { PluginListenerHandle } from "@capacitor/core";
 import type { Profile, Notification } from "../types";
 import {
   getStoredAuthUser,
@@ -14,6 +17,7 @@ import {
   signOut as authSignOut,
   type AuthUser,
 } from "../lib/auth";
+import { supabase } from "../lib/supabase";
 import { getUnreadCount, getNotifications } from "../lib/notifications";
 import { updateProfile } from "../lib/profiles";
 
@@ -126,7 +130,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Try to restore from local storage immediately
+    let disposed = false;
+    let appStateListener: PluginListenerHandle | null = null;
+
+    // ── 1. Restore stored user immediately so the UI is never blank ──────────
     const stored = getStoredAuthUser();
     if (stored) {
       setAuthUser(stored);
@@ -134,7 +141,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       refreshNotifications();
     }
 
-    // Then watch Supabase auth state for changes
+    // ── 2. Watch Supabase auth for authoritative updates ─────────────────────
+    // watchAuthState now handles INITIAL_SESSION (null) → callback(null) when
+    // there is truly no stored user, so isLoading is cleared immediately.
     const unsub = watchAuthState((user) => {
       setAuthUser(user);
       setIsLoading(false);
@@ -145,31 +154,103 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     unsubRef.current = unsub;
 
-    // Fallback: if no response after 2s, stop loading
-    const timer = setTimeout(() => setIsLoading(false), 2000);
+    // ── 3. Safety valve: stop showing the loader after 3 s in any case ───────
+    const timer = setTimeout(() => setIsLoading(false), 3000);
 
-    // ── Reconnection recovery ──────────────────────────────────────────────
-    // When the device regains network access or the app comes back to the
-    // foreground, ask Supabase to re-validate the stored JWT.  If the token
-    // was refreshed it re-fires onAuthStateChange which updates the state.
-    async function handleReconnect() {
-      await refreshSession();
+    // ── 4. Reconnection recovery ──────────────────────────────────────────────
+    // When the device regains network access or the app returns to the
+    // foreground, ask Supabase to refresh the stored JWT so autoRefreshToken
+    // can do its job even after a long Android background suspension.
+    //
+    // We use getSession() first (non-destructive) to avoid triggering a
+    // network round-trip when the app already has a fresh token.  Only when
+    // the token is close to expiry do we refresh it.  refreshSession() itself
+    // no longer clears stored user data on failure (see auth.ts), so a flaky
+    // network on Android wake-up can no longer silently log the user out.
+    async function handleReconnect(forceRefresh = false) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          const expiresAt = session.expires_at ?? 0;
+          const nowSec = Math.floor(Date.now() / 1000);
+          // Refresh if forced (e.g. app resumed) or expiring in the next 10 min.
+          if (forceRefresh || expiresAt - nowSec < 600) {
+            await refreshSession();
+          }
+        }
+      } catch {
+        // Network error — silently ignore, autoRefreshToken will retry
+      }
+    }
+
+    async function setupNativeLifecycle() {
+      if (!Capacitor.isNativePlatform()) return;
+
+      try {
+        await supabase.auth.startAutoRefresh();
+      } catch {
+        // Ignore; fallback reconnect handlers remain active.
+      }
+
+      try {
+        const listener = await CapApp.addListener(
+          "appStateChange",
+          ({ isActive }) => {
+            void (async () => {
+              if (isActive) {
+                try {
+                  await supabase.auth.startAutoRefresh();
+                } catch {}
+                await handleReconnect(true);
+              } else {
+                try {
+                  await supabase.auth.stopAutoRefresh();
+                } catch {}
+              }
+            })();
+          },
+        );
+
+        if (disposed) {
+          await listener.remove();
+          return;
+        }
+
+        appStateListener = listener;
+      } catch {
+        // Ignore listener registration errors on unsupported environments.
+      }
     }
 
     function handleVisibility() {
       if (document.visibilityState === "visible") {
-        handleReconnect();
+        void handleReconnect();
       }
     }
 
-    window.addEventListener("online", handleReconnect);
+    function handleOnline() {
+      void handleReconnect(true);
+    }
+
+    void setupNativeLifecycle();
+
+    window.addEventListener("online", handleOnline);
     document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
+      disposed = true;
       unsub();
       clearTimeout(timer);
-      window.removeEventListener("online", handleReconnect);
+      window.removeEventListener("online", handleOnline);
       document.removeEventListener("visibilitychange", handleVisibility);
+
+      if (appStateListener) {
+        void appStateListener.remove();
+      }
+
+      if (Capacitor.isNativePlatform()) {
+        void supabase.auth.stopAutoRefresh();
+      }
     };
   }, [refreshNotifications]);
 
